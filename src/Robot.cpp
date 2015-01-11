@@ -8,15 +8,6 @@ private:
 	static const int MOTOR_TWO = 2;
 	static const int MOTOR_THREE = 3;
 
-	static const int GYRO_ANALOG = 1;
-
-	static const int ENCODER_A = 2;
-	static const int ENCODER_B = 3;
-
-	static const int ANGULAR_SENSOR_ANALOG = 4;
-
-	static const int SOLENOID = 1;
-
 	Victor * motor_1;
 	Victor * motor_2;
 	Victor * motor_3;
@@ -24,7 +15,7 @@ private:
 
 	GamepadF310 * pilot;
 
-	//SmartDashboard * smart_dash;
+	AxisCamera * camera;
 
 	LiveWindow *lw;
 
@@ -37,6 +28,8 @@ private:
 		pilot = new GamepadF310(0);
 
 		accel = new BuiltInAccelerometer();
+
+		camera = new AxisCamera("10.8.30.11");
 
 		SmartDashboard::init();
 
@@ -65,9 +58,9 @@ private:
 		motor_1->Set(pilot->LeftY());
 		motor_2->Set(pilot->RightY());
 
-		SmartDashboard::PutNumber("DPad X", pilot->DPadX());
-		SmartDashboard::PutNumber("DPad Y", pilot->DPadY());
-		SmartDashboard::PutString("message", "hi!");
+		SmartDashboard::PutNumber("accel x", accel->GetX());
+		SmartDashboard::PutNumber("accel y", accel->GetY());
+		SmartDashboard::PutNumber("accel z", accel->GetZ());
 
 		lw->Run();
 	}
