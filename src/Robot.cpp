@@ -117,8 +117,11 @@ private:
 
 	void AutonomousPeriodic()
 	{
-		//this is the pointer to the chosen auton function
-		auton();
+		//use the pointer to the chosen auton function
+		//make sure it's not null though, that would be bad
+		if (auton) {
+			auton();
+		}
 	}
 
 	//a couple auton functions to test the chooser
