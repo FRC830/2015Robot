@@ -20,10 +20,10 @@ public:
 	float RightTrigger();
 	float RightX();
 	float RightY();
-	float DPadX();
-	float DPadY();
+	float DPadX(); //only returns +1, 0, or -1
+	float DPadY(); //only returns +1, 0, or -1
 
-	void LeftRumble(float rumbleness); //doesn't actually do anything on these controllers
+	void LeftRumble(float rumbleness); //doesn't actually do anything on our controllers :(
 	void RightRumble(float rumbleness); //ditto
 
 	bool Button(int buttonNum);
