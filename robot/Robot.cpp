@@ -5,16 +5,16 @@
 class Robot: public IterativeRobot
 {
 private:
-	static const int MOTOR_ONE = 1;
+	static const int MOTOR_ONE = 6;
 	static const int MOTOR_TWO = 2;
 	static const int MOTOR_THREE = 3;
 	static const int GYRO_ANALOG = 0;
 
 	//drivetrain
-	static const int LEFT_FRONT_PWM = 6;
-	static const int RIGHT_FRONT_PWM = 7;
-	static const int LEFT_REAR_PWM = 8;
-	static const int RIGHT_REAR_PWM = 9;
+	static const int LEFT_FRONT_PWM = 8;
+	static const int RIGHT_FRONT_PWM = 1;
+	static const int LEFT_REAR_PWM = 9;
+	static const int RIGHT_REAR_PWM = 0;
 
 	//servo
 	static const int YAW_SERVO_PWM = 4;
@@ -33,8 +33,8 @@ private:
 	RobotDrive * drive;
 
 	//acceleration control for drivetrain
-	static constexpr float TIME_TO_MAX_X = 3.0;
-	static constexpr float TIME_TO_MAX_Y = 3.0;
+	static constexpr float TIME_TO_MAX_X = 2.0;
+	static constexpr float TIME_TO_MAX_Y = 2.0;
 	static constexpr float SECS_PER_CYCLE = 1 / 50.0;
 	AccelerationController * x_control;
 	AccelerationController * y_control;
@@ -48,7 +48,6 @@ private:
 	Gyro * gyro;
 
 	GamepadF310 * pilot;
-	InternalButton * user_button; //USER BUTTON!!!!!
 
 	AxisCamera * camera;
 
@@ -95,7 +94,6 @@ private:
 		drive = new RobotDrive(left_front, right_front, left_rear, right_rear);
 
 		pilot = new GamepadF310(0);
-		user_button = new InternalButton();
 
 		gyro = new Gyro(GYRO_ANALOG);
 		accel = new BuiltInAccelerometer();
@@ -172,10 +170,13 @@ private:
 		y_control->Set(pilot->LeftY(), SECS_PER_CYCLE);
 		//mecanum test code
 		float forward = y_control->Get();
+		forward = clamp_value(forward, 0.05);
 		float strafe = x_control->Get();
+		strafe = clamp_value(strafe, 0.05);
 		//float forward = pilot->LeftY();
 		//float strafe = pilot->LeftX();
 		float rotation = pilot->RightX();
+		rotation = clamp_value(rotation, 0.05);
 
 
 		SmartDashboard::PutNumber("forward", forward);
@@ -197,10 +198,10 @@ private:
 		}
 
 		SmartDashboard::PutNumber("pdp voltage (V)", pdp->GetVoltage());
-		SmartDashboard::PutNumber("pdp 8 current (A)", pdp->GetCurrent(8));
+		SmartDashboard::PutNumber("pdp 0 current (A)", pdp->GetCurrent(0));
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
-		SmartDashboard::PutBoolean("user button", user_button->Get());
+		SmartDashboard::PutBoolean("user button", GetUserButton());
 
 		lw->Run();
 	}
@@ -208,6 +209,13 @@ private:
 	void TestPeriodic()
 	{
 
+	}
+	float clamp_value(float value, float minimum){
+		if (value <= minimum && value >= -minimum){
+			return 0.0;
+		} else {
+			return value;
+		}
 	}
 };
 
