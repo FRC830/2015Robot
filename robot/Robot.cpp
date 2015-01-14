@@ -50,6 +50,8 @@ private:
 	GamepadF310 * pilot;
 
 	AxisCamera * camera;
+	float camerax;
+	float cameray;
 
 	PowerDistributionPanel * pdp;
 
@@ -99,6 +101,8 @@ private:
 		accel = new BuiltInAccelerometer();
 
 		camera = new AxisCamera("10.8.30.11");
+		camerax = 90.0;
+		cameray = 90.0;
 
 		SmartDashboard::init();
 
@@ -149,8 +153,7 @@ private:
 
 	void TeleopInit()
 	{
-		yaw_servo->SetAngle(90.0);
-		pitch_servo->SetAngle(90.0);
+
 	}
 
 	void TeleopPeriodic()
@@ -187,15 +190,17 @@ private:
 
 		//move camera using DPad input
 		if(pilot->DPadX()==1.0){
-			yaw_servo->SetAngle(yaw_servo->GetAngle()+1.0);
+			camerax = camerax + 1.0;
 		} else if(pilot->DPadX()==-1.0){
-			yaw_servo->SetAngle(yaw_servo->GetAngle()-1.0);
+			camerax = camerax - 1.0;
 		}
 		if(pilot->DPadY()==1.0){
-			pitch_servo->SetAngle(pitch_servo->GetAngle()+1.0);
+			cameray = cameray + 1.0;
 		} else if(pilot->DPadY()==-1.0){
-			pitch_servo->SetAngle(pitch_servo->GetAngle()-1.0);
+			cameray = cameray -1.0;
 		}
+		yaw_servo->SetAngle(camerax);
+		pitch_servo->SetAngle(cameray);
 
 		SmartDashboard::PutNumber("pdp voltage (V)", pdp->GetVoltage());
 		SmartDashboard::PutNumber("pdp 0 current (A)", pdp->GetCurrent(0));
