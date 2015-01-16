@@ -25,19 +25,15 @@ private:
 	Victor * motor_3;
 
 	//Talons for drive train
-	Talon * left_front;
-	Talon * right_front;
-	Talon * left_rear;
-	Talon * right_rear;
+	AccelLimitedController * left_front;
+	AccelLimitedController * right_front;
+	AccelLimitedController * left_rear;
+	AccelLimitedController * right_rear;
 
 	RobotDrive * drive;
 
 	//acceleration control for drivetrain
-	static constexpr float TIME_TO_MAX_X = 2.0;
-	static constexpr float TIME_TO_MAX_Y = 2.0;
-	static constexpr float SECS_PER_CYCLE = 1 / 50.0;
-	AccelerationController * x_control;
-	AccelerationController * y_control;
+	static constexpr float TIME_TO_MAX_SPEED = 2.0;
 
 	//servos to control the position of the camera
 	Servo * yaw_servo;
@@ -82,13 +78,10 @@ private:
 		motor_2 = new Victor(MOTOR_TWO);
 		motor_3 = new Victor(MOTOR_THREE);
 
-		left_front = new Talon(LEFT_FRONT_PWM);
-		right_front = new Talon(RIGHT_FRONT_PWM);
-		left_rear = new Talon(LEFT_REAR_PWM);
-		right_rear = new Talon(RIGHT_REAR_PWM);
-
-		x_control = new AccelerationController(TIME_TO_MAX_X);
-		y_control = new AccelerationController(TIME_TO_MAX_Y);
+		left_front = new AccelLimitedController(new VictorSP(LEFT_FRONT_PWM), TIME_TO_MAX_SPEED);
+		right_front = new AccelLimitedController(new VictorSP(RIGHT_FRONT_PWM), TIME_TO_MAX_SPEED);
+		left_rear = new AccelLimitedController(new VictorSP(LEFT_REAR_PWM), TIME_TO_MAX_SPEED);
+		right_rear = new AccelLimitedController(new VictorSP(RIGHT_REAR_PWM), TIME_TO_MAX_SPEED);
 
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
@@ -169,12 +162,10 @@ private:
 		SmartDashboard::PutNumber("accel y", accel->GetY());
 		SmartDashboard::PutNumber("accel z", accel->GetZ());
 
-		x_control->Set(pilot->LeftX(), SECS_PER_CYCLE);
-		y_control->Set(pilot->LeftY(), SECS_PER_CYCLE);
 		//mecanum test code
-		float forward = y_control->Get();
+		float forward = pilot->RightY();
 		forward = clamp_value(forward, 0.05);
-		float strafe = x_control->Get();
+		float strafe = pilot->LeftX();
 		strafe = clamp_value(strafe, 0.05);
 		//float forward = pilot->LeftY();
 		//float strafe = pilot->LeftX();

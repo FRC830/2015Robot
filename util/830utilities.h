@@ -10,7 +10,7 @@
 #ifndef UTIL_830_UTILITIES_H_
 #define UTIL_830_UTILITIES_H_
 
-#include "AccelerationController.h"
+#include "AccelLimitedController.h"
 #include "GamepadF310.h"
 
 
