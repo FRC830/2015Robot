@@ -6,7 +6,7 @@ class Robot: public IterativeRobot
 {
 private:
 	static const int MOTOR_ONE = 6;
-	static const int MOTOR_TWO = 2;
+	static const int MOTOR_TWO = 7;
 	static const int MOTOR_THREE = 3;
 	static const int GYRO_ANALOG = 0;
 
@@ -20,9 +20,9 @@ private:
 	static const int YAW_SERVO_PWM = 4;
 	static const int PITCH_SERVO_PWM = 5;
 
-	Victor * motor_1;
-	Victor * motor_2;
-	Victor * motor_3;
+	AccelLimitedController * motor_1;
+	AccelLimitedController * motor_2;
+	VictorSP * motor_3;
 
 	//Talons for drive train
 	AccelLimitedController * left_front;
@@ -74,9 +74,9 @@ private:
 
 	void RobotInit()
 	{
-		motor_1 = new Victor(MOTOR_ONE);
-		motor_2 = new Victor(MOTOR_TWO);
-		motor_3 = new Victor(MOTOR_THREE);
+		motor_1 = new AccelLimitedController(new VictorSP(MOTOR_ONE), TIME_TO_MAX_SPEED);
+		motor_2 = new AccelLimitedController(new VictorSP(MOTOR_TWO), TIME_TO_MAX_SPEED);
+		motor_3 = new VictorSP(MOTOR_THREE);
 
 		left_front = new AccelLimitedController(new VictorSP(LEFT_FRONT_PWM), TIME_TO_MAX_SPEED);
 		right_front = new AccelLimitedController(new VictorSP(RIGHT_FRONT_PWM), TIME_TO_MAX_SPEED);
@@ -152,7 +152,8 @@ private:
 	void TeleopPeriodic()
 	{
 
-		motor_1->Set(pilot->RightY());
+		motor_1->Set(pilot->LeftY());
+		motor_2->Set(pilot->RightY());
 
 		float angle = gyro->GetAngle();
 
@@ -164,13 +165,8 @@ private:
 
 		//mecanum test code
 		float forward = pilot->RightY();
-		forward = clamp_value(forward, 0.05);
 		float strafe = pilot->LeftX();
-		strafe = clamp_value(strafe, 0.05);
-		//float forward = pilot->LeftY();
-		//float strafe = pilot->LeftX();
 		float rotation = pilot->RightX();
-		rotation = clamp_value(rotation, 0.05);
 
 
 		SmartDashboard::PutNumber("forward", forward);
@@ -194,7 +190,8 @@ private:
 		pitch_servo->SetAngle(cameray);
 
 		SmartDashboard::PutNumber("pdp voltage (V)", pdp->GetVoltage());
-		SmartDashboard::PutNumber("pdp 0 current (A)", pdp->GetCurrent(0));
+		SmartDashboard::PutNumber("motor 1 current (A)", pdp->GetCurrent(3));
+		SmartDashboard::PutNumber("motor 2 current (A)", pdp->GetCurrent(2));
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
@@ -205,13 +202,6 @@ private:
 	void TestPeriodic()
 	{
 
-	}
-	float clamp_value(float value, float minimum){
-		if (value <= minimum && value >= -minimum){
-			return 0.0;
-		} else {
-			return value;
-		}
 	}
 };
 
