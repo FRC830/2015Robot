@@ -1,6 +1,7 @@
 #include "WPILib.h"
 
 #include "../util/830utilities.h"
+#include "MecanumDrive.h"
 
 class Robot: public IterativeRobot
 {
@@ -20,17 +21,12 @@ private:
 	static const int YAW_SERVO_PWM = 4;
 	static const int PITCH_SERVO_PWM = 5;
 
-	AccelLimitedController * motor_1;
-	AccelLimitedController * motor_2;
+	VictorSP * motor_1;
+	VictorSP * motor_2;
 	VictorSP * motor_3;
 
-	//Talons for drive train
-	AccelLimitedController * left_front;
-	AccelLimitedController * right_front;
-	AccelLimitedController * left_rear;
-	AccelLimitedController * right_rear;
 
-	RobotDrive * drive;
+	MecanumDrive * drive;
 
 	//acceleration control for drivetrain
 	static constexpr float TIME_TO_MAX_SPEED = 2.0;
@@ -75,19 +71,15 @@ private:
 
 	void RobotInit()
 	{
-		motor_1 = new AccelLimitedController(new VictorSP(MOTOR_ONE), TIME_TO_MAX_SPEED);
-		motor_2 = new AccelLimitedController(new VictorSP(MOTOR_TWO), TIME_TO_MAX_SPEED);
+		motor_1 = new VictorSP(MOTOR_ONE);
+		motor_2 = new VictorSP(MOTOR_TWO);
 		motor_3 = new VictorSP(MOTOR_THREE);
-
-		left_front = new AccelLimitedController(new VictorSP(LEFT_FRONT_PWM), TIME_TO_MAX_SPEED);
-		right_front = new AccelLimitedController(new VictorSP(RIGHT_FRONT_PWM), TIME_TO_MAX_SPEED);
-		left_rear = new AccelLimitedController(new VictorSP(LEFT_REAR_PWM), TIME_TO_MAX_SPEED);
-		right_rear = new AccelLimitedController(new VictorSP(RIGHT_REAR_PWM), TIME_TO_MAX_SPEED);
 
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
 
-		drive = new RobotDrive(left_front, right_front, left_rear, right_rear);
+		drive = new MecanumDrive(new Talon(LEFT_FRONT_PWM), new Talon(LEFT_REAR_PWM),
+				new Talon(RIGHT_FRONT_PWM), new Talon(RIGHT_REAR_PWM), TIME_TO_MAX_SPEED);
 
 		pilot = new GamepadF310(0);
 
@@ -153,6 +145,7 @@ private:
 
 	void TeleopPeriodic()
 	{
+		gyro2->Update(); //important or gyro won't work
 
 		motor_1->Set(pilot->LeftY());
 		motor_2->Set(pilot->RightY());
@@ -175,7 +168,7 @@ private:
 		SmartDashboard::PutNumber("strafe", strafe);
 		SmartDashboard::PutNumber("rotation", rotation);
 
-		drive->MecanumDrive_Cartesian(forward, strafe, rotation);
+		drive->MecanumDriveCartesian(forward, strafe, rotation);
 
 		//move camera using DPad input
 		if(pilot->DPadX()==1.0){
@@ -197,7 +190,7 @@ private:
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
-		SmartDashboard::PutNumber("gyro output", gyro2->update());
+		SmartDashboard::PutNumber("gyro output", gyro2->GetAngle());
 		lw->Run();
 	}
 

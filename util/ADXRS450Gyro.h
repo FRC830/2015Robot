@@ -14,7 +14,9 @@ class ADXRS450Gyro {
 public:
 	ADXRS450Gyro();
 	virtual ~ADXRS450Gyro();
-	float update();
+	int Update(); //must call every cycle or things won't work
+	float GetRate();
+	float GetAngle();
 
 
 private:
@@ -31,6 +33,7 @@ private:
 
 	float accumulated_angle;
 	Timer * timer;
+	float current_rate;
 
 	unsigned char command[4];
 	unsigned char data[4];

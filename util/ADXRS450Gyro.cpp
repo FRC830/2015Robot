@@ -23,6 +23,7 @@ ADXRS450Gyro::ADXRS450Gyro() {
 	data[3] = 0;
 
 	accumulated_angle = 0.0;
+	current_rate = 0.0;
 	timer = new Timer();
 
 }
@@ -31,17 +32,28 @@ ADXRS450Gyro::~ADXRS450Gyro() {
 	// TODO Auto-generated destructor stub
 }
 
-float ADXRS450Gyro::update() {
+int ADXRS450Gyro::Update() {
 	check_parity(command);
-	spi->Transaction(command, data, DATA_SIZE);
+	int err = spi->Transaction(command, data, DATA_SIZE); //perform transaction, get error code
 
-	//return (data[0] & 0x0C) >> 2; //return the "status" bits
+	int status = (data[0] & 0x0C) >> 2; //status bits
+	if (err != 0 || status == 0x00) { //there was an error somewhere
+		return 1;
+	}
 	int sensor_data = assemble_sensor_data(data);
-	int rate = ((float) sensor_data) / 80.0;
+	current_rate = ((float) sensor_data) / 80.0;
 	timer->Start();
-	accumulated_angle += timer->Get() * rate;
+	accumulated_angle += timer->Get() * current_rate;
 	timer->Reset();
 
+	return 0;
+}
+
+float ADXRS450Gyro::GetRate() {
+	return current_rate;
+}
+
+float ADXRS450Gyro::GetAngle() {
 	return accumulated_angle;
 }
 

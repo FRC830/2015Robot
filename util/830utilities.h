@@ -10,7 +10,6 @@
 #ifndef UTIL_830_UTILITIES_H_
 #define UTIL_830_UTILITIES_H_
 
-#include "AccelLimitedController.h"
 #include "GamepadF310.h"
 #include "ADXRS450Gyro.h"
 
