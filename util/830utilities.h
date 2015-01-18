@@ -12,6 +12,6 @@
 
 #include "AccelLimitedController.h"
 #include "GamepadF310.h"
-
+#include "ADXRS450Gyro.h"
 
 #endif

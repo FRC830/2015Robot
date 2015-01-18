@@ -5,9 +5,9 @@
 class Robot: public IterativeRobot
 {
 private:
-	static const int MOTOR_ONE = 6;
-	static const int MOTOR_TWO = 7;
-	static const int MOTOR_THREE = 3;
+	static const int MOTOR_ONE = 3;
+	static const int MOTOR_TWO = 2;
+	static const int MOTOR_THREE = 6;
 	static const int GYRO_ANALOG = 0;
 
 	//drivetrain
@@ -42,6 +42,7 @@ private:
 
 	BuiltInAccelerometer * accel;
 	Gyro * gyro;
+	ADXRS450Gyro * gyro2;
 
 	GamepadF310 * pilot;
 
@@ -91,6 +92,7 @@ private:
 		pilot = new GamepadF310(0);
 
 		gyro = new Gyro(GYRO_ANALOG);
+		gyro2 = new ADXRS450Gyro();
 		accel = new BuiltInAccelerometer();
 
 		camera = new AxisCamera("10.8.30.11");
@@ -155,10 +157,10 @@ private:
 		motor_1->Set(pilot->LeftY());
 		motor_2->Set(pilot->RightY());
 
-		float angle = gyro->GetAngle();
+		//float angle = gyro->GetAngle();
 
 		//display on the SmartDashboard
-		SmartDashboard::PutNumber("gyro", NormalizedAngle(angle));
+		//SmartDashboard::PutNumber("gyro", NormalizedAngle(angle));
 		SmartDashboard::PutNumber("accel x", accel->GetX());
 		SmartDashboard::PutNumber("accel y", accel->GetY());
 		SmartDashboard::PutNumber("accel z", accel->GetZ());
@@ -195,7 +197,7 @@ private:
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
-
+		SmartDashboard::PutNumber("gyro output", gyro2->update());
 		lw->Run();
 	}
 
