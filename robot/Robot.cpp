@@ -153,13 +153,15 @@ private:
 
 		rollers->Set(copilot->LeftY());
 		gripper->Set(copilot->RightX());
-		shover->Set(copilot->Button(GamepadF310::A_Button));
 
-		//testing gamepad buttons
-		SmartDashboard::PutBoolean("F310 button 1", copilot->Button(1));
-		SmartDashboard::PutBoolean("F310 button 2", copilot->Button(2));
-		SmartDashboard::PutBoolean("F310 button 3", copilot->Button(3));
-		SmartDashboard::PutBoolean("F310 button 4", copilot->Button(4));
+		//Shove bins out
+		if (copilot->Button(GamepadF310::Y_Button)){
+			shover->Set(1.0);//shove out
+		}else if (copilot->Button(GamepadF310::A_Button)){
+			shover->Set(-1.0);//retract shove mechanism
+		}else{
+			shover->Set(0.0);
+		}
 
 		//Tote/bin lifting
 		if (copilot->RightTrigger() || copilot->LeftTrigger()){
