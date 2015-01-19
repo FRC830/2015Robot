@@ -6,24 +6,25 @@
 class Robot: public IterativeRobot
 {
 private:
-	static const int MOTOR_ONE = 3;
-	static const int MOTOR_TWO = 2;
-	static const int MOTOR_THREE = 6;
-	static const int GYRO_ANALOG = 0;
+	static const int ROLLER_PWM = 6;
+	static const int GRIPPER_PWM = 7;
+	static const int LIFTER_PWM = 8;
+	static const int SHOVE_PWM = 9;
 
 	//drivetrain
-	static const int LEFT_FRONT_PWM = 8;
+	static const int LEFT_FRONT_PWM = 0;
 	static const int RIGHT_FRONT_PWM = 1;
-	static const int LEFT_REAR_PWM = 9;
-	static const int RIGHT_REAR_PWM = 0;
+	static const int LEFT_REAR_PWM = 2;
+	static const int RIGHT_REAR_PWM = 3;
 
 	//servo
 	static const int YAW_SERVO_PWM = 4;
 	static const int PITCH_SERVO_PWM = 5;
 
-	VictorSP * motor_1;
-	VictorSP * motor_2;
-	VictorSP * motor_3;
+	Talon * rollers;
+	Talon * gripper;
+	Talon * lifter;
+	Talon * shover;
 
 
 	MecanumDrive * drive;
@@ -37,10 +38,11 @@ private:
 
 
 	BuiltInAccelerometer * accel;
-	Gyro * gyro;
-	ADXRS450Gyro * gyro2;
+
+	ADXRS450Gyro * gyro;
 
 	GamepadF310 * pilot;
+	GamepadF310 * copilot;
 
 	AxisCamera * camera;
 	float camerax;
@@ -71,20 +73,22 @@ private:
 
 	void RobotInit()
 	{
-		motor_1 = new VictorSP(MOTOR_ONE);
-		motor_2 = new VictorSP(MOTOR_TWO);
-		motor_3 = new VictorSP(MOTOR_THREE);
+		rollers = new Talon(ROLLER_PWM);
+		gripper = new Talon(GRIPPER_PWM);
+		lifter = new Talon(LIFTER_PWM);
+		shover = new Talon(SHOVE_PWM);
+
 
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
 
-		drive = new MecanumDrive(new Talon(LEFT_FRONT_PWM), new Talon(LEFT_REAR_PWM),
-				new Talon(RIGHT_FRONT_PWM), new Talon(RIGHT_REAR_PWM), TIME_TO_MAX_SPEED);
+		drive = new MecanumDrive(new VictorSP(LEFT_FRONT_PWM), new VictorSP(LEFT_REAR_PWM),
+				new VictorSP(RIGHT_FRONT_PWM), new VictorSP(RIGHT_REAR_PWM), TIME_TO_MAX_SPEED);
 
 		pilot = new GamepadF310(0);
+		copilot = new GamepadF310(1);
 
-		gyro = new Gyro(GYRO_ANALOG);
-		gyro2 = new ADXRS450Gyro();
+		gyro = new ADXRS450Gyro();
 		accel = new BuiltInAccelerometer();
 
 		camera = new AxisCamera("10.8.30.11");
@@ -145,21 +149,35 @@ private:
 
 	void TeleopPeriodic()
 	{
-		gyro2->Update(); //important or gyro won't work
+		gyro->Update(); //important or gyro won't work
 
-		motor_1->Set(pilot->LeftY());
-		motor_2->Set(pilot->RightY());
+		rollers->Set(copilot->LeftY());
+		gripper->Set(copilot->RightX());
+		shover->Set(copilot->Button(GamepadF310::A_Button));
 
-		//float angle = gyro->GetAngle();
+		//testing gamepad buttons
+		SmartDashboard::PutBoolean("F310 button 1", copilot->Button(1));
+		SmartDashboard::PutBoolean("F310 button 2", copilot->Button(2));
+		SmartDashboard::PutBoolean("F310 button 3", copilot->Button(3));
+		SmartDashboard::PutBoolean("F310 button 4", copilot->Button(4));
+
+		//Tote/bin lifting
+		if (copilot->RightTrigger() || copilot->LeftTrigger()){
+			lifter->Set(-1.0);//Move lifter down
+		}else if(copilot->RightBumper() || copilot->LeftBumper()){
+			lifter->Set(1.0);//move lifter up
+		}else{
+			lifter->Set(0.0);
+		}
+
 
 		//display on the SmartDashboard
-		//SmartDashboard::PutNumber("gyro", NormalizedAngle(angle));
 		SmartDashboard::PutNumber("accel x", accel->GetX());
 		SmartDashboard::PutNumber("accel y", accel->GetY());
 		SmartDashboard::PutNumber("accel z", accel->GetZ());
 
 		//mecanum test code
-		float forward = pilot->RightY();
+		float forward = pilot->LeftY();
 		float strafe = pilot->LeftX();
 		float rotation = pilot->RightX();
 
@@ -190,7 +208,7 @@ private:
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
-		SmartDashboard::PutNumber("gyro output", gyro2->GetAngle());
+		SmartDashboard::PutNumber("Gyro Angle", gyro->GetRate());
 		lw->Run();
 	}
 

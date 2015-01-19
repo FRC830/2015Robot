@@ -9,7 +9,7 @@
 
 ADXRS450Gyro::ADXRS450Gyro() {
 	spi = new SPI(SPI::kOnboardCS0);
-	spi->SetClockRate(4000000); //4 MHz (rRIO max, gyro can go high)
+	spi->SetClockRate(1000000); //4 MHz (rRIO max, gyro can go high)
 	spi->SetClockActiveHigh();
 	spi->SetChipSelectActiveLow();
 

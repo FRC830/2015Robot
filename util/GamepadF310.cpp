@@ -29,6 +29,12 @@ float GamepadF310::LeftTrigger() {
 float GamepadF310::RightTrigger() {
 	return joystick->GetRawAxis(RIGHT_TRIGGER_NUM);
 }
+float GamepadF310::LeftBumper() {
+	return joystick->GetRawButton(5);
+}
+float GamepadF310::RightBumper() {
+	return joystick->GetRawButton(6);
+}
 float GamepadF310::RightX() {
 	return joystick->GetRawAxis(RIGHT_X_AXIS_NUM);
 }

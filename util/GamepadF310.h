@@ -18,6 +18,8 @@ public:
 	float LeftY();
 	float LeftTrigger();
 	float RightTrigger();
+	float LeftBumper();
+	float RightBumper();
 	float RightX();
 	float RightY();
 	float DPadX(); //only returns +1, 0, or -1
@@ -29,6 +31,12 @@ public:
 	bool Button(int buttonNum);
 	bool LeftStickPress();
 	bool RightStickPress();
+
+	//the gamepad buttons
+	static const int A_Button = 1;
+	static const int B_Button = 2;
+	static const int X_Button = 3;
+	static const int Y_Button = 4;
 
 
 protected:
