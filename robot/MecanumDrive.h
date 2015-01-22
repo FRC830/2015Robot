@@ -12,8 +12,7 @@
 
 class MecanumDrive {
 public:
-	MecanumDrive(SpeedController * front_left_motor, SpeedController * rear_left_motor,
-			SpeedController * front_right_motor, SpeedController * rear_right_motor, float accel_time);
+	MecanumDrive(RobotDrive * robot_drive, float accel_time);
 	virtual ~MecanumDrive();
 	void MecanumDriveCartesian(float x, float y, float rotation, float gyro_angle = 0.0);
 

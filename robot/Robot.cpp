@@ -13,8 +13,8 @@ private:
 
 	//drivetrain
 	static const int LEFT_FRONT_PWM = 0;
-	static const int RIGHT_FRONT_PWM = 1;
-	static const int LEFT_REAR_PWM = 2;
+	static const int LEFT_REAR_PWM = 1;
+	static const int RIGHT_FRONT_PWM = 2;
 	static const int RIGHT_REAR_PWM = 3;
 
 	//servo
@@ -25,7 +25,6 @@ private:
 	Talon * gripper;
 	Talon * lifter;
 	Talon * shover;
-
 
 	MecanumDrive * drive;
 
@@ -82,13 +81,19 @@ private:
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
 
-		drive = new MecanumDrive(new VictorSP(LEFT_FRONT_PWM), new VictorSP(LEFT_REAR_PWM),
-				new VictorSP(RIGHT_FRONT_PWM), new VictorSP(RIGHT_REAR_PWM), TIME_TO_MAX_SPEED);
+		RobotDrive * robot_drive = new RobotDrive(
+				new VictorSP(LEFT_FRONT_PWM), new VictorSP(LEFT_REAR_PWM),
+				new VictorSP(RIGHT_FRONT_PWM), new VictorSP(RIGHT_REAR_PWM));
+		robot_drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
+		robot_drive->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+		drive = new MecanumDrive(robot_drive, TIME_TO_MAX_SPEED);
 
 		pilot = new GamepadF310(0);
 		copilot = new GamepadF310(1);
 
 		gyro = new ADXRS450Gyro();
+		//GyroInit(gyro);
+		//GyroStart();
 		accel = new BuiltInAccelerometer();
 
 		camera = new AxisCamera("10.8.30.11");
@@ -149,8 +154,7 @@ private:
 
 	void TeleopPeriodic()
 	{
-		gyro->Update(); //important or gyro won't work
-
+		gyro->Update();
 		rollers->Set(copilot->LeftY());
 		gripper->Set(copilot->RightX());
 
@@ -210,7 +214,8 @@ private:
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
-		SmartDashboard::PutNumber("Gyro Angle", gyro->GetRate());
+		SmartDashboard::PutNumber("Gyro Angle", gyro->GetAngle());
+		SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
 		lw->Run();
 	}
 

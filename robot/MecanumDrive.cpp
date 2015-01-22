@@ -7,10 +7,9 @@
 
 #include "MecanumDrive.h"
 
-MecanumDrive::MecanumDrive(SpeedController * front_left_motor, SpeedController * rear_left_motor,
-		SpeedController * front_right_motor, SpeedController * rear_right_motor, float accel_time) {
+MecanumDrive::MecanumDrive(RobotDrive * robot_drive, float accel_time) {
 
-	drive = new RobotDrive(front_left_motor, rear_left_motor, front_right_motor, rear_right_motor);
+	drive = robot_drive;
 	time_to_max_speed = accel_time;
 	current_x = 0.0;
 	current_y = 0.0;
