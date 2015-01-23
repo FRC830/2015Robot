@@ -18,10 +18,11 @@ public:
 	float GetAngle();
 	void Reset();
 	void Update();
+	float Offset();
 
 
 private:
-	float GetData();
+	int GetData();
 	void UpdateData();
 	void Calibrate();
 

@@ -35,11 +35,8 @@ ADXRS450Gyro::~ADXRS450Gyro() {
 	// TODO Auto-generated destructor stub
 }
 
-void ADXRS450Gyro::Reset(){
-	accumulated_angle = 0.0;
-}
 
-float ADXRS450Gyro::GetData() {
+int ADXRS450Gyro::GetData() {
 	check_parity(command);
 	spi->Transaction(command, data, DATA_SIZE); //perform transaction, get error code
 
@@ -53,19 +50,20 @@ float ADXRS450Gyro::GetData() {
 }
 
 void ADXRS450Gyro::Update() {
-	/*
+
 	calibration_timer->Start();
+
 	if (calibration_timer->Get() < 3.0){
 		Calibrate();
 	} else {
 		UpdateData();
 	}
-	*/
-	UpdateData();
 }
 void ADXRS450Gyro::UpdateData() {
 	int sensor_data = GetData();
-	current_rate = ((float) sensor_data) / 80.0;
+	float rate = ((float) sensor_data) / 80.0;
+
+	current_rate = rate;
 	current_rate -= rate_offset;
 	update_timer->Start();
 	accumulated_angle += update_timer->Get() * current_rate;
@@ -75,7 +73,6 @@ void ADXRS450Gyro::UpdateData() {
 void ADXRS450Gyro::Calibrate() {
 	int sensor_data = GetData();
 	float rate = ((float) sensor_data) / 80.0;
-
 	update_timer->Start();
 	calibration_timer->Start();
 	accumulated_offset += rate * update_timer->Get();
@@ -91,6 +88,19 @@ float ADXRS450Gyro::GetRate() {
 
 float ADXRS450Gyro::GetAngle() {
 	return accumulated_angle;
+}
+
+float ADXRS450Gyro::Offset() {
+	return rate_offset;
+}
+
+void ADXRS450Gyro::Reset() {
+	accumulated_angle = 0.0;
+	rate_offset = 0.0;
+	accumulated_offset = 0.0;
+	calibration_timer->Reset();
+	update_timer->Stop();
+	update_timer->Reset();
 }
 
 short ADXRS450Gyro::assemble_sensor_data(unsigned char * data){

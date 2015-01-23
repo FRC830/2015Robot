@@ -149,7 +149,7 @@ private:
 
 	void TeleopInit()
 	{
-
+		gyro->Reset();
 	}
 
 	void TeleopPeriodic()
@@ -214,8 +214,9 @@ private:
 		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
-		SmartDashboard::PutNumber("Gyro Angle", gyro->GetAngle());
+		SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
 		SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
+		SmartDashboard::PutNumber("offset", gyro->Offset());
 		lw->Run();
 	}
 
