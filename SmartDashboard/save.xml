@@ -1,0 +1,60 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="gyro rate" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="213"/>
+	</widget>
+	<widget field="motor 2 current (A)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="193" y="160"/>
+	</widget>
+	<widget field="motor 1 current (A)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="189" y="130"/>
+	</widget>
+	<widget field="Gyro Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="192"/>
+	</widget>
+	<widget field="user button" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="6" y="171"/>
+	</widget>
+	<widget field="pdp temp (C)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="410" y="166"/>
+	</widget>
+	<widget field="pdp voltage (V)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="404" y="142"/>
+	</widget>
+	<widget field="forward" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="100"/>
+	</widget>
+	<widget field="accel z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="431" y="66"/>
+	</widget>
+	<widget field="rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="142"/>
+	</widget>
+	<widget field="strafe" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="121"/>
+	</widget>
+	<widget field="auton" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="33" y="0"/>
+	</widget>
+	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="33"/>
+	</widget>
+	<widget field="accel x" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="180" y="67"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
+		<location x="665" y="44"/>
+		<width>464</width>
+		<height>211</height>
+	</static-widget>
+	<widget field="accel y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="302" y="67"/>
+		<width>123</width>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="0" y="0"/>
+	</static-widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

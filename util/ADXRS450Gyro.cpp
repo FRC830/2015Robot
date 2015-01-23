@@ -53,12 +53,15 @@ float ADXRS450Gyro::GetData() {
 }
 
 void ADXRS450Gyro::Update() {
+	/*
 	calibration_timer->Start();
 	if (calibration_timer->Get() < 3.0){
 		Calibrate();
 	} else {
 		UpdateData();
 	}
+	*/
+	UpdateData();
 }
 void ADXRS450Gyro::UpdateData() {
 	int sensor_data = GetData();

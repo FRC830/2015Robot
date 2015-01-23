@@ -41,7 +41,6 @@ private:
 	Timer * calibration_timer;
 	float current_rate;
 	float accumulated_offset;
-	float calibrate_time;
 	float rate_offset;
 
 	unsigned char command[4];
