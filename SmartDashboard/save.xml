@@ -1,16 +1,19 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="166" y="276"/>
+	</widget>
+	<widget field="gyro angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="154" y="252"/>
+	</widget>
 	<widget field="gyro rate" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="213"/>
+		<location x="159" y="229"/>
 	</widget>
 	<widget field="motor 2 current (A)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="193" y="160"/>
 	</widget>
 	<widget field="motor 1 current (A)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="189" y="130"/>
-	</widget>
-	<widget field="Gyro Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="192"/>
 	</widget>
 	<widget field="user button" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="6" y="171"/>
@@ -57,4 +60,6 @@
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Gyro Angle"/>
+	<hidden field="gyro output"/>
 </xml>

@@ -43,7 +43,6 @@ private:
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
 
-	AxisCamera * camera;
 	float camerax;
 	float cameray;
 
@@ -92,11 +91,8 @@ private:
 		copilot = new GamepadF310(1);
 
 		gyro = new ADXRS450Gyro();
-		//GyroInit(gyro);
-		//GyroStart();
 		accel = new BuiltInAccelerometer();
 
-		camera = new AxisCamera("10.8.30.11");
 		camerax = 90.0;
 		cameray = 90.0;
 
