@@ -1,34 +1,19 @@
 <xml version="1.0">
 <dashboard>
 	<widget field="offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="166" y="276"/>
+		<location x="166" y="136"/>
 	</widget>
 	<widget field="gyro angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="154" y="252"/>
+		<location x="144" y="111"/>
 	</widget>
 	<widget field="gyro rate" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="159" y="229"/>
-	</widget>
-	<widget field="motor 2 current (A)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="193" y="160"/>
-	</widget>
-	<widget field="motor 1 current (A)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="189" y="130"/>
+		<location x="149" y="85"/>
 	</widget>
 	<widget field="user button" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="6" y="171"/>
 	</widget>
-	<widget field="pdp temp (C)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="410" y="166"/>
-	</widget>
-	<widget field="pdp voltage (V)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="404" y="142"/>
-	</widget>
 	<widget field="forward" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="100"/>
-	</widget>
-	<widget field="accel z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="431" y="66"/>
 	</widget>
 	<widget field="rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="142"/>
@@ -42,24 +27,22 @@
 	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="0" y="33"/>
 	</widget>
-	<widget field="accel x" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="180" y="67"/>
-	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
 		<location x="665" y="44"/>
 		<width>464</width>
 		<height>211</height>
 	</static-widget>
-	<widget field="accel y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="302" y="67"/>
-		<width>123</width>
-	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="0" y="0"/>
 	</static-widget>
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Gyro Angle"/>
-	<hidden field="gyro output"/>
+	<hidden field="pdp temp (C)"/>
+	<hidden field="pdp voltage (V)"/>
+	<hidden field="motor 1 current (A)"/>
+	<hidden field="accel z"/>
+	<hidden field="motor 2 current (A)"/>
+	<hidden field="accel x"/>
+	<hidden field="accel y"/>
 </xml>

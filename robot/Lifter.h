@@ -19,7 +19,8 @@ public:
 	Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * top_limit_switch);
 	void Update();
 	void MoveToPosition(enum Position target_pos);
-	int DistFromTargetPosition();
+	int DistFromPosition(enum Position target_pos);
+	bool AtPosition(enum Position target_pos);
 private:
 	static constexpr float LIFT_SPEED = 0.2;
 

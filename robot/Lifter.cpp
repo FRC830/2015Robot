@@ -23,7 +23,7 @@ void Lifter::Update() {
 	}
 
 	//move lifter to the desired posidion
-	int dist_to_target = DistFromTargetPosition();
+	int dist_to_target = DistFromPosition(target);
 	if (dist_to_target > 0) {
 		lifter->Set(LIFT_SPEED);
 	} else if (dist_to_target < 0) {
@@ -36,9 +36,9 @@ void Lifter::Update() {
 void Lifter::MoveToPosition(enum Position target_pos){
 	 target = target_pos;
 }
-int Lifter::DistFromTargetPosition(){
+int Lifter::DistFromPosition(enum Position target_pos){
 	int dist;
-	switch (target){
+	switch (target_pos){
 	case kFloor:
 		if (bottom_switch->Get()) {
 			return 0;
@@ -61,4 +61,7 @@ int Lifter::DistFromTargetPosition(){
 	} else {
 		return dist;
 	}
+}
+bool Lifter::AtPosition(enum Position target_pos){
+	return DistFromPosition(target_pos) == 0;
 }

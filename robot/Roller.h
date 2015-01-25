@@ -33,6 +33,7 @@ private:
 	};
 
 	enum RollState state;
+
 };
 
 #endif /* ROBOT_ROLLER_H_ */

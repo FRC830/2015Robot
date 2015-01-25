@@ -3,13 +3,14 @@
 #include "../util/830utilities.h"
 #include "MecanumDrive.h"
 
+#include "Lifter.h"
+#include "Roller.h"
+
 class Robot: public IterativeRobot
 {
 private:
 	static const int ROLLER_PWM = 6;
-	static const int GRIPPER_PWM = 7;
-	static const int LIFTER_PWM = 8;
-	static const int SHOVE_PWM = 9;
+	static const int LIFTER_PWM = 7;
 
 	//drivetrain
 	static const int LEFT_FRONT_PWM = 0;
@@ -21,10 +22,22 @@ private:
 	static const int YAW_SERVO_PWM = 4;
 	static const int PITCH_SERVO_PWM = 5;
 
-	Talon * rollers;
-	Talon * gripper;
-	Talon * lifter;
-	Talon * shover;
+	//Roller setup
+	static const int ROLLER_LINEBREAK_DIO = 0;
+	Victor * roller_motor;
+	Roller * roller;
+	DigitalInput * roller_linebreak;
+
+	//lifter setup
+	static const int TOP_SWITCH_DIO = 1;
+	static const int BOTTOM_SWITCH_DIO = 2;
+	static const int ENC_A_DIO = 3;
+	static const int ENC_B_DIO = 4;
+	Victor * lifter_motor;
+	Lifter * lifter;
+	DigitalInput * bottom_switch;
+	DigitalInput * top_switch;
+	Encoder * lift_encoder;
 
 	MecanumDrive * drive;
 
@@ -71,11 +84,15 @@ private:
 
 	void RobotInit()
 	{
-		rollers = new Talon(ROLLER_PWM);
-		gripper = new Talon(GRIPPER_PWM);
-		lifter = new Talon(LIFTER_PWM);
-		shover = new Talon(SHOVE_PWM);
+		roller_motor = new Victor(ROLLER_PWM);
+		roller_linebreak = new DigitalInput(ROLLER_LINEBREAK_DIO);
+		roller = new Roller(roller_motor, roller_linebreak);
 
+		lifter_motor = new Victor(LIFTER_PWM);
+		bottom_switch = new DigitalInput(BOTTOM_SWITCH_DIO);
+		top_switch = new DigitalInput(TOP_SWITCH_DIO);
+		lift_encoder = new Encoder(ENC_A_DIO, ENC_B_DIO);
+		lifter = new Lifter(lifter_motor, lift_encoder, bottom_switch, top_switch);
 
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
@@ -154,25 +171,28 @@ private:
 	void TeleopPeriodic()
 	{
 		gyro->Update();
-		rollers->Set(copilot->LeftY());
-		gripper->Set(copilot->RightX());
 
-		//Shove bins out
-		if (copilot->Button(GamepadF310::Y_Button)){
-			shover->Set(1.0);//shove out
-		}else if (copilot->Button(GamepadF310::A_Button)){
-			shover->Set(-1.0);//retract shove mechanism
+		//Roller code
+		if(copilot->Button(GamepadF310::A_Button)){
+			roller->RollIn();
+			SmartDashboard::PutString("Roll state", "Rolling In!");
+		}else if(copilot->Button(GamepadF310::Y_Button)){
+			roller->RollOut();
+			SmartDashboard::PutString("Roll state", "Rolling Out!");
 		}else{
-			shover->Set(0.0);
+			roller->Stop();
+			SmartDashboard::PutString("Roll state", "Rolling Not!");
 		}
 
 		//Tote/bin lifting
 		if (copilot->RightTrigger() || copilot->LeftTrigger()){
-			lifter->Set(-1.0);//Move lifter down
+			lifter->MoveToPosition(Lifter::kFloor);
 		}else if(copilot->RightBumper() || copilot->LeftBumper()){
-			lifter->Set(1.0);//move lifter up
-		}else{
-			lifter->Set(0.0);
+			if (lifter->AtPosition(Lifter::kTote1)){
+				lifter->MoveToPosition(Lifter::kTote2);
+			} else {
+				lifter->MoveToPosition(Lifter::kTote1);
+			}
 		}
 
 
