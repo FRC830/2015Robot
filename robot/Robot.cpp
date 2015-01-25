@@ -83,7 +83,10 @@ private:
 		RobotDrive * robot_drive = new RobotDrive(
 				new VictorSP(LEFT_FRONT_PWM), new VictorSP(LEFT_REAR_PWM),
 				new VictorSP(RIGHT_FRONT_PWM), new VictorSP(RIGHT_REAR_PWM));
+
+		robot_drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
 		robot_drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
+		robot_drive->SetInvertedMotor(RobotDrive::kFrontRightMotor, false);
 		robot_drive->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 		drive = new MecanumDrive(robot_drive, TIME_TO_MAX_SPEED);
 
@@ -179,7 +182,7 @@ private:
 		SmartDashboard::PutNumber("accel z", accel->GetZ());
 
 		//mecanum test code
-		float forward = pilot->LeftY();
+		float forward = pilot->LeftY(); //slow down for now because it's really fast
 		float strafe = pilot->LeftX();
 		float rotation = pilot->RightX();
 
@@ -188,7 +191,9 @@ private:
 		SmartDashboard::PutNumber("strafe", strafe);
 		SmartDashboard::PutNumber("rotation", rotation);
 
-		drive->MecanumDriveCartesian(forward, strafe, rotation);
+		drive->DriveCartesian(forward, strafe, rotation);
+		//drive->TestAll();
+
 
 		//move camera using DPad input
 		if(pilot->DPadX()==1.0){
