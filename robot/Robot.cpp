@@ -171,6 +171,8 @@ private:
 	void TeleopPeriodic()
 	{
 		gyro->Update();
+		lifter->Update();
+		roller->Update();
 
 		//Roller code
 		if(copilot->Button(GamepadF310::A_Button)){
@@ -187,11 +189,14 @@ private:
 		//Tote/bin lifting
 		if (copilot->RightTrigger() || copilot->LeftTrigger()){
 			lifter->MoveToPosition(Lifter::kFloor);
+			SmartDashboard::PutString("Lift State", "kFloor");
 		}else if(copilot->RightBumper() || copilot->LeftBumper()){
 			if (lifter->AtPosition(Lifter::kTote1)){
 				lifter->MoveToPosition(Lifter::kTote2);
+				SmartDashboard::PutString("Lift State", "kTote2");
 			} else {
 				lifter->MoveToPosition(Lifter::kTote1);
+				SmartDashboard::PutString("Lift State", "kTote1");
 			}
 		}
 
@@ -229,10 +234,10 @@ private:
 		yaw_servo->SetAngle(camerax);
 		pitch_servo->SetAngle(cameray);
 
-		SmartDashboard::PutNumber("pdp voltage (V)", pdp->GetVoltage());
-		SmartDashboard::PutNumber("motor 1 current (A)", pdp->GetCurrent(3));
-		SmartDashboard::PutNumber("motor 2 current (A)", pdp->GetCurrent(2));
-		SmartDashboard::PutNumber("pdp temp (C)", pdp->GetTemperature());
+		SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
+		SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
+		SmartDashboard::PutNumber("front right", pdp->GetCurrent(1));
+		SmartDashboard::PutNumber("rear right", pdp->GetCurrent(0));
 
 		SmartDashboard::PutBoolean("user button", GetUserButton());
 		SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());

@@ -9,9 +9,10 @@
 
 ADXRS450Gyro::ADXRS450Gyro() {
 	spi = new SPI(SPI::kOnboardCS0);
-	spi->SetClockRate(1000000); //4 MHz (rRIO max, gyro can go high)
+	spi->SetClockRate(4000000); //4 MHz (rRIO max, gyro can go high)
 	spi->SetClockActiveHigh();
 	spi->SetChipSelectActiveLow();
+	spi->SetMSBFirst();
 
 	command[0] = READ_COMMAND;
 	command[1] = 0;
@@ -53,7 +54,7 @@ void ADXRS450Gyro::Update() {
 
 	calibration_timer->Start();
 
-	if (calibration_timer->Get() < 3.0){
+	if (false && calibration_timer->Get() < 3.0){
 		Calibrate();
 	} else {
 		UpdateData();

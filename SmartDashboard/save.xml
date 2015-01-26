@@ -1,5 +1,32 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Lift State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="255"/>
+	</widget>
+	<widget field="rear right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="332" y="235"/>
+	</widget>
+	<widget field="front right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="326" y="213"/>
+	</widget>
+	<widget field="rear left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="336" y="188"/>
+	</widget>
+	<widget field="front left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="331" y="164"/>
+	</widget>
+	<widget field="Roll state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="172" y="168"/>
+	</widget>
+	<widget field="accel z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="234"/>
+	</widget>
+	<widget field="accel y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="213"/>
+	</widget>
+	<widget field="accel x" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="192"/>
+	</widget>
 	<widget field="offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="166" y="136"/>
 	</widget>
@@ -13,13 +40,13 @@
 		<location x="6" y="171"/>
 	</widget>
 	<widget field="forward" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="100"/>
+		<location x="5" y="97"/>
 	</widget>
 	<widget field="rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="142"/>
+		<location x="0" y="141"/>
 	</widget>
 	<widget field="strafe" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="121"/>
+		<location x="9" y="121"/>
 	</widget>
 	<widget field="auton" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="33" y="0"/>
@@ -28,9 +55,9 @@
 		<location x="0" y="33"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
-		<location x="665" y="44"/>
-		<width>464</width>
-		<height>211</height>
+		<location x="611" y="4"/>
+		<width>648</width>
+		<height>453</height>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="0" y="0"/>
@@ -41,8 +68,5 @@
 	<hidden field="pdp temp (C)"/>
 	<hidden field="pdp voltage (V)"/>
 	<hidden field="motor 1 current (A)"/>
-	<hidden field="accel z"/>
 	<hidden field="motor 2 current (A)"/>
-	<hidden field="accel x"/>
-	<hidden field="accel y"/>
 </xml>
