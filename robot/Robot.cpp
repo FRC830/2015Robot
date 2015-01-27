@@ -166,6 +166,8 @@ private:
 	void TeleopInit()
 	{
 		gyro->Reset();
+
+		ADXRS450Gyro::DataTest();
 	}
 
 	void TeleopPeriodic()

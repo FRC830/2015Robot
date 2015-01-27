@@ -65,8 +65,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="pdp temp (C)"/>
-	<hidden field="pdp voltage (V)"/>
-	<hidden field="motor 1 current (A)"/>
-	<hidden field="motor 2 current (A)"/>
 </xml>

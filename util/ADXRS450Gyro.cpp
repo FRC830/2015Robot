@@ -6,6 +6,7 @@
  */
 
 #include "ADXRS450Gyro.h"
+#include <cstdio>
 
 ADXRS450Gyro::ADXRS450Gyro() {
 	spi = new SPI(SPI::kOnboardCS0);
@@ -30,6 +31,7 @@ ADXRS450Gyro::ADXRS450Gyro() {
 	update_timer = new Timer();
 	calibration_timer = new Timer();
 
+
 }
 
 ADXRS450Gyro::~ADXRS450Gyro() {
@@ -41,12 +43,6 @@ int ADXRS450Gyro::GetData() {
 	check_parity(command);
 	spi->Transaction(command, data, DATA_SIZE); //perform transaction, get error code
 
-	//int status = (data[0] & 0x0C) >> 2; //status bits
-	/*
-	if (err != 0 || status == 0x00) { //there was an error somewhere
-		return 1;
-	}
-	*/
 	return assemble_sensor_data(data);
 }
 
@@ -62,6 +58,9 @@ void ADXRS450Gyro::Update() {
 }
 void ADXRS450Gyro::UpdateData() {
 	int sensor_data = GetData();
+	sprintf(sensor_data_string, "%0hX", sensor_data);
+	SmartDashboard::PutString("gyro sensor data", sensor_data_string);
+
 	float rate = ((float) sensor_data) / 80.0;
 
 	current_rate = rate;
@@ -104,10 +103,17 @@ void ADXRS450Gyro::Reset() {
 	update_timer->Reset();
 }
 
+void ADXRS450Gyro::DataTest() {
+	unsigned char data[4] = { 0xFF, 0xFF, 0xFF, 0x00 };
+	SmartDashboard::PutNumber("gyro test", assemble_sensor_data(data));
+}
+
 short ADXRS450Gyro::assemble_sensor_data(unsigned char * data){
 	//cast to short to make space for shifts
 	//the 16 bits from the gyro are a 2's complement short
-	//so just casting it to a C++ short gets it right
+	//so we just cast it too a C++ short
+	//the data is split across the output like this (MSB first): (D = data bit, X = not data)
+	// X X X X X X D D | D D D D D D D D | D D D D D D X X | X X X X X X X X X
 	return ((short) (data[0] & FIRST_BYTE_DATA)) << 14
 		| ((short) data[1]) << 6
 		| ((short) (data[2] & THIRD_BYTE_DATA)) >> 2;
