@@ -208,9 +208,9 @@ private:
 		SmartDashboard::PutNumber("accel z", accel->GetZ());
 
 		//mecanum test code
-		float forward = pilot->LeftY(); //slow down for now because it's really fast
-		float strafe = pilot->LeftX();
-		float rotation = pilot->RightX();
+		float forward = pilot->LeftY() / 3.0; //slow down for now because it's really fast
+		float strafe = pilot->LeftX() / 3.0;
+		float rotation = pilot->RightX() / 3.0;
 
 
 		SmartDashboard::PutNumber("forward", forward);

@@ -43,9 +43,12 @@ float MecanumDrive::curve_accel(float * current, float target){
 	} else {
 		*current = target;
 	}
+	//if controller is in full acceleration in either direction, set speed to zero instantly when reversed
+	if ((*current > 0 && target < 0) || (*current < 0 && target > 0)) {
+		*current = 0;
+	}
 	return *current;
 }
-
 MecanumDrive::~MecanumDrive() {
 	// TODO Auto-generated destructor stub
 }
