@@ -93,7 +93,6 @@ private:
 		top_switch = new DigitalInput(TOP_SWITCH_DIO);
 		lift_encoder = new Encoder(ENC_A_DIO, ENC_B_DIO);
 		lifter = new Lifter(lifter_motor, lift_encoder, bottom_switch, top_switch);
-
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
 
@@ -102,8 +101,8 @@ private:
 				new VictorSP(RIGHT_FRONT_PWM), new VictorSP(RIGHT_REAR_PWM));
 
 		robot_drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
-		robot_drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
-		robot_drive->SetInvertedMotor(RobotDrive::kFrontRightMotor, false);
+		robot_drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, false  );
+		robot_drive->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
 		robot_drive->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 		drive = new MecanumDrive(robot_drive, TIME_TO_MAX_SPEED);
 
@@ -218,7 +217,7 @@ private:
 		SmartDashboard::PutNumber("strafe", strafe);
 		SmartDashboard::PutNumber("rotation", rotation);
 
-		drive->DriveCartesian(forward, strafe, rotation);
+		drive->DriveCartesian(strafe, forward, rotation);
 		//drive->TestAll();
 
 

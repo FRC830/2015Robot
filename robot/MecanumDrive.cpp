@@ -23,7 +23,7 @@ void MecanumDrive::DriveCartesian(float x, float y, float rotation, float gyro_a
 }
 
 void MecanumDrive::TestAll() {
-	drive->TankDrive(0.3, 0.3, false);
+	drive->ArcadeDrive(0.0, 0.3, false);
 }
 
 float MecanumDrive::curve_accel(float * current, float target){
