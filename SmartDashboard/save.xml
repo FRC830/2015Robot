@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="gyro sensor data" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="297"/>
+	</widget>
+	<widget field="gyro test" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="276"/>
+	</widget>
 	<widget field="Lift State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="255"/>
 	</widget>
