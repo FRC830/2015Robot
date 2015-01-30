@@ -6,7 +6,7 @@
  */
 
 #include "ADXRS450Gyro.h"
-#include <cstdio>
+#include "830utilities.h"
 
 ADXRS450Gyro::ADXRS450Gyro() {
 	spi = new SPI(SPI::kOnboardCS0);
@@ -50,16 +50,24 @@ void ADXRS450Gyro::Update() {
 
 	calibration_timer->Start();
 
-	if (false && calibration_timer->Get() < 3.0){
+	if (false && calibration_timer->Get() < 10.0){
 		Calibrate();
 	} else {
 		UpdateData();
 	}
+
+	to_binary_string(data[0], sensor_output_1);
+	to_binary_string(data[1], sensor_output_2);
+	to_binary_string(data[2], sensor_output_3);
+	to_binary_string(data[3], sensor_output_4);
+
+	SmartDashboard::PutString("gyro sensor data 1", sensor_output_1);
+	SmartDashboard::PutString("gyro sensor data 2", sensor_output_2);
+	SmartDashboard::PutString("gyro sensor data 3", sensor_output_3);
+	SmartDashboard::PutString("gyro sensor data 4", sensor_output_4);
 }
 void ADXRS450Gyro::UpdateData() {
 	int sensor_data = GetData();
-	sprintf(sensor_data_string, "%0hX", sensor_data);
-	SmartDashboard::PutString("gyro sensor data", sensor_data_string);
 
 	float rate = ((float) sensor_data) / 80.0;
 
@@ -103,8 +111,8 @@ void ADXRS450Gyro::Reset() {
 	update_timer->Reset();
 }
 
-void ADXRS450Gyro::DataTest() {
-	unsigned char data[4] = { 0xFF, 0xFF, 0xFF, 0x00 };
+void ADXRS450Gyro::DataAssemblyTest() {
+	unsigned char data[4] = { 0x00, 0x00, 0x00, 0xFF };
 	SmartDashboard::PutNumber("gyro test", assemble_sensor_data(data));
 }
 

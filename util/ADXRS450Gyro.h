@@ -20,7 +20,7 @@ public:
 	void Update();
 	float Offset();
 
-	static void DataTest();
+	static void DataAssemblyTest();
 
 private:
 	int GetData();
@@ -50,7 +50,10 @@ private:
 	unsigned char data[4];
 	SPI * spi;
 
-	char sensor_data_string[20];
+	char sensor_output_1[9];
+	char sensor_output_2[9];
+	char sensor_output_3[9];
+	char sensor_output_4[9];
 };
 
 #endif /* UTIL_ADXRS450GYRO_H_ */

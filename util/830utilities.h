@@ -13,4 +13,9 @@
 #include "GamepadF310.h"
 #include "ADXRS450Gyro.h"
 
+void reverse(char s[]);
+void to_binary_string(unsigned char n, char s[]);
+
+
+
 #endif
