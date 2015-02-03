@@ -22,11 +22,11 @@ public:
 	int DistFromPosition(enum Position target_pos);
 	bool AtPosition(enum Position target_pos);
 private:
-	static constexpr float LIFT_SPEED = 0.2;
+	static constexpr float LIFT_SPEED = 0.3;
 
-	static const int TOTE_1_POSITION = 0; //enocder ticks to put lifter at height of 1 tote
-	static const int TOTE_2_POSITION = 0; //TODO: empirically determine actual values
-	static const int MARGIN_OF_ERROR = 5;
+	static const int TOTE_1_POSITION = 1000; //enocder ticks to put lifter at height of 1 tote
+	static const int TOTE_2_POSITION = 2000; //TODO: empirically determine actual values
+	static const int MARGIN_OF_ERROR = 50;
 
 	Victor * lifter;
 	Encoder * encoder;

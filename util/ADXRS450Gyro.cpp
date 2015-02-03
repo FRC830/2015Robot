@@ -7,6 +7,19 @@
 
 #include "ADXRS450Gyro.h"
 #include "830utilities.h"
+#include <cstdarg>
+
+int ADXRS450GyroUpdateFunction(int pointer_val) {
+	ADXRS450Gyro * gyro = (ADXRS450Gyro *) pointer_val;
+	Timer * timer = new Timer(); //don't update too often
+	timer->Start();
+	while (true) {
+		gyro->Update();
+		SmartDashboard::PutNumber("task loop time", timer->Get());
+		timer->Reset();
+	}
+	return 0;
+}
 
 ADXRS450Gyro::ADXRS450Gyro() {
 	spi = new SPI(SPI::kOnboardCS0);
@@ -31,43 +44,53 @@ ADXRS450Gyro::ADXRS450Gyro() {
 	update_timer = new Timer();
 	calibration_timer = new Timer();
 
-
-}
-
-ADXRS450Gyro::~ADXRS450Gyro() {
-	// TODO Auto-generated destructor stub
+	update_task = new Task("adxrs450update", (FUNCPTR) &ADXRS450GyroUpdateFunction); //TODO: this should give a unique name for each gyro object
+	task_started = false;
 }
 
 
-int ADXRS450Gyro::GetData() {
-	check_parity(command);
-	spi->Transaction(command, data, DATA_SIZE); //perform transaction, get error code
+void ADXRS450Gyro::Start() {
+	if (task_started) {
+		update_task->Resume();
+	} else {
+		update_task->Start((int) this);
+		task_started = true;
+	}
+}
 
-	return assemble_sensor_data(data);
+void ADXRS450Gyro::Stop() {
+	if (task_started) {
+		update_task->Suspend();
+	}
 }
 
 void ADXRS450Gyro::Update() {
 
 	calibration_timer->Start();
 
-	if (false && calibration_timer->Get() < 10.0){
+	check_parity(command);
+	spi->Transaction(command, data, DATA_SIZE); //perform transaction, get error code
+
+	if (calibration_timer->Get() < 5.0){
+		return;
+	} else if (calibration_timer->Get() < 15.0) {
 		Calibrate();
 	} else {
 		UpdateData();
 	}
 
-	to_binary_string(data[0], sensor_output_1);
-	to_binary_string(data[1], sensor_output_2);
-	to_binary_string(data[2], sensor_output_3);
-	to_binary_string(data[3], sensor_output_4);
+	//to_binary_string(data[0], sensor_output_1);
+	//to_binary_string(data[1], sensor_output_2);
+	//to_binary_string(data[2], sensor_output_3);
+	//to_binary_string(data[3], sensor_output_4);
 
-	SmartDashboard::PutString("gyro sensor data 1", sensor_output_1);
-	SmartDashboard::PutString("gyro sensor data 2", sensor_output_2);
-	SmartDashboard::PutString("gyro sensor data 3", sensor_output_3);
-	SmartDashboard::PutString("gyro sensor data 4", sensor_output_4);
+	//SmartDashboard::PutString("gyro sensor data 1", sensor_output_1);
+	//SmartDashboard::PutString("gyro sensor data 2", sensor_output_2);
+	//SmartDashboard::PutString("gyro sensor data 3", sensor_output_3);
+	//SmartDashboard::PutString("gyro sensor data 4", sensor_output_4);
 }
 void ADXRS450Gyro::UpdateData() {
-	int sensor_data = GetData();
+	int sensor_data = assemble_sensor_data(data);
 
 	float rate = ((float) sensor_data) / 80.0;
 
@@ -79,7 +102,7 @@ void ADXRS450Gyro::UpdateData() {
 }
 
 void ADXRS450Gyro::Calibrate() {
-	int sensor_data = GetData();
+	int sensor_data = assemble_sensor_data(data);
 	float rate = ((float) sensor_data) / 80.0;
 	update_timer->Start();
 	calibration_timer->Start();
@@ -103,17 +126,18 @@ float ADXRS450Gyro::Offset() {
 }
 
 void ADXRS450Gyro::Reset() {
+	data[0] = 0;
+	data[1] = 0;
+	data[2] = 0;
+	data[3] = 0;
+	current_rate = 0.0;
 	accumulated_angle = 0.0;
 	rate_offset = 0.0;
 	accumulated_offset = 0.0;
+	calibration_timer->Stop();
 	calibration_timer->Reset();
 	update_timer->Stop();
 	update_timer->Reset();
-}
-
-void ADXRS450Gyro::DataAssemblyTest() {
-	unsigned char data[4] = { 0x00, 0x00, 0x00, 0xFF };
-	SmartDashboard::PutNumber("gyro test", assemble_sensor_data(data));
 }
 
 short ADXRS450Gyro::assemble_sensor_data(unsigned char * data){

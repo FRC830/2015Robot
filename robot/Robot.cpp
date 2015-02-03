@@ -137,6 +137,10 @@ private:
 
 	}
 
+	void DisabledInit() {
+		gyro->Stop();
+	}
+
 	void AutonomousInit()
 	{
 		//read the auton program from the SmartDashboard
@@ -166,12 +170,12 @@ private:
 	{
 		gyro->Reset();
 
-		ADXRS450Gyro::DataAssemblyTest();
+		gyro->Start();
 	}
 
 	void TeleopPeriodic()
 	{
-		gyro->Update();
+		//gyro->Update();
 		lifter->Update();
 		roller->Update();
 
@@ -244,6 +248,9 @@ private:
 		SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
 		SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
 		SmartDashboard::PutNumber("offset", gyro->Offset());
+
+		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
+
 		lw->Run();
 	}
 

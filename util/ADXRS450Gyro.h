@@ -10,20 +10,20 @@
 
 #include "WPILib.h"
 
+int ADXRS450GyroUpdateFunction(int pointer_val);
+
 class ADXRS450Gyro {
 public:
 	ADXRS450Gyro();
-	virtual ~ADXRS450Gyro();
 	float GetRate();
 	float GetAngle();
 	void Reset();
 	void Update();
 	float Offset();
-
-	static void DataAssemblyTest();
+	void Start();
+	void Stop();
 
 private:
-	int GetData();
 	void UpdateData();
 	void Calibrate();
 
@@ -49,6 +49,9 @@ private:
 	unsigned char command[4];
 	unsigned char data[4];
 	SPI * spi;
+
+	Task * update_task;
+	bool task_started;
 
 	char sensor_output_1[9];
 	char sensor_output_2[9];

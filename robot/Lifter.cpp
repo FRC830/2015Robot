@@ -19,6 +19,7 @@ Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_li
 void Lifter::Update() {
 	//use bottom position as reference point for encoder
 	if (bottom_switch->Get()) {
+		//ignore while switch not wired in
 		encoder->Reset();
 	}
 

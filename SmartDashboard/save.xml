@@ -1,58 +1,75 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="gyro sensor data" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="297"/>
+	<widget field="task loop time" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="6" y="284"/>
 	</widget>
-	<widget field="gyro test" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="276"/>
+	<widget field="encoder value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="35" y="343"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="Lift State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="255"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="rear right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="332" y="235"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="front right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="326" y="213"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="rear left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="336" y="188"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="front left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="331" y="164"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="Roll state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="172" y="168"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="accel z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="234"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="accel y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="213"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="accel x" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="192"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="166" y="136"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="gyro angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="144" y="111"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="gyro rate" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="149" y="85"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="user button" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="6" y="171"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="forward" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="5" y="97"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="141"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="strafe" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="9" y="121"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="auton" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="33" y="0"/>
@@ -71,4 +88,14 @@
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="task pointer val"/>
+	<hidden field="gyro test"/>
+	<hidden field="gyro pointer val"/>
+	<hidden field="task loop num"/>
+	<hidden field="task test:"/>
+	<hidden field="gyro sensor data 1"/>
+	<hidden field="gyro sensor data 2"/>
+	<hidden field="gyro sensor data 3"/>
+	<hidden field="gyro sensor data"/>
+	<hidden field="gyro sensor data 4"/>
 </xml>
