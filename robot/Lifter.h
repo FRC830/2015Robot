@@ -21,6 +21,7 @@ public:
 	void MoveToPosition(enum Position target_pos);
 	int DistFromPosition(enum Position target_pos);
 	bool AtPosition(enum Position target_pos);
+
 private:
 	static constexpr float LIFT_SPEED = 0.3;
 

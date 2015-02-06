@@ -5,6 +5,7 @@
 
 #include "Lifter.h"
 #include "Roller.h"
+#include "ToteHandler.h"
 
 class Robot: public IterativeRobot
 {
@@ -39,6 +40,8 @@ private:
 	DigitalInput * top_switch;
 	Encoder * lift_encoder;
 
+	ToteHandler * tote_handler;
+
 	MecanumDrive * drive;
 
 	//acceleration control for drivetrain
@@ -58,6 +61,8 @@ private:
 
 	float camerax;
 	float cameray;
+
+	float roller_speed;
 
 	PowerDistributionPanel * pdp;
 
@@ -93,6 +98,9 @@ private:
 		top_switch = new DigitalInput(TOP_SWITCH_DIO);
 		lift_encoder = new Encoder(ENC_A_DIO, ENC_B_DIO);
 		lifter = new Lifter(lifter_motor, lift_encoder, bottom_switch, top_switch);
+
+		tote_handler = new ToteHandler(roller, lifter);
+
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
 
@@ -114,6 +122,8 @@ private:
 
 		camerax = 90.0;
 		cameray = 90.0;
+
+		roller_speed = 0.5;
 
 		SmartDashboard::init();
 
@@ -175,19 +185,57 @@ private:
 
 	void TeleopPeriodic()
 	{
-		//gyro->Update();
-		lifter->Update();
-		roller->Update();
+		//"scope" when controls stick
+		if (copilot->LeftStickPress() || copilot->RightStickPress()){
+			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
+		} else {
+			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
+		}
+
+		if(copilot->Button(GamepadF310::B_Button)){
+			tote_handler->BinPickup();
+		}else if (copilot->Button(GamepadF310::A_Button)){
+			tote_handler->TotePickup();
+		}else if (copilot->Button(GamepadF310::Y_Button)){
+			tote_handler->Eject();
+		}else if (copilot->Button(GamepadF310::X_Button)){
+			tote_handler->Cancel();
+		}
+
+
+
+		tote_handler->Update();
+	}
+
+	void TestInit() {
+		TeleopInit();
+	}
+
+	void TestPeriodic()
+	{
+		tote_handler->Update();
+		tote_handler->Override(); //automation ain't ready for primetime yet
+
+		float dpad_y = copilot->DPadY();
+		if (dpad_y > 0.0 && roller_speed <= 0.9){
+			roller_speed += 0.1;
+		} else if (dpad_y < 0.0 && roller_speed >= 0.1) {
+			roller_speed -= 0.1;
+		}
+		SmartDashboard::PutNumber("roller speed", roller_speed);
 
 		//Roller code
 		if(copilot->Button(GamepadF310::A_Button)){
-			roller->RollIn();
+			//roller->RollIn();
+			roller_motor->Set(roller_speed);
 			SmartDashboard::PutString("Roll state", "Rolling In!");
 		}else if(copilot->Button(GamepadF310::Y_Button)){
-			roller->RollOut();
+			//roller->RollOut();
+			roller_motor->Set(-roller_speed);
 			SmartDashboard::PutString("Roll state", "Rolling Out!");
 		}else{
-			roller->Stop();
+			//roller->Stop();
+			roller_motor->Set(0.0);
 			SmartDashboard::PutString("Roll state", "Rolling Not!");
 		}
 
@@ -239,6 +287,9 @@ private:
 		yaw_servo->SetAngle(camerax);
 		pitch_servo->SetAngle(cameray);
 
+		tote_handler->Override(); //automation ain't ready for primetime yet
+		tote_handler->Update();
+
 		SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
 		SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
 		SmartDashboard::PutNumber("front right", pdp->GetCurrent(1));
@@ -252,11 +303,6 @@ private:
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 
 		lw->Run();
-	}
-
-	void TestPeriodic()
-	{
-
 	}
 };
 
