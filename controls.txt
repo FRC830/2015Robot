@@ -3,6 +3,8 @@ Ratpack 2015 Controls
 Pilot:
 Mecanum drive: left stick forward and strafe, right stick x-axis rotation
 
+Slow down: pressing either of the top two shoulder buttons will halve the drive inputs, allowing for greater precision
+
 Copilot:
 Pick up a bin: press B. this will lower the lift, run the rollers until a bin 
 breaks the line break, then lift up the bin.
