@@ -1,9 +1,12 @@
 Ratpack 2015 Controls
 
 Pilot:
-Mecanum drive: left stick forward and strafe, right stick x-axis rotation
+Mecanum drive: left stick forward and strafe, right stick x-axis rotation. This has acceleration control applied at all times
 
-Slow down: pressing either of the top two shoulder buttons will halve the drive inputs, allowing for greater precision
+Slow down: pressing down either of the two sticks will halve the drive inputs, allowing for greater precision
+
+Brake: pressing either of the top two shoulder buttons will immediately stop the robot (overriding acceleration control).
+This is intended to be used if the robot is about to crash.
 
 Copilot:
 Pick up a bin: press B. this will lower the lift, run the rollers until a bin 

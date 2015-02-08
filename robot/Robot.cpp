@@ -186,26 +186,28 @@ private:
 	//see controls.txt for control scheme
 	void TeleopPeriodic()
 	{
-		//"scope" when controls stick
-		if (copilot->LeftStickPress() || copilot->RightStickPress()){
+		if (pilot->LeftTrigger() || pilot->RightTrigger()) {
+			drive->Brake();
+		} else if (pilot->LeftStickPress() || pilot->RightStickPress()) {
+			//"scope" when control sticks pressed
 			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
 		} else {
 			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
 		}
 
-		if(copilot->Button(GamepadF310::B_Button)){
+		if(copilot->Button(GamepadF310::B_Button)) {
 			tote_handler->BinPickup();
-		}else if (copilot->Button(GamepadF310::A_Button)){
+		} else if (copilot->Button(GamepadF310::A_Button)) {
 			tote_handler->TotePickup();
-		}else if (copilot->Button(GamepadF310::Y_Button)){
+		} else if (copilot->Button(GamepadF310::Y_Button)) {
 			tote_handler->Eject();
-		}else if (copilot->Button(GamepadF310::X_Button) || fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)){
+		} else if (copilot->Button(GamepadF310::X_Button) || fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)) {
 			tote_handler->Cancel();
 		}
 
 
 
-		tote_handler->Update();
+		tote_handler->Update(); //need to call this for anything to happen
 	}
 
 	void TestInit() {

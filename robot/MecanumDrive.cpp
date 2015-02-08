@@ -23,6 +23,12 @@ void MecanumDrive::DriveCartesian(float x, float y, float rotation, float gyro_a
 	drive->MecanumDrive_Cartesian(current_x, -current_y, square_input(rotation), gyro_angle);
 }
 
+void MecanumDrive::Brake() {
+	current_x = 0.0;
+	current_y = 0.0;
+	drive->MecanumDrive_Cartesian(0, 0, 0);
+}
+
 void MecanumDrive::TestAll() {
 	drive->ArcadeDrive(0.0, 0.3, false);
 }
