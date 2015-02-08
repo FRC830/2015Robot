@@ -13,12 +13,12 @@
 class MecanumDrive {
 public:
 	MecanumDrive(RobotDrive * robot_drive, float accel_time);
-	virtual ~MecanumDrive();
 	void DriveCartesian(float x, float y, float rotation, float gyro_angle = 0.0);
 	void TestAll();
 
 private:
 	float curve_accel(float * current, float target);
+	static float square_input(float input);
 
 	RobotDrive * drive;
 

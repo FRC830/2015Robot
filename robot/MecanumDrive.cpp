@@ -18,9 +18,9 @@ MecanumDrive::MecanumDrive(RobotDrive * robot_drive, float accel_time) {
 
 void MecanumDrive::DriveCartesian(float x, float y, float rotation, float gyro_angle){
 	//square inputs for greater precision
-	curve_accel(&current_x, x*x);
-	curve_accel(&current_y, y*y);
-	drive->MecanumDrive_Cartesian(current_x, -current_y, rotation*rotation, gyro_angle);
+	curve_accel(&current_x, square_input(x));
+	curve_accel(&current_y, square_input(y));
+	drive->MecanumDrive_Cartesian(current_x, -current_y, square_input(rotation), gyro_angle);
 }
 
 void MecanumDrive::TestAll() {
@@ -50,7 +50,8 @@ float MecanumDrive::curve_accel(float * current, float target){
 	}
 	return *current;
 }
-MecanumDrive::~MecanumDrive() {
-	// TODO Auto-generated destructor stub
+
+float MecanumDrive::square_input(float input){
+	return input > 0 ? input * input : input * -input;
 }
 

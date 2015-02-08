@@ -1,0 +1,18 @@
+Ratpack 2015 Controls
+
+Pilot:
+Mecanum drive: left stick forward and strafe, right stick x-axis rotation
+
+Copilot:
+Pick up a bin: press B. this will lower the lift, run the rollers until a bin 
+breaks the line break, then lift up the bin.
+
+Pick up a tote: press A. this will run the rollers until a tote breaks the line break,
+then lower the lift, and raise it up again, picking up the tote
+
+Eject from the rollers: press Y (will run until cancelled)
+
+Cancel/stop any of the previous three: press X or jiggle the left-stick. if the button is
+pressed again, the sequence will restart from the beginning.
+
+(Note that all sequences are mutually exclusive, so for example pressing A will cancel the 'B'-sequence and start from the beginning)

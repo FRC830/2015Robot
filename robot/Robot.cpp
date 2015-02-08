@@ -183,6 +183,7 @@ private:
 		gyro->Start();
 	}
 
+	//see controls.txt for control scheme
 	void TeleopPeriodic()
 	{
 		//"scope" when controls stick
@@ -198,7 +199,7 @@ private:
 			tote_handler->TotePickup();
 		}else if (copilot->Button(GamepadF310::Y_Button)){
 			tote_handler->Eject();
-		}else if (copilot->Button(GamepadF310::X_Button)){
+		}else if (copilot->Button(GamepadF310::X_Button) || fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)){
 			tote_handler->Cancel();
 		}
 
@@ -288,7 +289,7 @@ private:
 		pitch_servo->SetAngle(cameray);
 
 		tote_handler->Override(); //automation ain't ready for primetime yet
-		tote_handler->Update();
+		tote_handler->Update(); //updating this also updates the lifter and the roller
 
 		SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
 		SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
