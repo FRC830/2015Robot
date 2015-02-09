@@ -88,14 +88,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="task pointer val"/>
-	<hidden field="gyro test"/>
-	<hidden field="gyro pointer val"/>
-	<hidden field="task loop num"/>
-	<hidden field="task test:"/>
-	<hidden field="gyro sensor data 1"/>
-	<hidden field="gyro sensor data 2"/>
-	<hidden field="gyro sensor data 3"/>
-	<hidden field="gyro sensor data"/>
-	<hidden field="gyro sensor data 4"/>
 </xml>

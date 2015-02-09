@@ -50,11 +50,11 @@ int Lifter::DistFromPosition(enum Position target_pos){
 			}
 		}
 		break;
-	case kTote1:
-		dist = (encoder->Get() - TOTE_1_POSITION);//TODO: Add margin of error
+	case kTote:
+		dist = (encoder->Get() - TOTE_POSITION);//TODO: Add margin of error
 		break;
-	case kTote2:
-		dist = (encoder->Get() - TOTE_2_POSITION);
+	case kBin:
+		dist = (encoder->Get() - BIN_POSITION);
 		break;
 	}
 	if (abs(dist) < MARGIN_OF_ERROR){

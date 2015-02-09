@@ -7,6 +7,9 @@
 #include "Roller.h"
 #include "ToteHandler.h"
 
+//compile this code for the practice robot
+#define PRACTICE_ROBOT
+
 class Robot: public IterativeRobot
 {
 private:
@@ -104,9 +107,15 @@ private:
 		yaw_servo = new Servo(YAW_SERVO_PWM);
 		pitch_servo = new Servo(PITCH_SERVO_PWM);
 
+#ifdef PRACTICE_ROBOT
+		RobotDrive * robot_drive = new RobotDrive(
+						new Talon(LEFT_FRONT_PWM), new Talon(LEFT_REAR_PWM),
+						new Talon(RIGHT_FRONT_PWM), new Talon(RIGHT_REAR_PWM));
+#else
 		RobotDrive * robot_drive = new RobotDrive(
 				new VictorSP(LEFT_FRONT_PWM), new VictorSP(LEFT_REAR_PWM),
 				new VictorSP(RIGHT_FRONT_PWM), new VictorSP(RIGHT_REAR_PWM));
+#endif
 
 		robot_drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
 		robot_drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, false  );
@@ -247,11 +256,11 @@ private:
 			lifter->MoveToPosition(Lifter::kFloor);
 			SmartDashboard::PutString("Lift State", "kFloor");
 		}else if(copilot->RightBumper() || copilot->LeftBumper()){
-			if (lifter->AtPosition(Lifter::kTote1)){
-				lifter->MoveToPosition(Lifter::kTote2);
+			if (lifter->AtPosition(Lifter::kTote)){
+				lifter->MoveToPosition(Lifter::kBin);
 				SmartDashboard::PutString("Lift State", "kTote2");
 			} else {
-				lifter->MoveToPosition(Lifter::kTote1);
+				lifter->MoveToPosition(Lifter::kTote);
 				SmartDashboard::PutString("Lift State", "kTote1");
 			}
 		}

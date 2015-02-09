@@ -23,6 +23,7 @@ public:
 private:
 	Roller * roller;
 	Lifter * lifter;
+	bool holding_bin;
 
 	enum HandlerState{
 		kGatheringBin, kGatheringTote, kEjecting, kDefault, kFree
