@@ -61,7 +61,6 @@ void ToteHandler::BinPickup(){
 
 }
 void ToteHandler::TotePickup(){
-	holding_bin = false;
 	lifter->MoveToPosition(Lifter::kTote);
 	roller->RollIn();
 	current_state = kGatheringTote;

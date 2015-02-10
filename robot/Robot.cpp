@@ -65,7 +65,7 @@ private:
 	float camerax;
 	float cameray;
 
-	float roller_speed;
+	float lifter_speed;
 
 	PowerDistributionPanel * pdp;
 
@@ -132,7 +132,7 @@ private:
 		camerax = 90.0;
 		cameray = 90.0;
 
-		roller_speed = 0.5;
+		lifter_speed = 0.5;
 
 		SmartDashboard::init();
 
@@ -149,6 +149,7 @@ private:
 		auton_chooser->AddObject("auton 2", (void *) &Robot::Autonomous2);
 
 		SmartDashboard::PutData("auton chooser", auton_chooser);
+		SmartDashboard::PutNumber("lifter speed", 0.0);
 
 
 		lw = LiveWindow::GetInstance();
@@ -189,11 +190,15 @@ private:
 	{
 		gyro->Reset();
 
-		gyro->Start();
+		//gyro->Start();
+	}
+
+	void TeleopPeriodic() {
+		TeleopTestPeriodic();
 	}
 
 	//see controls.txt for control scheme
-	void TeleopPeriodic()
+	void TeleopControlPeriodic()
 	{
 		if (pilot->LeftTrigger() || pilot->RightTrigger()) {
 			drive->Brake();
@@ -219,40 +224,38 @@ private:
 		tote_handler->Update(); //need to call this for anything to happen
 	}
 
-	void TestInit() {
-		TeleopInit();
-	}
-
-	void TestPeriodic()
+	void TeleopTestPeriodic()
 	{
 		tote_handler->Update();
 		tote_handler->Override(); //automation ain't ready for primetime yet
 
+		/*
 		float dpad_y = copilot->DPadY();
-		if (dpad_y > 0.0 && roller_speed <= 0.9){
-			roller_speed += 0.1;
-		} else if (dpad_y < 0.0 && roller_speed >= 0.1) {
-			roller_speed -= 0.1;
+		if (dpad_y > 0.0 && lifter_speed <= 0.9){
+			lifter_speed += 0.1;
+		} else if (dpad_y < 0.0 && lifter_speed >= 0.1) {
+			lifter_speed -= 0.1;
 		}
-		SmartDashboard::PutNumber("roller speed", roller_speed);
+		*/
+		lifter_speed = SmartDashboard::GetNumber("lifter speed");
 
-		//Roller code
+		//lifter (test) code
 		if(copilot->Button(GamepadF310::A_Button)){
 			//roller->RollIn();
-			roller_motor->Set(roller_speed);
-			SmartDashboard::PutString("Roll state", "Rolling In!");
+			lifter_motor->Set(lifter_speed);
+			SmartDashboard::PutString("lift state", "lifting up!");
 		}else if(copilot->Button(GamepadF310::Y_Button)){
 			//roller->RollOut();
-			roller_motor->Set(-roller_speed);
-			SmartDashboard::PutString("Roll state", "Rolling Out!");
+			lifter_motor->Set(-lifter_speed);
+			SmartDashboard::PutString("lift state", "lifting down!");
 		}else{
 			//roller->Stop();
-			roller_motor->Set(0.0);
-			SmartDashboard::PutString("Roll state", "Rolling Not!");
+			lifter_motor->Set(0.0);
+			SmartDashboard::PutString("lift state", "lifting not!");
 		}
 
 		//Tote/bin lifting
-		if (copilot->RightTrigger() || copilot->LeftTrigger()){
+		if (copilot->RightTrigger() || copilot->LeftTrigger()) {
 			lifter->MoveToPosition(Lifter::kFloor);
 			SmartDashboard::PutString("Lift State", "kFloor");
 		}else if(copilot->RightBumper() || copilot->LeftBumper()){
@@ -300,7 +303,7 @@ private:
 		pitch_servo->SetAngle(cameray);
 
 		tote_handler->Override(); //automation ain't ready for primetime yet
-		tote_handler->Update(); //updating this also updates the lifter and the roller
+		//tote_handler->Update(); //updating this also updates the lifter and the roller
 
 		SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
 		SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
@@ -314,7 +317,7 @@ private:
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 
-		lw->Run();
+		//lw->Run();
 	}
 };
 

@@ -44,14 +44,14 @@ int Lifter::DistFromPosition(enum Position target_pos){
 		if (bottom_switch->Get()) {
 			return 0;
 		} else {
-			dist = encoder->Get();
+			dist = encoder->Get(); //since encoder measures from the bottom, encoder->Get() gives our distance from the bottom position
 			if (dist < MARGIN_OF_ERROR) {
 				dist = MARGIN_OF_ERROR + 1;
 			}
 		}
 		break;
 	case kTote:
-		dist = (encoder->Get() - TOTE_POSITION);//TODO: Add margin of error
+		dist = (encoder->Get() - TOTE_POSITION);
 		break;
 	case kBin:
 		dist = (encoder->Get() - BIN_POSITION);

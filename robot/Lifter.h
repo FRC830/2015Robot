@@ -25,9 +25,9 @@ public:
 private:
 	static constexpr float LIFT_SPEED = 0.3;
 
-	static const int TOTE_POSITION = 1000; //encoder ticks to pick up a tote to be able to pick up another tote
-	static const int BIN_POSITION = 2000; //encoder ticks to lift up a bin to be able to pick up a tote
-	static const int MARGIN_OF_ERROR = 50; //TODO: empirically determine actual values
+	static const int TOTE_POSITION = 450; //encoder ticks to pick up a tote to be able to pick up another tote
+	static const int BIN_POSITION = 600; //encoder ticks to lift up a bin to be able to pick up a tote
+	static const int MARGIN_OF_ERROR = 20; //TODO: check these values (I got them by messing with the lifter and some game pieces
 
 	Victor * lifter;
 	Encoder * encoder;
