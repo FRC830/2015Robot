@@ -1,12 +1,12 @@
 #include "WPILib.h"
 
 #include "../util/830utilities.h"
+#include "../auton/auton_programs.h"
 #include "MecanumDrive.h"
 
 #include "Lifter.h"
 #include "Roller.h"
 #include "ToteHandler.h"
-#include "AutonHandler.h"
 
 //compile this code for the practice robot
 #define PRACTICE_ROBOT
@@ -68,7 +68,9 @@ private:
 
 	PowerDistributionPanel * pdp;
 
-	AutonHandler * auton_handler;
+	AutonProgram * auton_program;
+	ToteOnly * tote_only;
+	BinOnly * bin_only;
 
 	SendableChooser * auton_chooser;
 
@@ -138,25 +140,26 @@ private:
 
 		pdp = new PowerDistributionPanel();
 
-		auton_handler = new AutonHandler(tote_handler, drive);
+		tote_only = new ToteOnly(lifter, roller, drive);
+		bin_only = new BinOnly(lifter, roller, drive);
 		auton_chooser = new SendableChooser();
 		//these guys have to be pointers
 
-		auton_chooser->AddDefault("tote only", (void *) AutonHandler::TOTE);
-		auton_chooser->AddObject("bin only", (void *) AutonHandler::BIN);
-		auton_chooser->AddObject("tote and bin", (void *) AutonHandler::TOTE_AND_BIN);
-		auton_chooser->AddObject("3 tote stack", (void *) AutonHandler::THREE_TOTE_STACK);
+		auton_chooser->AddDefault("tote only", tote_only);
+		auton_chooser->AddObject("bin only", bin_only);
+		auton_program = tote_only;
 
 
-		/*
+
 		//this is horrible sketchy yes but it works
 		teleop_chooser = new SendableChooser();
 		teleop_chooser->AddDefault("test", (void *) &Robot::TeleopTestPeriodic);
 		teleop_chooser->AddObject("official", (void *) &Robot::TeleopControlPeriodic);
-		*/
+
 
 
 		SmartDashboard::PutData("auton chooser", auton_chooser);
+		SmartDashboard::PutData("teleop chooser", teleop_chooser);
 		SmartDashboard::PutNumber("roller speed", 0.0); //set up smart dashboard variables we want to read from
 		SmartDashboard::PutNumber("lifter speed", 0.0);
 
@@ -172,17 +175,18 @@ private:
 
 	void DisabledPeriodic() {
 		drive->Brake();
-		auton_handler->SetMode((const char *) auton_chooser->GetSelected());
-		//current_teleop = (teleop_program) teleop_chooser->GetSelected();
+		auton_program = (AutonProgram *) auton_chooser->GetSelected();
+		current_teleop = (teleop_program) teleop_chooser->GetSelected();
 	}
 
 	void AutonomousInit()
 	{
+		auton_program->Init();
 	}
 
 	void AutonomousPeriodic()
 	{
-		auton_handler->Update();
+		auton_program->Periodic();
 	}
 
 	void TeleopInit()
@@ -193,17 +197,17 @@ private:
 	}
 
 	void TeleopPeriodic() {
-		//current_teleop();
-		TeleopTestPeriodic();
+		current_teleop();
+		//TeleopTestPeriodic();
 	}
 
 	//see controls.txt for control scheme
 	void TeleopControlPeriodic()
 	{
-		if (pilot->LeftBumper() || pilot->RightBumper()) {
+		float right_y = pilot->RightY();
+		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
-		} else if (pilot->LeftTrigger() >= 0.2 || pilot->RightTrigger() >= 0.2) {
-			//"scope" when triggers pressed
+		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
 			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
 		} else {
 			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
@@ -220,7 +224,6 @@ private:
 		}
 
 
-
 		tote_handler->Update(); //need to call this for anything to happen
 	}
 
@@ -229,14 +232,6 @@ private:
 		tote_handler->Update();
 		tote_handler->Override(); //automation ain't ready for primetime yet
 
-		/*
-		float dpad_y = copilot->DPadY();
-		if (dpad_y > 0.0 && lifter_speed <= 0.9){
-			lifter_speed += 0.1;
-		} else if (dpad_y < 0.0 && lifter_speed >= 0.1) {
-			lifter_speed -= 0.1;
-		}
-		*/
 		float lifter_speed = SmartDashboard::GetNumber("lifter speed");
 
 		//lifter (test) code
@@ -284,10 +279,10 @@ private:
 		}
 		*/
 
-		if (pilot->LeftBumper() || pilot->RightBumper()) {
+		float right_y = pilot->RightY();
+		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
-		} else if (pilot->LeftTrigger() >= 0.2 || pilot->RightTrigger() >= 0.2) {
-			//"scope" when triggers pressed
+		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
 			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
 		} else {
 			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
