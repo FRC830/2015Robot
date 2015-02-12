@@ -6,6 +6,7 @@
 #include "Lifter.h"
 #include "Roller.h"
 #include "ToteHandler.h"
+#include "AutonHandler.h"
 
 //compile this code for the practice robot
 #define PRACTICE_ROBOT
@@ -65,17 +66,18 @@ private:
 	float camerax;
 	float cameray;
 
-	float lifter_speed;
-
 	PowerDistributionPanel * pdp;
+
+	AutonHandler * auton_handler;
 
 	SendableChooser * auton_chooser;
 
-	//to store our chosen auton program, use a function pointer
+	SendableChooser * teleop_chooser;
+	//to store our chosen teleop program, use a function pointer
 	//this is a pointer to a function that takes nothing and returns nothing
 	//so we can use it for our auton program
-	typedef void (*auton_program)();
-	auton_program auton;
+	typedef void (*teleop_program)();
+	teleop_program current_teleop;
 
 	LiveWindow *lw;
 
@@ -132,23 +134,30 @@ private:
 		camerax = 90.0;
 		cameray = 90.0;
 
-		lifter_speed = 0.5;
-
 		SmartDashboard::init();
 
 		pdp = new PowerDistributionPanel();
 
+		auton_handler = new AutonHandler(tote_handler, drive);
 		auton_chooser = new SendableChooser();
+		//these guys have to be pointers
 
-		//yes this is really ugly
-		//we're making it accept the function pointer, which apparently doesn't count as void *
-		//it doesn't matter what terrible things we do to the type
-		//the chooser holds it, and we take it back out again
-		//we have to cast the output from the chooser anyways
-		auton_chooser->AddDefault("auton 1",  (void *) &Robot::Autonomous1);
-		auton_chooser->AddObject("auton 2", (void *) &Robot::Autonomous2);
+		auton_chooser->AddDefault("tote only", (void *) AutonHandler::TOTE);
+		auton_chooser->AddObject("bin only", (void *) AutonHandler::BIN);
+		auton_chooser->AddObject("tote and bin", (void *) AutonHandler::TOTE_AND_BIN);
+		auton_chooser->AddObject("3 tote stack", (void *) AutonHandler::THREE_TOTE_STACK);
+
+
+		/*
+		//this is horrible sketchy yes but it works
+		teleop_chooser = new SendableChooser();
+		teleop_chooser->AddDefault("test", (void *) &Robot::TeleopTestPeriodic);
+		teleop_chooser->AddObject("official", (void *) &Robot::TeleopControlPeriodic);
+		*/
+
 
 		SmartDashboard::PutData("auton chooser", auton_chooser);
+		SmartDashboard::PutNumber("roller speed", 0.0); //set up smart dashboard variables we want to read from
 		SmartDashboard::PutNumber("lifter speed", 0.0);
 
 
@@ -161,29 +170,19 @@ private:
 		gyro->Stop();
 	}
 
+	void DisabledPeriodic() {
+		drive->Brake();
+		auton_handler->SetMode((const char *) auton_chooser->GetSelected());
+		//current_teleop = (teleop_program) teleop_chooser->GetSelected();
+	}
+
 	void AutonomousInit()
 	{
-		//read the auton program from the SmartDashboard
-		//cast it back to an auton_program (a function pointer)
-		auton = (auton_program) auton_chooser->GetSelected();
 	}
 
 	void AutonomousPeriodic()
 	{
-		//use the pointer to the chosen auton function
-		//make sure it's not null though, that would be bad
-		if (auton) {
-			auton();
-		}
-	}
-
-	//a couple auton functions to test the chooser
-	void Autonomous1(){
-		SmartDashboard::PutString("auton", "running auton 1");
-	}
-
-	void Autonomous2() {
-		SmartDashboard::PutString("auton", "running auton 2");
+		auton_handler->Update();
 	}
 
 	void TeleopInit()
@@ -194,16 +193,17 @@ private:
 	}
 
 	void TeleopPeriodic() {
+		//current_teleop();
 		TeleopTestPeriodic();
 	}
 
 	//see controls.txt for control scheme
 	void TeleopControlPeriodic()
 	{
-		if (pilot->LeftTrigger() || pilot->RightTrigger()) {
+		if (pilot->LeftBumper() || pilot->RightBumper()) {
 			drive->Brake();
-		} else if (pilot->LeftStickPress() || pilot->RightStickPress()) {
-			//"scope" when control sticks pressed
+		} else if (pilot->LeftTrigger() >= 0.2 || pilot->RightTrigger() >= 0.2) {
+			//"scope" when triggers pressed
 			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
 		} else {
 			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
@@ -237,7 +237,7 @@ private:
 			lifter_speed -= 0.1;
 		}
 		*/
-		lifter_speed = SmartDashboard::GetNumber("lifter speed");
+		float lifter_speed = SmartDashboard::GetNumber("lifter speed");
 
 		//lifter (test) code
 		if(copilot->Button(GamepadF310::A_Button)){
@@ -254,7 +254,22 @@ private:
 			SmartDashboard::PutString("lift state", "lifting not!");
 		}
 
+		float roller_speed = SmartDashboard::GetNumber("roller speed");
+		float dpad_y = copilot->DPadY();
+		if(dpad_y == -1){
+			roller_motor->Set(roller_speed);
+			SmartDashboard::PutString("roller state", "rolling in!");
+		}else if(dpad_y == 1){
+			roller_motor->Set(-roller_speed);
+			SmartDashboard::PutString("roller state", "rolling out!");
+		}else{
+			roller_motor->Set(0.0);
+			SmartDashboard::PutString("roller state", "rolling not!");
+		}
+
 		//Tote/bin lifting
+
+		/*
 		if (copilot->RightTrigger() || copilot->LeftTrigger()) {
 			lifter->MoveToPosition(Lifter::kFloor);
 			SmartDashboard::PutString("Lift State", "kFloor");
@@ -267,25 +282,16 @@ private:
 				SmartDashboard::PutString("Lift State", "kTote1");
 			}
 		}
+		*/
 
-
-		//display on the SmartDashboard
-		SmartDashboard::PutNumber("accel x", accel->GetX());
-		SmartDashboard::PutNumber("accel y", accel->GetY());
-		SmartDashboard::PutNumber("accel z", accel->GetZ());
-
-		//mecanum test code
-		float forward = pilot->LeftY() / 3.0; //slow down for now because it's really fast
-		float strafe = pilot->LeftX() / 3.0;
-		float rotation = pilot->RightX() / 3.0;
-
-
-		SmartDashboard::PutNumber("forward", forward);
-		SmartDashboard::PutNumber("strafe", strafe);
-		SmartDashboard::PutNumber("rotation", rotation);
-
-		drive->DriveCartesian(strafe, forward, rotation);
-		//drive->TestAll();
+		if (pilot->LeftBumper() || pilot->RightBumper()) {
+			drive->Brake();
+		} else if (pilot->LeftTrigger() >= 0.2 || pilot->RightTrigger() >= 0.2) {
+			//"scope" when triggers pressed
+			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
+		} else {
+			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
+		}
 
 
 		//move camera using DPad input
@@ -305,15 +311,15 @@ private:
 		tote_handler->Override(); //automation ain't ready for primetime yet
 		//tote_handler->Update(); //updating this also updates the lifter and the roller
 
-		SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
-		SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
-		SmartDashboard::PutNumber("front right", pdp->GetCurrent(1));
-		SmartDashboard::PutNumber("rear right", pdp->GetCurrent(0));
+		//SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
+		//SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
+		//SmartDashboard::PutNumber("front right", pdp->GetCurrent(1));
+		//SmartDashboard::PutNumber("rear right", pdp->GetCurrent(0));
 
-		SmartDashboard::PutBoolean("user button", GetUserButton());
-		SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
-		SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
-		SmartDashboard::PutNumber("offset", gyro->Offset());
+		//SmartDashboard::PutBoolean("user button", GetUserButton());
+		//SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
+		//SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
+		//SmartDashboard::PutNumber("offset", gyro->Offset());
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 

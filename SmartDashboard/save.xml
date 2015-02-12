@@ -1,0 +1,32 @@
+<xml version="1.0">
+<dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
+		<location x="648" y="24"/>
+		<width>557</width>
+		<height>389</height>
+	</static-widget>
+	<widget field="encoder value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="22" y="179"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="roller state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="227" y="151"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="lift state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="49" y="151"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="roller speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="224" y="125"/>
+	</widget>
+	<widget field="lifter speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="38" y="125"/>
+	</widget>
+	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="0"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

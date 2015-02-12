@@ -26,9 +26,9 @@ void Lifter::Update() {
 	//move lifter to the desired posidion
 	int dist_to_target = DistFromPosition(target);
 	if (dist_to_target > 0) {
-		lifter->Set(LIFT_SPEED);
+		lifter->Set(LIFT_SPEED_DOWN);
 	} else if (dist_to_target < 0) {
-		lifter->Set(-LIFT_SPEED);
+		lifter->Set(LIFT_SPEED_UP);
 	} else {
 		lifter->Set(0.0);
 	}
