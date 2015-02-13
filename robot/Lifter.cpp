@@ -50,6 +50,9 @@ int Lifter::DistFromPosition(enum Position target_pos){
 			}
 		}
 		break;
+	case kBinPickup:
+		dist = (encoder->Get() - BIN_PICKUP_POSITION);
+		break;
 	case kTote:
 		dist = (encoder->Get() - TOTE_POSITION);
 		break;

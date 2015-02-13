@@ -20,4 +20,7 @@ Eject from the rollers: press Y (will run until cancelled)
 Cancel/stop any of the previous three: press X or jiggle the left-stick. if the button is
 pressed again, the sequence will restart from the beginning.
 
+Note: once the robot is in a certain mode (eg "picking up a tote"), pressing the same button again will have no effect.
+If you want to restart the sequence, cancel it then start again.
+
 (Note that all sequences are mutually exclusive, so for example pressing A will cancel the 'B'-sequence and start from the beginning)

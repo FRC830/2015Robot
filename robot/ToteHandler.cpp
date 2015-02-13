@@ -46,8 +46,6 @@ void ToteHandler::Update(){
 		break;
 	case kFree:
 		//let main program control lifter and roller
-		//resets each cycle
-		current_state = kDefault;
 		break;
 	}
 
@@ -55,19 +53,24 @@ void ToteHandler::Update(){
 	lifter->Update();
 }
 void ToteHandler::BinPickup(){
-	lifter->MoveToPosition(Lifter::kFloor);
-	roller->RollIn();
-	current_state = kGatheringBin;
-
+	if (current_state != kGatheringBin) {
+		lifter->MoveToPosition(Lifter::kBinPickup);
+		roller->RollIn();
+		current_state = kGatheringBin;
+	}
 }
 void ToteHandler::TotePickup(){
-	lifter->MoveToPosition(Lifter::kTote);
-	roller->RollIn();
-	current_state = kGatheringTote;
+	if (current_state != kGatheringTote) {
+		lifter->MoveToPosition(Lifter::kTote);
+		roller->RollIn();
+		current_state = kGatheringTote;
+	}
 }
 void ToteHandler::Eject(){
-	roller->RollOut();
-	current_state = kEjecting;
+	if (current_state != kEjecting){
+		roller->RollOut();
+		current_state = kEjecting;
+	}
 }
 void ToteHandler::Override(){
 	current_state = kFree;

@@ -8,13 +8,14 @@
 #include "Roller.h"
 #include "ToteHandler.h"
 
-//compile this code for the practice robot
+//compile this code for the practice robot if PRACTICE_ROBOT is defined
 #define PRACTICE_ROBOT
 
 class Robot: public IterativeRobot
 {
 private:
-	static const int ROLLER_PWM = 6;
+	static const int ROLLER_LEFT_PWM = 6;
+	static const int ROLLER_RIGHT_PWM = 8;
 	static const int LIFTER_PWM = 7;
 
 	//drivetrain
@@ -29,7 +30,8 @@ private:
 
 	//Roller setup
 	static const int ROLLER_LINEBREAK_DIO = 0;
-	Victor * roller_motor;
+	Victor * left_roller_motor;
+	Victor * right_roller_motor;
 	Roller * roller;
 	DigitalInput * roller_linebreak;
 
@@ -96,9 +98,10 @@ private:
 
 	void RobotInit()
 	{
-		roller_motor = new Victor(ROLLER_PWM);
+		left_roller_motor = new Victor(ROLLER_LEFT_PWM);
+		right_roller_motor = new Victor(ROLLER_RIGHT_PWM);
 		roller_linebreak = new DigitalInput(ROLLER_LINEBREAK_DIO);
-		roller = new Roller(roller_motor, roller_linebreak);
+		roller = new Roller(left_roller_motor, right_roller_motor, roller_linebreak);
 
 		lifter_motor = new Victor(LIFTER_PWM);
 		bottom_switch = new DigitalInput(BOTTOM_SWITCH_DIO);
@@ -229,8 +232,14 @@ private:
 
 	void TeleopTestPeriodic()
 	{
-		tote_handler->Update();
-		tote_handler->Override(); //automation ain't ready for primetime yet
+		float right_y = pilot->RightY();
+		if (right_y > 0.9 || right_y < -0.9) {
+			drive->Brake();
+		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
+			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
+		} else {
+			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
+		}
 
 		float lifter_speed = SmartDashboard::GetNumber("lifter speed");
 
@@ -252,13 +261,13 @@ private:
 		float roller_speed = SmartDashboard::GetNumber("roller speed");
 		float dpad_y = copilot->DPadY();
 		if(dpad_y == -1){
-			roller_motor->Set(roller_speed);
+			left_roller_motor->Set(roller_speed);
 			SmartDashboard::PutString("roller state", "rolling in!");
 		}else if(dpad_y == 1){
-			roller_motor->Set(-roller_speed);
+			left_roller_motor->Set(-roller_speed);
 			SmartDashboard::PutString("roller state", "rolling out!");
 		}else{
-			roller_motor->Set(0.0);
+			left_roller_motor->Set(0.0);
 			SmartDashboard::PutString("roller state", "rolling not!");
 		}
 
@@ -278,15 +287,6 @@ private:
 			}
 		}
 		*/
-
-		float right_y = pilot->RightY();
-		if (right_y > 0.9 || right_y < -0.9) {
-			drive->Brake();
-		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
-			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
-		} else {
-			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
-		}
 
 
 		//move camera using DPad input
@@ -317,8 +317,10 @@ private:
 		//SmartDashboard::PutNumber("offset", gyro->Offset());
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
+		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
+		SmartDashboard::PutBoolean("arm at bottom", bottom_switch->Get());
 
-		//lw->Run();
+		//lw->Run()
 	}
 };
 

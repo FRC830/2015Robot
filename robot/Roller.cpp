@@ -7,8 +7,9 @@
 
 #include "Roller.h"
 
-Roller::Roller(Victor * intake_motor, DigitalInput * linebreak_sensor) {
-	intake = intake_motor;
+Roller::Roller(Victor * left_motor, Victor * right_motor, DigitalInput * linebreak_sensor) {
+	left_side = left_motor;
+	right_side = right_motor;
 	line_break = linebreak_sensor;
 	state = kStopped;
 
@@ -16,22 +17,26 @@ Roller::Roller(Victor * intake_motor, DigitalInput * linebreak_sensor) {
 void Roller::Update(){
 	switch (state){
 	case kStopped:
-		intake->Set(0.0);
+		left_side->Set(0.0);
+		right_side->Set(0.0);
 		break;
 	case kRollingIn:
 		if (ToteCaptured()){
 			state = kStopped;
-			intake->Set(0.0);
+			left_side->Set(0.0);
+			right_side->Set(0.0);
 		}else{
-			intake->Set(SPEED);
+			left_side->Set(SPEED);
+			right_side->Set(-SPEED);
 		}
 		break;
 	case kRollingOut:
-		intake->Set(-SPEED);
+		left_side->Set(-SPEED);
+		right_side->Set(SPEED);
 	}
 }
 bool Roller::ToteCaptured(){
-	return line_break->Get();
+	return !line_break->Get(); //linebreak returns 0 when broken
 }
 void Roller::RollIn(){
 	state = kRollingIn;

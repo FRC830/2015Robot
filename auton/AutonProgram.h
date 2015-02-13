@@ -10,6 +10,7 @@
 
 #include "../robot/Lifter.h"
 #include "../robot/Roller.h"
+#include "../robot/ToteHandler.h"
 #include "../robot/MecanumDrive.h"
 
 //abstract class to represent auton programs
@@ -23,6 +24,7 @@ public:
 protected:
 	Lifter * lifter;
 	Roller * roller;
+	ToteHandler * tote_handler;
 	MecanumDrive * drive;
 };
 

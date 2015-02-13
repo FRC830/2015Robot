@@ -1,13 +1,15 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="teleop mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="88"/>
+	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="216" y="175"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="arm at bottom" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="22" y="202"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="teleop chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="179" y="3"/>
-	</widget>
-	<widget field="auton mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="67"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
 		<location x="648" y="24"/>

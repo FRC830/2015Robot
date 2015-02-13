@@ -12,7 +12,7 @@
 
 class Roller {
 public:
-	Roller(Victor * intake_motor, DigitalInput * linebreak_sensor);
+	Roller(Victor * left_motor, Victor * right_motor, DigitalInput * linebreak_sensor);
 
 	void Update();
 
@@ -23,7 +23,8 @@ public:
 	bool ToteCaptured();
 
 private:
-	Victor * intake;
+	Victor * left_side;
+	Victor * right_side;
 	DigitalInput * line_break;
 
 	static constexpr float SPEED = 0.8;

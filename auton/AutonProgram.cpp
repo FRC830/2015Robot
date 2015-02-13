@@ -10,6 +10,7 @@
 AutonProgram::AutonProgram(Lifter * lift, Roller * roll, MecanumDrive * mec_drive){
 	lifter = lift;
 	roller = roll;
+	tote_handler = new ToteHandler(roller, lifter);
 	drive = mec_drive;
 }
 
