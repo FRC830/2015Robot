@@ -23,7 +23,8 @@ public:
 private:
 	Roller * roller;
 	Lifter * lifter;
-	bool holding_bin;
+	enum Lifter::Position default_position; //depends on whether we're carrying a tote or bin
+
 
 	enum HandlerState{
 		kGatheringBin, kGatheringTote, kEjecting, kDefault, kFree

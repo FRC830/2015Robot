@@ -244,23 +244,20 @@ private:
 		float lifter_speed = SmartDashboard::GetNumber("lifter speed");
 
 		//lifter (test) code
-		if(copilot->Button(GamepadF310::A_Button)){
-			//roller->RollIn();
+		if(copilot->Button(GamepadF310::A_Button) && !bottom_switch->Get()){
 			lifter_motor->Set(lifter_speed);
-			SmartDashboard::PutString("lift state", "lifting up!");
-		}else if(copilot->Button(GamepadF310::Y_Button)){
-			//roller->RollOut();
-			lifter_motor->Set(-lifter_speed);
 			SmartDashboard::PutString("lift state", "lifting down!");
+		}else if(copilot->Button(GamepadF310::Y_Button)){
+			lifter_motor->Set(-lifter_speed);
+			SmartDashboard::PutString("lift state", "lifting up!");
 		}else{
-			//roller->Stop();
 			lifter_motor->Set(0.0);
 			SmartDashboard::PutString("lift state", "lifting not!");
 		}
 
 		float roller_speed = SmartDashboard::GetNumber("roller speed");
 		float dpad_y = copilot->DPadY();
-		if(dpad_y == -1){
+		if(dpad_y == -1 && !roller->ToteCaptured()){
 			left_roller_motor->Set(roller_speed);
 			SmartDashboard::PutString("roller state", "rolling in!");
 		}else if(dpad_y == 1){

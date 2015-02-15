@@ -8,6 +8,8 @@
 #include "Lifter.h"
 #include <cmath>
 
+const int Lifter::HEIGHTS[5]  = {0, STEP_HEIGHT, BIN_PICKUP_HEIGHT, TOTE_HEIGHT, BIN_HEIGHT };
+
 Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * top_limit_switch) {
 	lifter = lift_motor;
 	encoder = lift_enc;
@@ -39,31 +41,26 @@ void Lifter::MoveToPosition(enum Position target_pos){
 }
 int Lifter::DistFromPosition(enum Position target_pos){
 	int dist;
-	switch (target_pos){
-	case kFloor:
+	if (target_pos == kFloor){
 		if (bottom_switch->Get()) {
 			return 0;
 		} else {
 			dist = encoder->Get(); //since encoder measures from the bottom, encoder->Get() gives our distance from the bottom position
-			if (dist < MARGIN_OF_ERROR) {
-				dist = MARGIN_OF_ERROR + 1;
+			if (dist > MARGIN_OF_ERROR) {
+				return dist;
+			} else {
+				return MARGIN_OF_ERROR;
 			}
 		}
-		break;
-	case kBinPickup:
-		dist = (encoder->Get() - BIN_PICKUP_POSITION);
-		break;
-	case kTote:
-		dist = (encoder->Get() - TOTE_POSITION);
-		break;
-	case kBin:
-		dist = (encoder->Get() - BIN_POSITION);
-		break;
 	}
-	if (abs(dist) < MARGIN_OF_ERROR){
-		return 0;
-	} else {
-		return dist;
+	else {
+		int index = (int) target_pos;
+		dist = encoder->Get() - HEIGHTS[index];
+		if (abs(dist) < MARGIN_OF_ERROR){
+			return 0;
+		} else {
+			return dist;
+		}
 	}
 }
 bool Lifter::AtPosition(enum Position target_pos){

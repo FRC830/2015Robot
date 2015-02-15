@@ -13,13 +13,13 @@ ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 	roller = roll;
 	lifter = lift;
 	current_state = kDefault;
-	holding_bin = false;
+	default_position = Lifter::kTote;
 }
 void ToteHandler::Update(){
 	switch (current_state){
 	case kGatheringBin:
 		if (roller->ToteCaptured()){
-			holding_bin = true;
+			default_position = Lifter::kBin;
 			current_state = kDefault;
 		}
 		break;
@@ -28,7 +28,7 @@ void ToteHandler::Update(){
 			roller->Stop();
 			lifter->MoveToPosition(Lifter::kFloor);
 			if (lifter->AtPosition(Lifter::kFloor)){
-				holding_bin = false;
+				default_position = Lifter::kTote;
 				current_state = kDefault;
 			}
 		}
@@ -37,11 +37,7 @@ void ToteHandler::Update(){
 		//ejecting, may need to do something here later
 		break;
 	case kDefault:
-		if (holding_bin){
-			lifter->MoveToPosition(Lifter::kBin);
-		} else {
-			lifter->MoveToPosition(Lifter::kTote);
-		}
+		lifter->MoveToPosition(default_position);
 		roller->Stop();
 		break;
 	case kFree:
