@@ -19,6 +19,7 @@ void ToteHandler::Update(){
 	switch (current_state){
 	case kGatheringBin:
 		if (roller->ToteCaptured()){
+			roller->Stop();
 			default_position = Lifter::kBin;
 			current_state = kDefault;
 		}
@@ -27,14 +28,24 @@ void ToteHandler::Update(){
 		if (roller->ToteCaptured()){
 			roller->Stop();
 			lifter->MoveToPosition(Lifter::kFloor);
-			if (lifter->AtPosition(Lifter::kFloor)){
-				default_position = Lifter::kTote;
-				current_state = kDefault;
-			}
+			current_state = kPickingUpTote;
 		}
 		break;
-	case kEjecting:
-		//ejecting, may need to do something here later
+	case kPickingUpTote:
+		if (lifter->AtPosition(Lifter::kFloor)){
+			default_position = Lifter::kTote;
+			current_state = kDefault;
+		}
+		break;
+	case kEjectingToFloor:
+		if (lifter->AtPosition(Lifter::kFloor)){
+			roller->RollOut();
+		}
+		break;
+	case kEjectingToStep:
+		if (lifter->AtPosition(Lifter::kStep)) {
+			roller->RollOut();
+		}
 		break;
 	case kDefault:
 		lifter->MoveToPosition(default_position);
@@ -48,26 +59,34 @@ void ToteHandler::Update(){
 	roller->Update();
 	lifter->Update();
 }
-void ToteHandler::BinPickup(){
+void ToteHandler::PickupBin(){
 	if (current_state != kGatheringBin) {
-		lifter->MoveToPosition(Lifter::kBinPickup);
+		lifter->MoveToPosition(Lifter::kFloor); //position above bin
 		roller->RollIn();
 		current_state = kGatheringBin;
 	}
 }
-void ToteHandler::TotePickup(){
+void ToteHandler::PickupTote(){
 	if (current_state != kGatheringTote) {
-		lifter->MoveToPosition(Lifter::kTote);
+		lifter->MoveToPosition(default_position);
 		roller->RollIn();
 		current_state = kGatheringTote;
 	}
 }
-void ToteHandler::Eject(){
-	if (current_state != kEjecting){
-		roller->RollOut();
-		current_state = kEjecting;
+void ToteHandler::EjectToFloor(){
+	if (current_state != kEjectingToFloor){
+		lifter->MoveToPosition(Lifter::kFloor);
+		current_state = kEjectingToFloor;
 	}
 }
+
+void ToteHandler::EjectToStep() {
+	if (current_state != kEjectingToStep){
+		lifter->MoveToPosition(Lifter::kStep);
+	}
+	current_state = kEjectingToStep;
+}
+
 void ToteHandler::Override(){
 	current_state = kFree;
 }

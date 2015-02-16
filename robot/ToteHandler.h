@@ -15,9 +15,10 @@ class ToteHandler {
 public:
 	ToteHandler(Roller * roll, Lifter * lift);
 	void Update();
-	void BinPickup();
-	void TotePickup();
-	void Eject();
+	void PickupBin();
+	void PickupTote();
+	void EjectToFloor();
+	void EjectToStep();
 	void Override();
 	void Cancel();
 private:
@@ -27,7 +28,7 @@ private:
 
 
 	enum HandlerState{
-		kGatheringBin, kGatheringTote, kEjecting, kDefault, kFree
+		kGatheringBin, kGatheringTote, kPickingUpTote, kEjectingToFloor, kEjectingToStep, kDefault, kFree
 	};
 	enum HandlerState current_state;
 };

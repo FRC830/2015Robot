@@ -8,8 +8,6 @@
 #include "Lifter.h"
 #include <cmath>
 
-const int Lifter::HEIGHTS[5]  = {0, STEP_HEIGHT, BIN_PICKUP_HEIGHT, TOTE_HEIGHT, BIN_HEIGHT };
-
 Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * top_limit_switch) {
 	lifter = lift_motor;
 	encoder = lift_enc;
@@ -25,7 +23,7 @@ void Lifter::Update() {
 		encoder->Reset();
 	}
 
-	//move lifter to the desired posidion
+	//move lifter to the desired position
 	int dist_to_target = DistFromPosition(target);
 	if (dist_to_target > 0) {
 		lifter->Set(LIFT_SPEED_DOWN);
@@ -54,8 +52,7 @@ int Lifter::DistFromPosition(enum Position target_pos){
 		}
 	}
 	else {
-		int index = (int) target_pos;
-		dist = encoder->Get() - HEIGHTS[index];
+		dist = encoder->Get() - ((int) target_pos);
 		if (abs(dist) < MARGIN_OF_ERROR){
 			return 0;
 		} else {

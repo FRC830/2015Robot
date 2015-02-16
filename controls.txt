@@ -15,10 +15,12 @@ breaks the line break, then lift up the bin.
 Pick up a tote: press A. this will run the rollers until a tote breaks the line break,
 then lower the lift, and raise it up again, picking up the tote
 
-Eject from the rollers: press Y (will run until cancelled)
+Eject to floor: press X. this will lower the stack to the ground and then roll out until cancelled.
 
-Cancel/stop any of the previous three: press X or jiggle the left-stick. if the button is
-pressed again, the sequence will restart from the beginning.
+Eject to step: press Y. this will lower the stack to the height of the step, then roll out until cancelled.
+
+Cancel/stop any of the previous three: jiggle the left-stick. (The program detects if it is pressed more than halfway in any direction) 
+if the button is pressed again, the sequence will restart from the beginning.
 
 Note: once the robot is in a certain mode (eg "picking up a tote"), pressing the same button again will have no effect.
 If you want to restart the sequence, cancel it then start again.

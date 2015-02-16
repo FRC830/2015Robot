@@ -178,8 +178,13 @@ private:
 
 	void DisabledPeriodic() {
 		drive->Brake();
+		//update auton and teleop modes from smart dashboard
 		auton_program = (AutonProgram *) auton_chooser->GetSelected();
 		current_teleop = (teleop_program) teleop_chooser->GetSelected();
+
+		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
+		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
+		SmartDashboard::PutBoolean("arm at bottom", bottom_switch->Get());
 	}
 
 	void AutonomousInit()
@@ -207,6 +212,7 @@ private:
 	//see controls.txt for control scheme
 	void TeleopControlPeriodic()
 	{
+		//drive controls
 		float right_y = pilot->RightY();
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
@@ -216,16 +222,21 @@ private:
 			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
 		}
 
+		//copilot tote handling controls
+
+		roller->SetRotation(copilot->RightX());
 		if(copilot->Button(GamepadF310::B_Button)) {
-			tote_handler->BinPickup();
+			tote_handler->PickupBin();
 		} else if (copilot->Button(GamepadF310::A_Button)) {
-			tote_handler->TotePickup();
+			tote_handler->PickupTote();
+		} else if (copilot->Button(GamepadF310::X_Button)) {
+			tote_handler->EjectToFloor();
 		} else if (copilot->Button(GamepadF310::Y_Button)) {
-			tote_handler->Eject();
-		} else if (copilot->Button(GamepadF310::X_Button) || fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)) {
+			tote_handler->EjectToStep();
+		} else if (fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)) {
+			//cancel command if left stick wiggled
 			tote_handler->Cancel();
 		}
-
 
 		tote_handler->Update(); //need to call this for anything to happen
 	}
@@ -236,7 +247,7 @@ private:
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
 		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
-			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
+			drive->DriveCartesian(pilot->LeftX() / 1.5, pilot->LeftY() / 1.5, pilot->RightX() / 1.5);
 		} else {
 			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
 		}
@@ -267,24 +278,6 @@ private:
 			left_roller_motor->Set(0.0);
 			SmartDashboard::PutString("roller state", "rolling not!");
 		}
-
-		//Tote/bin lifting
-
-		/*
-		if (copilot->RightTrigger() || copilot->LeftTrigger()) {
-			lifter->MoveToPosition(Lifter::kFloor);
-			SmartDashboard::PutString("Lift State", "kFloor");
-		}else if(copilot->RightBumper() || copilot->LeftBumper()){
-			if (lifter->AtPosition(Lifter::kTote)){
-				lifter->MoveToPosition(Lifter::kBin);
-				SmartDashboard::PutString("Lift State", "kTote2");
-			} else {
-				lifter->MoveToPosition(Lifter::kTote);
-				SmartDashboard::PutString("Lift State", "kTote1");
-			}
-		}
-		*/
-
 
 		//move camera using DPad input
 		if(pilot->DPadX()==1.0){
