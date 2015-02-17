@@ -11,6 +11,8 @@ Roller::Roller(Victor * left_motor, Victor * right_motor, DigitalInput * linebre
 	left_side = left_motor;
 	right_side = right_motor;
 	line_break = linebreak_sensor;
+	left_side_coefficient = 1.0;
+	right_side_coefficient = 1.0;
 	state = kStopped;
 
 }

@@ -9,37 +9,34 @@
 #include "ToteHandler.h"
 
 //compile this code for the practice robot if PRACTICE_ROBOT is defined
-#define PRACTICE_ROBOT
+//#define PRACTICE_ROBOT
 
 class Robot: public IterativeRobot
 {
 private:
-	static const int ROLLER_LEFT_PWM = 6;
-	static const int ROLLER_RIGHT_PWM = 8;
-	static const int LIFTER_PWM = 7;
-
 	//drivetrain
 	static const int LEFT_FRONT_PWM = 0;
 	static const int LEFT_REAR_PWM = 1;
 	static const int RIGHT_FRONT_PWM = 2;
 	static const int RIGHT_REAR_PWM = 3;
 
-	//servo
-	static const int YAW_SERVO_PWM = 4;
-	static const int PITCH_SERVO_PWM = 5;
+	static const int ROLLER_LEFT_PWM = 5;
+	static const int ROLLER_RIGHT_PWM = 6;
+	static const int LIFTER_PWM = 8;
+
+	static const int ROLLER_LINEBREAK_DIO = 0;
+	static const int TOP_SWITCH_DIO = 1;
+	static const int BOTTOM_SWITCH_DIO = 2;
+	static const int ENC_A_DIO = 3;
+	static const int ENC_B_DIO = 4;
 
 	//Roller setup
-	static const int ROLLER_LINEBREAK_DIO = 0;
 	Victor * left_roller_motor;
 	Victor * right_roller_motor;
 	Roller * roller;
 	DigitalInput * roller_linebreak;
 
 	//lifter setup
-	static const int TOP_SWITCH_DIO = 1;
-	static const int BOTTOM_SWITCH_DIO = 2;
-	static const int ENC_A_DIO = 3;
-	static const int ENC_B_DIO = 4;
 	Victor * lifter_motor;
 	Lifter * lifter;
 	DigitalInput * bottom_switch;
@@ -53,20 +50,12 @@ private:
 	//acceleration control for drivetrain
 	static constexpr float TIME_TO_MAX_SPEED = 2.0;
 
-	//servos to control the position of the camera
-	Servo * yaw_servo;
-	Servo * pitch_servo;
-
-
 	BuiltInAccelerometer * accel;
 
 	ADXRS450Gyro * gyro;
 
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
-
-	float camerax;
-	float cameray;
 
 	PowerDistributionPanel * pdp;
 
@@ -111,9 +100,6 @@ private:
 
 		tote_handler = new ToteHandler(roller, lifter);
 
-		yaw_servo = new Servo(YAW_SERVO_PWM);
-		pitch_servo = new Servo(PITCH_SERVO_PWM);
-
 #ifdef PRACTICE_ROBOT
 		RobotDrive * robot_drive = new RobotDrive(
 						new Talon(LEFT_FRONT_PWM), new Talon(LEFT_REAR_PWM),
@@ -135,9 +121,6 @@ private:
 
 		gyro = new ADXRS450Gyro();
 		accel = new BuiltInAccelerometer();
-
-		camerax = 90.0;
-		cameray = 90.0;
 
 		SmartDashboard::init();
 
@@ -254,44 +237,35 @@ private:
 
 		float lifter_speed = SmartDashboard::GetNumber("lifter speed");
 
-		//lifter (test) code
-		if(copilot->Button(GamepadF310::A_Button) && !bottom_switch->Get()){
+		float dpad_x = copilot->DPadX();
+		float dpad_y = copilot->DPadY();
+
+		if(dpad_y == -1 && !bottom_switch->Get()) {
 			lifter_motor->Set(lifter_speed);
 			SmartDashboard::PutString("lift state", "lifting down!");
-		}else if(copilot->Button(GamepadF310::Y_Button)){
+		} else if(dpad_y == 1) {
 			lifter_motor->Set(-lifter_speed);
 			SmartDashboard::PutString("lift state", "lifting up!");
-		}else{
+		} else {
 			lifter_motor->Set(0.0);
 			SmartDashboard::PutString("lift state", "lifting not!");
 		}
 
 		float roller_speed = SmartDashboard::GetNumber("roller speed");
-		float dpad_y = copilot->DPadY();
-		if(dpad_y == -1 && !roller->ToteCaptured()){
+		if (dpad_x == -1 && !roller->ToteCaptured()) {
 			left_roller_motor->Set(roller_speed);
+			right_roller_motor->Set(-roller_speed);
 			SmartDashboard::PutString("roller state", "rolling in!");
-		}else if(dpad_y == 1){
+		} else if(dpad_x == 1) {
 			left_roller_motor->Set(-roller_speed);
+			right_roller_motor->Set(roller_speed);
 			SmartDashboard::PutString("roller state", "rolling out!");
-		}else{
+		} else {
 			left_roller_motor->Set(0.0);
+			right_roller_motor->Set(0.0);
 			SmartDashboard::PutString("roller state", "rolling not!");
 		}
 
-		//move camera using DPad input
-		if(pilot->DPadX()==1.0){
-			camerax = camerax + 1.0;
-		} else if(pilot->DPadX()==-1.0){
-			camerax = camerax - 1.0;
-		}
-		if(pilot->DPadY()==1.0){
-			cameray = cameray + 1.0;
-		} else if(pilot->DPadY()==-1.0){
-			cameray = cameray -1.0;
-		}
-		yaw_servo->SetAngle(camerax);
-		pitch_servo->SetAngle(cameray);
 
 		tote_handler->Override(); //automation ain't ready for primetime yet
 		//tote_handler->Update(); //updating this also updates the lifter and the roller
