@@ -9,37 +9,34 @@
 #include "ToteHandler.h"
 
 //compile this code for the practice robot if PRACTICE_ROBOT is defined
-#define PRACTICE_ROBOT
+//#define PRACTICE_ROBOT
 
 class Robot: public IterativeRobot
 {
 private:
-	static const int ROLLER_LEFT_PWM = 6;
-	static const int ROLLER_RIGHT_PWM = 8;
-	static const int LIFTER_PWM = 7;
-
 	//drivetrain
 	static const int LEFT_FRONT_PWM = 0;
 	static const int LEFT_REAR_PWM = 1;
 	static const int RIGHT_FRONT_PWM = 2;
 	static const int RIGHT_REAR_PWM = 3;
 
-	//servo
-	static const int YAW_SERVO_PWM = 4;
-	static const int PITCH_SERVO_PWM = 5;
+	static const int ROLLER_LEFT_PWM = 5;
+	static const int ROLLER_RIGHT_PWM = 6;
+	static const int LIFTER_PWM = 8;
+
+	static const int ROLLER_LINEBREAK_DIO = 0;
+	static const int TOP_SWITCH_DIO = 1;
+	static const int BOTTOM_SWITCH_DIO = 2;
+	static const int ENC_A_DIO = 3;
+	static const int ENC_B_DIO = 4;
 
 	//Roller setup
-	static const int ROLLER_LINEBREAK_DIO = 0;
 	Victor * left_roller_motor;
 	Victor * right_roller_motor;
 	Roller * roller;
 	DigitalInput * roller_linebreak;
 
 	//lifter setup
-	static const int TOP_SWITCH_DIO = 1;
-	static const int BOTTOM_SWITCH_DIO = 2;
-	static const int ENC_A_DIO = 3;
-	static const int ENC_B_DIO = 4;
 	Victor * lifter_motor;
 	Lifter * lifter;
 	DigitalInput * bottom_switch;
