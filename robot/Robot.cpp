@@ -78,7 +78,8 @@ private:
 	typedef void (*teleop_program)();
 	teleop_program current_teleop;
 
-	LiveWindow *lw;
+	LiveWindow * lw;
+	DriverStation * ds;
 
 	//normalizes the angles of the gyro
 	//converts all angles to be between 0 and 360 degrees
@@ -159,6 +160,7 @@ private:
 
 
 		lw = LiveWindow::GetInstance();
+		ds = DriverStation::GetInstance();
 
 
 	}
@@ -272,6 +274,18 @@ private:
 			left_roller_motor->Set(0.0);
 			right_roller_motor->Set(0.0);
 			SmartDashboard::PutString("roller state", "rolling not!");
+		}
+
+		if (roller->ToteCaptured()){
+			led->Set(DigitalLED::kGreen);
+		}else{
+			enum DriverStation::Alliance alliance = ds->GetAlliance();
+			if (alliance == DriverStation::kBlue){
+				led->Set(DigitalLED::kBlue);
+			}
+			else if (alliance == DriverStation::kRed){
+				led->Set(DigitalLED::kRed);
+			}
 		}
 
 
