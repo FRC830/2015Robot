@@ -12,6 +12,7 @@
 
 #include "GamepadF310.h"
 #include "ADXRS450Gyro.h"
+#include "DigitalLED.h"
 
 void reverse(char s[]);
 void to_binary_string(unsigned char n, char s[]);

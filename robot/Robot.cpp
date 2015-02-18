@@ -30,6 +30,10 @@ private:
 	static const int ENC_A_DIO = 3;
 	static const int ENC_B_DIO = 4;
 
+	static const int LED_RED_DIO = 7;
+	static const int LED_GREEN_DIO = 8;
+	static const int LED_BLUE_DIO = 9;
+
 	//Roller setup
 	Victor * left_roller_motor;
 	Victor * right_roller_motor;
@@ -53,6 +57,8 @@ private:
 	BuiltInAccelerometer * accel;
 
 	ADXRS450Gyro * gyro;
+
+	DigitalLED * led;
 
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
@@ -121,6 +127,8 @@ private:
 
 		gyro = new ADXRS450Gyro();
 		accel = new BuiltInAccelerometer();
+
+		led = new DigitalLED(LED_RED_DIO, LED_GREEN_DIO, LED_BLUE_DIO);
 
 		SmartDashboard::init();
 

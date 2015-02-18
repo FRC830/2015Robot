@@ -39,6 +39,10 @@ float MecanumDrive::curve_accel(float * current, float target){
 		target= 0.0;
 	}
 
+	if (time_to_max_speed == 0) {
+		*current = target;
+	}
+
 	float max_delta = 1.0 / (time_to_max_speed / SECS_PER_CYCLE); //1.0 represents the maximum value
 
 	float delta = target - *current;
