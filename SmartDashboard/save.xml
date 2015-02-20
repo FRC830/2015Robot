@@ -1,16 +1,7 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="402" y="171"/>
-		<property name="Editable" value="false"/>
-	</widget>
-	<widget field="drive y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="406" y="147"/>
-		<property name="Editable" value="false"/>
-	</widget>
-	<widget field="drive x" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="406" y="121"/>
-		<property name="Editable" value="false"/>
+	<widget field="auton mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="67"/>
 	</widget>
 	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="216" y="175"/>
@@ -52,4 +43,7 @@
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="drive x"/>
+	<hidden field="drive y"/>
+	<hidden field="rotation"/>
 </xml>

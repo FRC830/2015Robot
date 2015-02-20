@@ -261,20 +261,25 @@ private:
 			SmartDashboard::PutString("lift state", "lifting not!");
 		}
 
+		if (bottom_switch->Get()){
+			lift_encoder->Reset();
+		}
+
 		float roller_speed = SmartDashboard::GetNumber("roller speed");
-		if (dpad_x == -1 && !roller->ToteCaptured()) {
-			left_roller_motor->Set(roller_speed);
-			right_roller_motor->Set(-roller_speed);
+		roller->SetSpeed(roller_speed);
+		roller->SetRotation(copilot->RightX());
+		if (dpad_x == -1) {
+			roller->RollIn();
 			SmartDashboard::PutString("roller state", "rolling in!");
 		} else if(dpad_x == 1) {
-			left_roller_motor->Set(-roller_speed);
-			right_roller_motor->Set(roller_speed);
+			roller->RollOut();
 			SmartDashboard::PutString("roller state", "rolling out!");
 		} else {
-			left_roller_motor->Set(0.0);
-			right_roller_motor->Set(0.0);
+			roller->Stop();
 			SmartDashboard::PutString("roller state", "rolling not!");
 		}
+
+		roller->Update();
 
 		if (roller->ToteCaptured()){
 			led->Set(DigitalLED::kGreen);
