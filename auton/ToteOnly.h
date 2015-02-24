@@ -19,6 +19,12 @@ public:
 	ToteOnly(Lifter * lift, Roller * roll, MecanumDrive * mec_drive);
 	void Init();
 	void Periodic();
+
+	enum State {kCalibrating, kGatheringTote, kMovingToAuto, kDone};
+	enum State current_state;
+
+	static constexpr float TIME_TO_GATHER_TOTE = 5.0;
+	static constexpr float TIME_TO_MOVE = 10.0;
 };
 
 #endif /* AUTON_TOTEONLY_H_ */

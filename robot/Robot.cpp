@@ -8,8 +8,7 @@
 #include "Roller.h"
 #include "ToteHandler.h"
 
-//compile this code for the practice robot if PRACTICE_ROBOT is defined
-//#define PRACTICE_ROBOT
+#include "robot_identifier.h"
 
 class Robot: public IterativeRobot
 {
@@ -68,6 +67,9 @@ private:
 	AutonProgram * auton_program;
 	ToteOnly * tote_only;
 	BinOnly * bin_only;
+	BinAndTote * bin_and_tote;
+	MoveForward * move_forward;
+	SitStill * sit_still;
 
 	SendableChooser * auton_chooser;
 
@@ -137,11 +139,17 @@ private:
 
 		tote_only = new ToteOnly(lifter, roller, drive);
 		bin_only = new BinOnly(lifter, roller, drive);
+		bin_and_tote = new BinAndTote(lifter, roller, drive);
+		move_forward = new MoveForward(lifter, roller, drive);
+		sit_still = new SitStill(lifter, roller, drive);
 		auton_chooser = new SendableChooser();
 		//these guys have to be pointers
 
 		auton_chooser->AddDefault("tote only", tote_only);
 		auton_chooser->AddObject("bin only", bin_only);
+		auton_chooser->AddObject("bin and tote", bin_and_tote);
+		auton_chooser->AddObject("move forward", move_forward);
+		auton_chooser->AddObject("sit still", sit_still);
 		auton_program = tote_only;
 
 
@@ -167,6 +175,7 @@ private:
 
 	void DisabledInit() {
 		gyro->Stop();
+		tote_handler->ReturnToDefault();
 	}
 
 	void DisabledPeriodic() {
@@ -212,26 +221,41 @@ private:
 		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
 			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
 		} else {
-			drive->DriveCartesian(pilot->LeftX(), pilot->LeftY(), pilot->RightX());
+			drive->DriveCartesian(pilot->LeftX() / 1.5, pilot->LeftY() /1.5, pilot->RightX() / 1.5);
 		}
 
 		//copilot tote handling controls
-
-		roller->SetRotation(copilot->RightX());
 		if(copilot->Button(GamepadF310::B_Button)) {
-			tote_handler->PickupBin();
+			tote_handler->GatherBin();
 		} else if (copilot->Button(GamepadF310::A_Button)) {
-			tote_handler->PickupTote();
+			tote_handler->GatherTote();
 		} else if (copilot->Button(GamepadF310::X_Button)) {
 			tote_handler->EjectToFloor();
 		} else if (copilot->Button(GamepadF310::Y_Button)) {
 			tote_handler->EjectToStep();
+		} else if (copilot->RightBumper()) {
+			tote_handler->PickUpBin();
+		} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
+			tote_handler->Calibrate();
 		} else if (fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)) {
 			//cancel command if left stick wiggled
-			tote_handler->Cancel();
+			tote_handler->ReturnToDefault();
+		}
+
+		float dpad_y = copilot->DPadY();
+		if (dpad_y == 1) {
+			tote_handler->IncreaseHeight();
+		} else if (dpad_y == -1) {
+			tote_handler->DecreaseHeight();
 		}
 
 		tote_handler->Update(); //need to call this for anything to happen
+
+		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
+		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
+		SmartDashboard::PutBoolean("arm at bottom", bottom_switch->Get());
+		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
+
 	}
 
 	void TeleopTestPeriodic()
@@ -266,20 +290,18 @@ private:
 		}
 
 		float roller_speed = SmartDashboard::GetNumber("roller speed");
-		roller->SetSpeed(roller_speed);
-		roller->SetRotation(copilot->RightX());
 		if (dpad_x == -1) {
-			roller->RollIn();
+			left_roller_motor->Set(roller_speed);
+			right_roller_motor->Set(-roller_speed);
 			SmartDashboard::PutString("roller state", "rolling in!");
 		} else if(dpad_x == 1) {
-			roller->RollOut();
+			left_roller_motor->Set(-roller_speed);
+			right_roller_motor->Set(roller_speed);
 			SmartDashboard::PutString("roller state", "rolling out!");
 		} else {
 			roller->Stop();
 			SmartDashboard::PutString("roller state", "rolling not!");
 		}
-
-		roller->Update();
 
 		if (roller->ToteCaptured()){
 			led->Set(DigitalLED::kGreen);

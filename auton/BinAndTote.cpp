@@ -1,22 +1,21 @@
 /*
- * BinOnly.cpp
+ * BinAndTote.cpp
  *
- *  Created on: Feb 11, 2015
+ *  Created on: Feb 23, 2015
  *      Author: ratpack
  */
 
-#include "BinOnly.h"
-#include "WPILib.h"
+#include "BinAndTote.h"
 
-BinOnly::BinOnly(Lifter * lift, Roller * roll, MecanumDrive * mec_drive) : AutonProgram(lift, roll, mec_drive) {
+BinAndTote::BinAndTote(Lifter * lift, Roller * roll, MecanumDrive * mec_drive) : AutonProgram(lift, roll, mec_drive) {
 	current_state = kCalibrating;
 }
 
-void BinOnly::Init() {
+void BinAndTote::Init() {
 	tote_handler->Calibrate();
 }
 
-void BinOnly::Periodic(){
+void BinAndTote::Periodic() {
 	switch (current_state) {
 	case kCalibrating:
 		if (tote_handler->Calibrated()){
@@ -31,6 +30,20 @@ void BinOnly::Periodic(){
 		if (timer->Get() >= TIME_TO_GATHER_BIN || roller->ToteCaptured()){
 			timer->Reset();
 			tote_handler->PickUpBin();
+			current_state = kRaisingBin;
+		}
+		break;
+	case kRaisingBin:
+		//raise bin enough to clear the linebreak
+		if (timer->Get() >= TIME_TO_RAISE_BIN) {
+			tote_handler->GatherTote();
+			current_state = kGatheringTote;
+		}
+		break;
+	case kGatheringTote:
+		drive->DriveCartesian(0.0, 0.5, 0.0);
+		if (roller->ToteCaptured()) {
+			timer->Reset();
 			current_state = kMovingToAuto;
 		}
 		break;
@@ -45,8 +58,5 @@ void BinOnly::Periodic(){
 	}
 
 	tote_handler->Update();
-
-
-
-	SmartDashboard::PutString("auton mode", "bin");
 }
+

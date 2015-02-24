@@ -15,20 +15,29 @@ class ToteHandler {
 public:
 	ToteHandler(Roller * roll, Lifter * lift);
 	void Update();
-	void PickupBin();
-	void PickupTote();
+	void GatherBin();
+	void PickUpBin();
+	void GatherTote();
+	void PickUpTote();
 	void EjectToFloor();
 	void EjectToStep();
+	void Calibrate();
 	void Override();
-	void Cancel();
+	void ReturnToDefault();
+
+	bool Calibrated();
+
+	void IncreaseHeight();
+	void DecreaseHeight();
 private:
 	Roller * roller;
 	Lifter * lifter;
 	enum Lifter::Position default_position; //depends on whether we're carrying a tote or bin
 
+	bool calibrated;
 
 	enum HandlerState{
-		kGatheringBin, kGatheringTote, kPickingUpTote, kEjectingToFloor, kEjectingToStep, kDefault, kFree
+		kGatheringBin, kGatheringTote, kPickingUpTote, kEjectingToFloor, kEjectingToStep, kDefault, kCalibrating, kFree
 	};
 	enum HandlerState current_state;
 };

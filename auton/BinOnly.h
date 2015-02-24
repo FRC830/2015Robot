@@ -20,6 +20,12 @@ public:
 	void Init();
 	void Periodic();
 
+private:
+	enum State {kCalibrating, kGatheringBin, kMovingToAuto, kDone};
+	enum State current_state;
+	static constexpr float TIME_TO_GATHER_BIN = 5.0;
+	static constexpr float TIME_TO_MOVE = 10.0;
+
 };
 
 #endif /* AUTON_BINONLY_H_ */

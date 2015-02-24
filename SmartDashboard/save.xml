@@ -1,5 +1,10 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="22" y="227"/>
+		<width>434</width>
+		<height>233</height>
+	</widget>
 	<widget field="auton mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="67"/>
 	</widget>
@@ -35,7 +40,7 @@
 		<location x="224" y="125"/>
 	</widget>
 	<widget field="lifter speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="38" y="125"/>
+		<location x="38" y="123"/>
 	</widget>
 	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="0" y="0"/>
@@ -43,7 +48,6 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="drive x"/>
-	<hidden field="drive y"/>
-	<hidden field="rotation"/>
+	<hidden field="left roller"/>
+	<hidden field="right roller"/>
 </xml>

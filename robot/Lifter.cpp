@@ -40,7 +40,8 @@ void Lifter::MoveToPosition(enum Position target_pos){
 int Lifter::DistFromPosition(enum Position target_pos){
 	int dist;
 	if (target_pos == kFloor){
-		if (bottom_switch->Get()) {
+		//switch returns false when pressed
+		if (!bottom_switch->Get()) {
 			return 0;
 		} else {
 			dist = encoder->Get(); //since encoder measures from the bottom, encoder->Get() gives our distance from the bottom position

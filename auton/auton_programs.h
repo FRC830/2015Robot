@@ -11,6 +11,9 @@
 #include "AutonProgram.h"
 #include "BinOnly.h"
 #include "ToteOnly.h"
+#include "BinAndTote.h"
+#include "MoveForward.h"
+#include "SitStill.h"
 
 
 

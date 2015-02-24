@@ -26,6 +26,7 @@ protected:
 	Roller * roller;
 	ToteHandler * tote_handler;
 	MecanumDrive * drive;
+	Timer * timer;
 };
 
 

@@ -20,9 +20,6 @@ public:
 	void RollOut();
 	void Stop();
 
-	void SetSpeed(float new_speed);
-	void SetRotation(float rotate_val); //run the motors at different speeds to pull the tote into a better position
-
 	bool ToteCaptured();
 
 private:
@@ -30,9 +27,7 @@ private:
 	Victor * right_side;
 	DigitalInput * line_break;
 
-	float speed;
-	float left_side_coefficient;
-	float right_side_coefficient;
+	static constexpr float SPEED = 0.8;
 
 	enum RollState{
 		kRollingIn, kRollingOut, kStopped
