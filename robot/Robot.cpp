@@ -83,6 +83,8 @@ private:
 	LiveWindow * lw;
 	DriverStation * ds;
 
+	float last_dpad_y;
+
 	//normalizes the angles of the gyro
 	//converts all angles to be between 0 and 360 degrees
 	int NormalizedAngle(float angle){
@@ -163,14 +165,14 @@ private:
 
 		SmartDashboard::PutData("auton chooser", auton_chooser);
 		SmartDashboard::PutData("teleop chooser", teleop_chooser);
-		SmartDashboard::PutNumber("roller speed", 0.0); //set up smart dashboard variables we want to read from
-		SmartDashboard::PutNumber("lifter speed", 0.0);
+		SmartDashboard::PutNumber("roller speed", 1.0); //set up smart dashboard variables we want to read from
+		SmartDashboard::PutNumber("lifter speed", 0.8);
 
 
 		lw = LiveWindow::GetInstance();
 		ds = DriverStation::GetInstance();
 
-
+		last_dpad_y = 0.0;
 	}
 
 	void DisabledInit() {
@@ -186,7 +188,7 @@ private:
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
-		SmartDashboard::PutBoolean("arm at bottom", bottom_switch->Get());
+		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 	}
 
 	void AutonomousInit()
@@ -219,9 +221,9 @@ private:
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
 		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
-			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 2.0, pilot->RightX() / 2.0);
+			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 1.5, pilot->RightX() / 2.0);
 		} else {
-			drive->DriveCartesian(pilot->LeftX() / 1.5, pilot->LeftY() /1.5, pilot->RightX() / 1.5);
+			drive->DriveCartesian(pilot->LeftX() / 1.5, pilot->LeftY() / 1.0, pilot->RightX() / 1.5);
 		}
 
 		//copilot tote handling controls
@@ -234,26 +236,28 @@ private:
 		} else if (copilot->Button(GamepadF310::Y_Button)) {
 			tote_handler->EjectToStep();
 		} else if (copilot->RightBumper()) {
-			tote_handler->PickUpBin();
+			tote_handler->PickUp();
 		} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
 			tote_handler->Calibrate();
-		} else if (fabs(copilot->LeftY() >= 0.5) || fabs(copilot->LeftX() >= 0.5)) {
+		} else if (fabs(copilot->LeftY() >= 0.3) || fabs(copilot->LeftX() >= 0.3)) {
 			//cancel command if left stick wiggled
 			tote_handler->ReturnToDefault();
 		}
 
 		float dpad_y = copilot->DPadY();
-		if (dpad_y == 1) {
+		if (dpad_y == 1.0 && last_dpad_y != 1.0) {
 			tote_handler->IncreaseHeight();
-		} else if (dpad_y == -1) {
+		} else if (dpad_y == -1.0 && last_dpad_y != -1.0) {
 			tote_handler->DecreaseHeight();
 		}
+		last_dpad_y = dpad_y;
+
 
 		tote_handler->Update(); //need to call this for anything to happen
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
-		SmartDashboard::PutBoolean("arm at bottom", bottom_switch->Get());
+		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 
 	}
@@ -274,7 +278,7 @@ private:
 		float dpad_x = copilot->DPadX();
 		float dpad_y = copilot->DPadY();
 
-		if(dpad_y == -1 && !bottom_switch->Get()) {
+		if(dpad_y == -1 && bottom_switch->Get()) {
 			lifter_motor->Set(lifter_speed);
 			SmartDashboard::PutString("lift state", "lifting down!");
 		} else if(dpad_y == 1) {
@@ -285,7 +289,7 @@ private:
 			SmartDashboard::PutString("lift state", "lifting not!");
 		}
 
-		if (bottom_switch->Get()){
+		if (lifter->AtBottom()){
 			lift_encoder->Reset();
 		}
 
@@ -299,7 +303,8 @@ private:
 			right_roller_motor->Set(roller_speed);
 			SmartDashboard::PutString("roller state", "rolling out!");
 		} else {
-			roller->Stop();
+			left_roller_motor->Set(0.0);
+			right_roller_motor->Set(0.0);
 			SmartDashboard::PutString("roller state", "rolling not!");
 		}
 
@@ -315,10 +320,6 @@ private:
 			}
 		}
 
-
-		tote_handler->Override(); //automation ain't ready for primetime yet
-		//tote_handler->Update(); //updating this also updates the lifter and the roller
-
 		//SmartDashboard::PutNumber("front left", pdp->GetCurrent(14));
 		//SmartDashboard::PutNumber("rear left", pdp->GetCurrent(15));
 		//SmartDashboard::PutNumber("front right", pdp->GetCurrent(1));
@@ -329,9 +330,13 @@ private:
 		//SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
 		//SmartDashboard::PutNumber("offset", gyro->Offset());
 
+		SmartDashboard::PutNumber("left roller", left_roller_motor->Get());
+		SmartDashboard::PutNumber("right roller", right_roller_motor->Get());
+
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
-		SmartDashboard::PutBoolean("arm at bottom", bottom_switch->Get());
+		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
+		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 
 		//lw->Run()
 	}

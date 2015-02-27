@@ -1,12 +1,18 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="right roller" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="94"/>
+	</widget>
+	<widget field="left roller" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="0"/>
+	</widget>
 	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
-		<location x="22" y="227"/>
-		<width>434</width>
-		<height>233</height>
+		<location x="200" y="202"/>
+		<width>352</width>
+		<height>272</height>
 	</widget>
 	<widget field="auton mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="67"/>
+		<location x="284" y="22"/>
 	</widget>
 	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="216" y="175"/>
@@ -17,7 +23,7 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="teleop chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="179" y="3"/>
+		<location x="43" y="27"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
 		<location x="648" y="24"/>
@@ -43,11 +49,9 @@
 		<location x="38" y="123"/>
 	</widget>
 	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="0" y="0"/>
+		<location x="487" y="3"/>
 	</widget>
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="left roller"/>
-	<hidden field="right roller"/>
 </xml>

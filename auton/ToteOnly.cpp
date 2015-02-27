@@ -21,12 +21,13 @@ void ToteOnly::Periodic(){
 	case kCalibrating:
 		if (tote_handler->Calibrated()){
 			current_state = kGatheringTote;
-			tote_handler->PickUpTote();
+			tote_handler->GatherTote();
 		}
 		break;
 	case kGatheringTote:
 		drive->DriveCartesian(0.0, 0.5, 0.0);
 		if (roller->ToteCaptured()){
+			tote_handler->PickUpTote();
 			timer->Reset();
 			timer->Start();
 			current_state = kMovingToAuto;

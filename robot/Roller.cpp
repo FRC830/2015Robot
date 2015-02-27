@@ -21,24 +21,12 @@ void Roller::Update(){
 		right_side->Set(0.0);
 		break;
 	case kRollingIn:
-		if (ToteCaptured()){
-			state = kStopped;
-			left_side->Set(0.0);
-			right_side->Set(0.0);
-		}else{
-			left_side->Set(SPEED);
-			right_side->Set(-SPEED);
-			/*
-			left_side->Set(speed * left_side_coefficient);
-			right_side->Set(-speed * right_side_coefficient);
-			SmartDashboard::PutNumber("roller left", left_side_coefficient);
-			SmartDashboard::PutNumber("roller right", right_side_coefficient);
-			*/
-		}
+		left_side->Set(INTAKE_SPEED);
+		right_side->Set(-INTAKE_SPEED);
 		break;
 	case kRollingOut:
-		left_side->Set(-SPEED);
-		right_side->Set(SPEED);
+		left_side->Set(-EJECT_SPEED);
+		right_side->Set(EJECT_SPEED);
 	}
 }
 bool Roller::ToteCaptured(){

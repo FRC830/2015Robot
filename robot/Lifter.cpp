@@ -18,7 +18,7 @@ Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_li
 
 void Lifter::Update() {
 	//use bottom position as reference point for encoder
-	if (bottom_switch->Get()) {
+	if (AtBottom()) {
 		//ignore while switch not wired in
 		encoder->Reset();
 	}
@@ -40,8 +40,8 @@ void Lifter::MoveToPosition(enum Position target_pos){
 int Lifter::DistFromPosition(enum Position target_pos){
 	int dist;
 	if (target_pos == kFloor){
-		//switch returns false when pressed
-		if (!bottom_switch->Get()) {
+
+		if (AtBottom()) {
 			return 0;
 		} else {
 			dist = encoder->Get(); //since encoder measures from the bottom, encoder->Get() gives our distance from the bottom position
@@ -63,4 +63,8 @@ int Lifter::DistFromPosition(enum Position target_pos){
 }
 bool Lifter::AtPosition(enum Position target_pos){
 	return DistFromPosition(target_pos) == 0;
+}
+
+bool Lifter::AtBottom() {
+	return !bottom_switch->Get(); //switch returns false when pressed
 }

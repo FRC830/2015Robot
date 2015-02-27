@@ -43,6 +43,7 @@ void BinAndTote::Periodic() {
 	case kGatheringTote:
 		drive->DriveCartesian(0.0, 0.5, 0.0);
 		if (roller->ToteCaptured()) {
+			tote_handler->PickUpTote();
 			timer->Reset();
 			current_state = kMovingToAuto;
 		}

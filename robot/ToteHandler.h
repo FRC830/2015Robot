@@ -19,6 +19,7 @@ public:
 	void PickUpBin();
 	void GatherTote();
 	void PickUpTote();
+	void PickUp();
 	void EjectToFloor();
 	void EjectToStep();
 	void Calibrate();

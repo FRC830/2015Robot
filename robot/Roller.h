@@ -27,7 +27,8 @@ private:
 	Victor * right_side;
 	DigitalInput * line_break;
 
-	static constexpr float SPEED = 0.8;
+	static constexpr float INTAKE_SPEED = 0.8;
+	static constexpr float EJECT_SPEED = 0.5;
 
 	enum RollState{
 		kRollingIn, kRollingOut, kStopped
