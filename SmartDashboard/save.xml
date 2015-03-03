@@ -1,29 +1,24 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="right roller" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="94"/>
-	</widget>
-	<widget field="left roller" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="0"/>
-	</widget>
-	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
-		<location x="200" y="202"/>
-		<width>352</width>
-		<height>272</height>
-	</widget>
-	<widget field="auton mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="22"/>
-	</widget>
-	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="216" y="175"/>
-		<property name="Editable" value="false"/>
-	</widget>
 	<widget field="arm at bottom" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="22" y="202"/>
 		<property name="Editable" value="false"/>
 	</widget>
+	<widget field="lifter calibrated" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="19" y="225"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="310" y="66"/>
+		<width>336</width>
+		<height>250</height>
+	</widget>
+	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="28" y="320"/>
+		<property name="Editable" value="false"/>
+	</widget>
 	<widget field="teleop chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="43" y="27"/>
+		<location x="191" y="25"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
 		<location x="648" y="24"/>
@@ -35,7 +30,7 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="roller state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="227" y="151"/>
+		<location x="42" y="297"/>
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="lift state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -43,13 +38,13 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="roller speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="224" y="125"/>
+		<location x="38" y="273"/>
 	</widget>
 	<widget field="lifter speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="38" y="123"/>
 	</widget>
 	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="487" y="3"/>
+		<location x="188" y="212"/>
 	</widget>
 </dashboard>
 <live-window>

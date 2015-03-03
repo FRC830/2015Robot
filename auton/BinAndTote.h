@@ -21,7 +21,6 @@ private:
 	enum State current_state;
 	static constexpr float TIME_TO_GATHER_BIN = 5.0;
 	static constexpr float TIME_TO_RAISE_BIN = 1.0;
-	static constexpr float TIME_TO_MOVE = 8.0;
 };
 
 #endif /* AUTON_BINANDTOTE_H_ */

@@ -27,16 +27,16 @@ void BinOnly::Periodic(){
 		}
 		break;
 	case kGatheringBin:
-		drive->DriveCartesian(0.0, 0.5, 0.0);
-		if (timer->Get() >= TIME_TO_GATHER_BIN || roller->ToteCaptured()){
+		drive->DriveCartesian(0.0, 0.4, 0.0);
+		if (timer->Get() >= BIN_TIME || roller->ToteCaptured()){
 			timer->Reset();
 			tote_handler->PickUpBin();
 			current_state = kMovingToAuto;
 		}
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(-1.0, 0.0, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
-		if (timer->Get() >= TIME_TO_MOVE) {
+		drive->DriveCartesian(0.0, 0.4, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
+		if (timer->Get() >= MOVE_TIME) {
 			current_state = kDone;
 		}
 		break;

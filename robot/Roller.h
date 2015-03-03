@@ -19,6 +19,7 @@ public:
 	void RollIn();
 	void RollOut();
 	void Stop();
+	void Manual(float x, float y);
 
 	bool ToteCaptured();
 
@@ -27,11 +28,14 @@ private:
 	Victor * right_side;
 	DigitalInput * line_break;
 
+	bool roller_set;
+
 	static constexpr float INTAKE_SPEED = 0.8;
-	static constexpr float EJECT_SPEED = 0.5;
+	static constexpr float EJECT_SPEED = 0.3;
+	static constexpr float MANUAL_SPEED = 0.2;
 
 	enum RollState{
-		kRollingIn, kRollingOut, kStopped
+		kRollingIn, kRollingOut, kStopped, kManual
 	};
 
 	enum RollState state;

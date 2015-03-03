@@ -19,7 +19,6 @@ public:
 private:
 	enum State {kMovingToAuto, kDone};
 	enum State current_state;
-	static constexpr float TIME_TO_MOVE = 10.0;
 };
 
 #endif /* AUTON_MOVEFORWARD_H_ */

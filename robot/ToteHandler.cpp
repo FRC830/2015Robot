@@ -12,9 +12,13 @@
 ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 	roller = roll;
 	lifter = lift;
-	current_state = kCalibrating;
+	current_state = kDefault;
 	default_position = Lifter::kTote;
+
+	timer = new Timer();
 	calibrated = false;
+	ejecting = false;
+
 }
 void ToteHandler::Update(){
 	switch (current_state){
@@ -32,36 +36,49 @@ void ToteHandler::Update(){
 		break;
 	case kPickingUpTote:
 		if (lifter->AtPosition(Lifter::kFloor)){
-			default_position = Lifter::kHoldTote;
-			ReturnToDefault();
+			timer->Start();
+			if (timer->Get() >= 0.5) {
+				default_position = Lifter::kHoldTote;
+				timer->Reset();
+				ReturnToDefault();
+			}
 		}
 		break;
-	case kEjectingToFloor:
-		if (lifter->AtPosition(Lifter::kFloor)){
-			roller->RollOut();
-		}
+	case kGatheringFromFeeder:
 		break;
-	case kEjectingToStep:
-		if (lifter->AtPosition(Lifter::kStep)) {
-			roller->RollOut();
+	case kPickingUpFromFeeder:
+		if (lifter->AtPosition(Lifter::kFeederPickup)) {
+			default_position = Lifter::kFeederGather;
 		}
 		break;
 	case kCalibrating:
 		if (lifter->AtPosition(Lifter::kFloor)) {
-			calibrated = true;
-			default_position = Lifter::kTote;
 			ReturnToDefault();
 		}
 		break;
 	case kDefault:
+		if (ejecting) {
+			roller->RollOut();
+			ejecting = false;
+		} else {
+			roller->Stop();
+		}
 		break;
-	case kFree:
+	case kOverridden:
 		//let main program control lifter and roller
 		break;
 	}
 
-	roller->Update();
-	lifter->Update();
+	if (lifter->AtPosition(Lifter::kFloor)) {
+		calibrated = true;
+	}
+
+	if (current_state == kOverridden) {
+		current_state = kDefault;
+	} else {
+		lifter->Update();
+		roller->Update();
+	}
 }
 void ToteHandler::GatherBin(){
 	if (current_state != kGatheringBin) {
@@ -79,6 +96,9 @@ void ToteHandler::PickUpBin() {
 
 void ToteHandler::GatherTote(){
 	if (current_state != kGatheringTote) {
+		if (default_position != Lifter::kBin) {
+			default_position = Lifter::kTote;
+		}
 		lifter->MoveToPosition(default_position);
 		roller->RollIn();
 		current_state = kGatheringTote;
@@ -93,43 +113,76 @@ void ToteHandler::PickUpTote() {
 	}
 }
 
+void ToteHandler::RaiseTote() {
+	if (current_state == kPickingUpTote && lifter->AtPosition(Lifter::kFloor)){
+		default_position = Lifter::kHoldTote;
+		ReturnToDefault();
+	}
+}
+
+void ToteHandler::GatherFromFeeder() {
+	if (current_state != kGatheringFromFeeder) {
+		default_position = Lifter::kFeederGather;
+		lifter->MoveToPosition(default_position);
+		roller->RollIn();
+		current_state = kGatheringFromFeeder;
+	}
+}
+
+void ToteHandler::PickUpFromFeeder() {
+	if (current_state != kPickingUpFromFeeder && roller->ToteCaptured()) {
+		roller->Stop();
+		lifter->MoveToPosition(Lifter::kFeederPickup);
+		current_state = kPickingUpFromFeeder;
+	}
+}
+
 void ToteHandler::PickUp() {
-	if (current_state == kGatheringTote) {
-		PickUpTote();
-	} else if (current_state == kGatheringBin) {
+	if (current_state == kGatheringBin) {
 		PickUpBin();
+	} else {
+		PickUpTote();
 	}
 }
 
-void ToteHandler::EjectToFloor(){
-	if (current_state != kEjectingToFloor){
-		lifter->MoveToPosition(Lifter::kFloor);
-		current_state = kEjectingToFloor;
+void ToteHandler::Eject(){
+	ejecting = true;
+}
+
+void ToteHandler::GoToStep() {
+	if (default_position != Lifter::kStep || current_state != kDefault) {
+		default_position = Lifter::kStep;
+		ReturnToDefault();
 	}
 }
 
-void ToteHandler::EjectToStep() {
-	if (current_state != kEjectingToStep){
-		lifter->MoveToPosition(Lifter::kStep);
+void ToteHandler::GoToFloor() {
+	if (default_position != Lifter::kFloor || current_state != kDefault) {
+		default_position = Lifter::kFloor;
+		ReturnToDefault();
 	}
-	current_state = kEjectingToStep;
 }
 
 void ToteHandler::Calibrate() {
 	if (current_state != kCalibrating){
+		roller->Stop();
 		lifter->MoveToPosition(Lifter::kFloor);
 	}
 	current_state = kCalibrating;
 }
 
 void ToteHandler::Override(){
-	current_state = kFree;
+	current_state = kOverridden;
 }
 void ToteHandler::ReturnToDefault(){
-	if (current_state != kDefault) {
-		lifter->MoveToPosition(default_position);
-		roller->Stop();
-		current_state = kDefault;
+	lifter->MoveToPosition(default_position);
+	roller->Stop();
+	current_state = kDefault;
+}
+
+void ToteHandler::ManualRoller(float x, float y) {
+	if (current_state == kPickingUpTote && lifter->AtPosition(Lifter::kFloor)) {
+		roller->Manual(x, y);
 	}
 }
 

@@ -20,8 +20,9 @@ void ToteOnly::Periodic(){
 	switch (current_state) {
 	case kCalibrating:
 		if (tote_handler->Calibrated()){
-			current_state = kGatheringTote;
-			tote_handler->GatherTote();
+			current_state = kMovingToAuto;
+			//current_state = kGatheringTote;
+			//tote_handler->GatherTote();
 		}
 		break;
 	case kGatheringTote:
@@ -34,10 +35,9 @@ void ToteOnly::Periodic(){
 		}
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(1.0, 0.0, 0.0); //we start out facing the tote, with the auto zone to our right, so strafe right
-		if (timer->Get() >= TIME_TO_MOVE) {
+		drive->DriveCartesian(0.0, 0.6, 0.0);
+		if (timer->Get() >= MOVE_TIME) {
 			current_state = kDone;
-			tote_handler->EjectToFloor(); //get rid of the yellow tote
 		}
 		break;
 	case kDone:

@@ -19,12 +19,18 @@ public:
 	void PickUpBin();
 	void GatherTote();
 	void PickUpTote();
+	void RaiseTote();
+	void GatherFromFeeder();
+	void PickUpFromFeeder();
 	void PickUp();
-	void EjectToFloor();
-	void EjectToStep();
+	void GoToStep();
+	void GoToFloor();
 	void Calibrate();
 	void Override();
 	void ReturnToDefault();
+
+	void ManualRoller(float x, float y);
+	void Eject();
 
 	bool Calibrated();
 
@@ -35,10 +41,12 @@ private:
 	Lifter * lifter;
 	enum Lifter::Position default_position; //depends on whether we're carrying a tote or bin
 
-	bool calibrated;
+	Timer * timer;
 
+	bool calibrated;
+	bool ejecting;
 	enum HandlerState{
-		kGatheringBin, kGatheringTote, kPickingUpTote, kEjectingToFloor, kEjectingToStep, kDefault, kCalibrating, kFree
+		kGatheringBin, kGatheringTote, kPickingUpTote, kGatheringFromFeeder, kPickingUpFromFeeder, kDefault, kCalibrating, kOverridden
 	};
 	enum HandlerState current_state;
 };

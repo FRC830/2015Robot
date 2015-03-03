@@ -205,6 +205,10 @@ private:
 	{
 		gyro->Reset();
 
+		if (!tote_handler->Calibrated()) {
+			tote_handler->Calibrate();
+		}
+
 		//gyro->Start();
 	}
 
@@ -232,18 +236,46 @@ private:
 		} else if (copilot->Button(GamepadF310::A_Button)) {
 			tote_handler->GatherTote();
 		} else if (copilot->Button(GamepadF310::X_Button)) {
-			tote_handler->EjectToFloor();
+			tote_handler->GoToFloor();
 		} else if (copilot->Button(GamepadF310::Y_Button)) {
-			tote_handler->EjectToStep();
+			tote_handler->GoToStep();
 		} else if (copilot->RightBumper()) {
 			tote_handler->PickUp();
+		} else if (copilot->LeftBumper()) {
+			tote_handler->RaiseTote();
+		} else if (copilot->DPadX() == 1.0){
+			tote_handler->Eject();
 		} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
 			tote_handler->Calibrate();
-		} else if (fabs(copilot->LeftY() >= 0.3) || fabs(copilot->LeftX() >= 0.3)) {
+		} else if (fabs(copilot->LeftY()) >= 0.3 || fabs(copilot->LeftX()) >= 0.3) {
 			//cancel command if left stick wiggled
 			tote_handler->ReturnToDefault();
 		}
 
+		//only does anything when lifter under tote
+		//tote_handler->ManualRoller(copilot->RightX(), copilot->RightY());
+
+		if (copilot->LeftTrigger() >= 0.4 && copilot->RightTrigger() >= 0.4) {
+			tote_handler->Override();
+			if (copilot->DPadY() == 1.0) {
+				lifter_motor->Set(-1.0);
+			} else if (copilot->DPadY()) {
+				lifter_motor->Set(1.0);
+			} else {
+				lifter_motor->Set(0.0);
+			}
+			if (copilot->Button(GamepadF310::A_Button)) {
+				left_roller_motor->Set(0.8);
+				right_roller_motor->Set(-0.8);
+			} else if (copilot->Button(GamepadF310::Y_Button)) {
+				left_roller_motor->Set(-0.3);
+				right_roller_motor->Set(0.3);
+			} else {
+				left_roller_motor->Set(0.0);
+				right_roller_motor->Set(0.0);
+			}
+		}
+		/*
 		float dpad_y = copilot->DPadY();
 		if (dpad_y == 1.0 && last_dpad_y != 1.0) {
 			tote_handler->IncreaseHeight();
@@ -251,13 +283,13 @@ private:
 			tote_handler->DecreaseHeight();
 		}
 		last_dpad_y = dpad_y;
-
-
+		*/
 		tote_handler->Update(); //need to call this for anything to happen
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
+		SmartDashboard::PutBoolean("lifter calibrated", tote_handler->Calibrated());
 		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 
 	}
@@ -329,9 +361,6 @@ private:
 		//SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
 		//SmartDashboard::PutNumber("gyro rate", gyro->GetRate());
 		//SmartDashboard::PutNumber("offset", gyro->Offset());
-
-		SmartDashboard::PutNumber("left roller", left_roller_motor->Get());
-		SmartDashboard::PutNumber("right roller", right_roller_motor->Get());
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());

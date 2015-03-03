@@ -26,7 +26,7 @@ void BinAndTote::Periodic() {
 		}
 		break;
 	case kGatheringBin:
-		drive->DriveCartesian(0.0, 0.5, 0.0);
+		drive->DriveCartesian(0.0, 0.2, 0.0);
 		if (timer->Get() >= TIME_TO_GATHER_BIN || roller->ToteCaptured()){
 			timer->Reset();
 			tote_handler->PickUpBin();
@@ -41,7 +41,7 @@ void BinAndTote::Periodic() {
 		}
 		break;
 	case kGatheringTote:
-		drive->DriveCartesian(0.0, 0.5, 0.0);
+		drive->DriveCartesian(0.0, 0.2, 0.0);
 		if (roller->ToteCaptured()) {
 			tote_handler->PickUpTote();
 			timer->Reset();
@@ -49,8 +49,8 @@ void BinAndTote::Periodic() {
 		}
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(-1.0, 0.0, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
-		if (timer->Get() >= TIME_TO_MOVE) {
+		drive->DriveCartesian(-0.5, 0.0, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
+		if (timer->Get() >= MOVE_TIME) {
 			current_state = kDone;
 		}
 		break;

@@ -22,6 +22,9 @@ public:
 	virtual void Periodic() = 0;
 
 protected:
+	static constexpr float MOVE_TIME = 2.0; //the time it takes to strafe into the auto zone
+
+
 	Lifter * lifter;
 	Roller * roller;
 	ToteHandler * tote_handler;
