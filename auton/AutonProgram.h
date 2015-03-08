@@ -16,7 +16,7 @@
 //abstract class to represent auton programs
 class AutonProgram {
 public:
-	AutonProgram(Lifter * lift, Roller * roll, MecanumDrive * mec_drive);
+	AutonProgram(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive);
 	virtual ~AutonProgram();
 	virtual void Init() = 0;
 	virtual void Periodic() = 0;

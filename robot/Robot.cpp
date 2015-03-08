@@ -139,11 +139,11 @@ private:
 
 		pdp = new PowerDistributionPanel();
 
-		tote_only = new ToteOnly(lifter, roller, drive);
-		bin_only = new BinOnly(lifter, roller, drive);
-		bin_and_tote = new BinAndTote(lifter, roller, drive);
-		move_forward = new MoveForward(lifter, roller, drive);
-		sit_still = new SitStill(lifter, roller, drive);
+		tote_only = new ToteOnly(lifter, roller, tote_handler, drive);
+		bin_only = new BinOnly(lifter, roller, tote_handler, drive);
+		bin_and_tote = new BinAndTote(lifter, roller, tote_handler, drive);
+		move_forward = new MoveForward(lifter, roller, tote_handler, drive);
+		sit_still = new SitStill(lifter, roller, tote_handler, drive);
 		auton_chooser = new SendableChooser();
 		//these guys have to be pointers
 
@@ -225,9 +225,9 @@ private:
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
 		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
-			drive->DriveCartesian(pilot->LeftX() / 2.0, pilot->LeftY() / 1.5, pilot->RightX() / 2.0);
+			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.5, pilot->RightX() / 2.0);
 		} else {
-			drive->DriveCartesian(pilot->LeftX() / 1.5, pilot->LeftY() / 1.0, pilot->RightX() / 1.5);
+			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.0, pilot->RightX() / 1.5);
 		}
 
 		//copilot tote handling controls

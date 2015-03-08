@@ -12,7 +12,7 @@
 
 class MoveForward: public AutonProgram {
 public:
-	MoveForward(Lifter * lift, Roller * roll, MecanumDrive * mec_drive);
+	MoveForward(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive);
 	void Init();
 	void Periodic();
 

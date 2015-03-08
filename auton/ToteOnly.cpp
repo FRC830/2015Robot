@@ -8,7 +8,7 @@
 #include "ToteOnly.h"
 #include "WPILib.h"
 
-ToteOnly::ToteOnly(Lifter * lift, Roller * roll, MecanumDrive * mec_drive) : AutonProgram(lift, roll, mec_drive) {
+ToteOnly::ToteOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive) : AutonProgram(lift, roll, tote_h, mec_drive) {
 	current_state = kCalibrating;
 }
 

@@ -16,7 +16,7 @@
 
 class BinOnly : public AutonProgram {
 public:
-	BinOnly(Lifter * lift, Roller * roll, MecanumDrive * mec_drive);
+	BinOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive);
 	void Init();
 	void Periodic();
 

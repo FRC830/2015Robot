@@ -16,7 +16,7 @@
 
 class ToteOnly : public AutonProgram {
 public:
-	ToteOnly(Lifter * lift, Roller * roll, MecanumDrive * mec_drive);
+	ToteOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive);
 	void Init();
 	void Periodic();
 

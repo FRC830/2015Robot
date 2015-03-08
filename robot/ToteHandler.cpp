@@ -37,18 +37,17 @@ void ToteHandler::Update(){
 	case kPickingUpTote:
 		if (lifter->AtPosition(Lifter::kFloor)){
 			timer->Start();
-			if (timer->Get() >= 0.5) {
-				default_position = Lifter::kHoldTote;
-				timer->Reset();
-				ReturnToDefault();
-			}
+			timer->Reset();
+			current_state = kWaitingToRaise;
+			//roller->RollIn();
 		}
 		break;
-	case kGatheringFromFeeder:
-		break;
-	case kPickingUpFromFeeder:
-		if (lifter->AtPosition(Lifter::kFeederPickup)) {
-			default_position = Lifter::kFeederGather;
+	case kWaitingToRaise:
+		if (timer->Get() >= 0.5) {
+			default_position = Lifter::kHoldTote;
+			timer->Stop();
+			timer->Reset();
+			ReturnToDefault();
 		}
 		break;
 	case kCalibrating:
@@ -120,23 +119,6 @@ void ToteHandler::RaiseTote() {
 	}
 }
 
-void ToteHandler::GatherFromFeeder() {
-	if (current_state != kGatheringFromFeeder) {
-		default_position = Lifter::kFeederGather;
-		lifter->MoveToPosition(default_position);
-		roller->RollIn();
-		current_state = kGatheringFromFeeder;
-	}
-}
-
-void ToteHandler::PickUpFromFeeder() {
-	if (current_state != kPickingUpFromFeeder && roller->ToteCaptured()) {
-		roller->Stop();
-		lifter->MoveToPosition(Lifter::kFeederPickup);
-		current_state = kPickingUpFromFeeder;
-	}
-}
-
 void ToteHandler::PickUp() {
 	if (current_state == kGatheringBin) {
 		PickUpBin();
@@ -150,16 +132,16 @@ void ToteHandler::Eject(){
 }
 
 void ToteHandler::GoToStep() {
-	if (default_position != Lifter::kStep || current_state != kDefault) {
+	if (current_state == kDefault) {
 		default_position = Lifter::kStep;
-		ReturnToDefault();
+		lifter->MoveToPosition(default_position);
 	}
 }
 
 void ToteHandler::GoToFloor() {
-	if (default_position != Lifter::kFloor || current_state != kDefault) {
+	if (current_state == kDefault) {
 		default_position = Lifter::kFloor;
-		ReturnToDefault();
+		lifter->MoveToPosition(default_position);
 	}
 }
 
@@ -193,9 +175,7 @@ bool ToteHandler::Calibrated() {
 void ToteHandler::IncreaseHeight() {
 	if (current_state == kDefault) {
 		switch (default_position) {
-		case Lifter::kHoldTote:
-			default_position = Lifter::kTote;
-			break;
+		case Lifter::kHoldTote: default_position = Lifter::kTote; break;
 		case Lifter::kTote: default_position = Lifter::kBin; break;
 		case Lifter::kBin: default_position = Lifter::kMaxHeight; break;
 		default: return;

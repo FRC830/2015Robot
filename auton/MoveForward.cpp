@@ -7,7 +7,7 @@
 
 #include "MoveForward.h"
 
-MoveForward::MoveForward(Lifter * lift, Roller * roll, MecanumDrive * mec_drive) : AutonProgram(lift, roll, mec_drive) {
+MoveForward::MoveForward(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive) : AutonProgram(lift, roll, tote_h, mec_drive) {
 	current_state = kMovingToAuto;
 }
 

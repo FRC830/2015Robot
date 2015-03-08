@@ -8,7 +8,7 @@
 #include "BinOnly.h"
 #include "WPILib.h"
 
-BinOnly::BinOnly(Lifter * lift, Roller * roll, MecanumDrive * mec_drive) : AutonProgram(lift, roll, mec_drive) {
+BinOnly::BinOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive) : AutonProgram(lift, roll, tote_h, mec_drive) {
 	current_state = kCalibrating;
 }
 

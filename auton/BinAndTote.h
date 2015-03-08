@@ -12,7 +12,7 @@
 
 class BinAndTote: public AutonProgram {
 public:
-	BinAndTote(Lifter * lift, Roller * roll, MecanumDrive * mec_drive);
+	BinAndTote(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive);
 	void Init();
 	void Periodic();
 
