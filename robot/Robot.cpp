@@ -236,7 +236,7 @@ private:
 		} else if (copilot->Button(GamepadF310::A_Button)) {
 			tote_handler->GatherTote();
 		} else if (copilot->Button(GamepadF310::X_Button)) {
-			tote_handler->GoToFloor();
+			tote_handler->GatherFromFeeder();
 		} else if (copilot->Button(GamepadF310::Y_Button)) {
 			tote_handler->GoToStep();
 		} else if (copilot->RightBumper()) {
@@ -275,7 +275,7 @@ private:
 				right_roller_motor->Set(0.0);
 			}
 		}
-		/*
+
 		float dpad_y = copilot->DPadY();
 		if (dpad_y == 1.0 && last_dpad_y != 1.0) {
 			tote_handler->IncreaseHeight();
@@ -283,7 +283,7 @@ private:
 			tote_handler->DecreaseHeight();
 		}
 		last_dpad_y = dpad_y;
-		*/
+
 		tote_handler->Update(); //need to call this for anything to happen
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());

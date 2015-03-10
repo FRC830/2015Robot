@@ -13,6 +13,7 @@ BinAndTote::BinAndTote(Lifter * lift, Roller * roll, ToteHandler * tote_h, Mecan
 
 void BinAndTote::Init() {
 	tote_handler->Calibrate();
+	current_state = kCalibrating;
 }
 
 void BinAndTote::Periodic() {

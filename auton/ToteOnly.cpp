@@ -14,6 +14,7 @@ ToteOnly::ToteOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDr
 
 void ToteOnly::Init() {
 	tote_handler->Calibrate();
+	current_state = kCalibrating;
 }
 
 void ToteOnly::Periodic(){

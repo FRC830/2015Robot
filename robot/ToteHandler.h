@@ -20,6 +20,8 @@ public:
 	void GatherTote();
 	void PickUpTote();
 	void RaiseTote();
+	void GatherFromFeeder();
+	void PickUpFromFeeder();
 	void PickUp();
 	void GoToStep();
 	void GoToFloor();
@@ -44,7 +46,7 @@ private:
 	bool calibrated;
 	bool ejecting;
 	enum HandlerState{
-		kGatheringBin, kGatheringTote, kPickingUpTote, kWaitingToRaise, kDefault, kCalibrating, kOverridden
+		kGatheringBin, kGatheringTote, kPickingUpTote, kGatheringFromFeeder, kPickingUpFromFeeder, kWaitingToRaise, kDefault, kCalibrating, kOverridden
 	};
 	enum HandlerState current_state;
 };

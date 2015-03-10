@@ -23,7 +23,7 @@ public:
 private:
 	enum State {kCalibrating, kGatheringBin, kMovingToAuto, kDone};
 	enum State current_state;
-	static constexpr float BIN_TIME = 0.5;
+	static constexpr float BIN_TIME = 1;
 
 };
 

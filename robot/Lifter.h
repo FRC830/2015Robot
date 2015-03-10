@@ -13,7 +13,7 @@
 class Lifter {
 public:
 	enum Position {
-		kFloor = 0, kBinPickup = 200, kHoldTote = 700, kStep = 1300, kFeederPickup = 2000, kTote = 2350, kBin = 3850, kFeederGather = 5000, kMaxHeight = 6500
+		kFloor = 0, kBinPickup = 500, kHoldTote = 700, kStep = 1200, kFeederPickup = 2000, kTote = 2350, kBin = 3850, kFeederGather = 5000, kMaxHeight = 6500
 	};
 
 	Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * top_limit_switch);
@@ -28,7 +28,7 @@ private:
 	static constexpr float LIFT_SPEED_UP = -1.0; //speed to go up (negative = up)
 	static constexpr float LIFT_SPEED_DOWN = 1.0; //speed to go down
 
-	static const int MARGIN_OF_ERROR = 100; //TODO: check these values (I got them by messing with the lifter and some game pieces)
+	static const int MARGIN_OF_ERROR = 100;
 
 	Victor * lifter;
 	Encoder * encoder;

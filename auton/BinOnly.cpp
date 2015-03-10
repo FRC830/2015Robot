@@ -14,6 +14,7 @@ BinOnly::BinOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDriv
 
 void BinOnly::Init() {
 	tote_handler->Calibrate();
+	current_state = kCalibrating;
 }
 
 void BinOnly::Periodic(){
@@ -25,22 +26,28 @@ void BinOnly::Periodic(){
 			timer->Reset();
 			timer->Start();
 		}
+		SmartDashboard::PutString("auton state", "calibrating");
 		break;
 	case kGatheringBin:
-		drive->DriveCartesian(0.0, 0.4, 0.0);
+		if (lifter->AtPosition(Lifter::kBinPickup)) {
+			drive->DriveCartesian(0.0, 0.5, 0.0);
+		}
 		if (timer->Get() >= BIN_TIME || roller->ToteCaptured()){
 			timer->Reset();
 			tote_handler->PickUpBin();
 			current_state = kMovingToAuto;
 		}
+		SmartDashboard::PutString("auton state", "gathering bin");
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(0.0, 0.4, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
+		drive->DriveCartesian(0.0, 0.5, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
 		if (timer->Get() >= MOVE_TIME) {
 			current_state = kDone;
 		}
+		SmartDashboard::PutString("auton state", "moving");
 		break;
 	case kDone:
+		SmartDashboard::PutString("auton state", "done");
 		break;
 	}
 
