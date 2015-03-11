@@ -24,13 +24,13 @@ void BinOnly::Periodic(){
 			current_state = kGatheringBin;
 			tote_handler->GatherBin();
 			timer->Reset();
-			timer->Start();
 		}
 		SmartDashboard::PutString("auton state", "calibrating");
 		break;
 	case kGatheringBin:
 		if (lifter->AtPosition(Lifter::kBinPickup)) {
 			drive->DriveCartesian(0.0, 0.5, 0.0);
+			timer->Start();
 		}
 		if (timer->Get() >= BIN_TIME || roller->ToteCaptured()){
 			timer->Reset();
@@ -41,7 +41,7 @@ void BinOnly::Periodic(){
 		break;
 	case kMovingToAuto:
 		drive->DriveCartesian(0.0, 0.5, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
-		if (timer->Get() >= MOVE_TIME) {
+		if (timer->Get() >= (MOVE_TIME - BIN_TIME)) {
 			current_state = kDone;
 		}
 		SmartDashboard::PutString("auton state", "moving");
