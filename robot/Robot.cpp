@@ -24,7 +24,7 @@ private:
 	static const int LIFTER_PWM = 8;
 
 	static const int ROLLER_LINEBREAK_DIO = 0;
-	static const int TOP_SWITCH_DIO = 1;
+	static const int CALIBRATION_SWITCH_DIO = 1;
 	static const int BOTTOM_SWITCH_DIO = 2;
 	static const int ENC_A_DIO = 3;
 	static const int ENC_B_DIO = 4;
@@ -43,7 +43,7 @@ private:
 	Victor * lifter_motor;
 	Lifter * lifter;
 	DigitalInput * bottom_switch;
-	DigitalInput * top_switch;
+	DigitalInput * calibration_switch;
 	Encoder * lift_encoder;
 
 	ToteHandler * tote_handler;
@@ -72,6 +72,9 @@ private:
 	SitStill * sit_still;
 
 	SendableChooser * auton_chooser;
+
+	SendableChooser * calibration_chooser;
+	bool above_cal;
 
 	SendableChooser * teleop_chooser;
 	//to store our chosen teleop program, use a function pointer
@@ -105,9 +108,9 @@ private:
 
 		lifter_motor = new Victor(LIFTER_PWM);
 		bottom_switch = new DigitalInput(BOTTOM_SWITCH_DIO);
-		top_switch = new DigitalInput(TOP_SWITCH_DIO);
+		calibration_switch = new DigitalInput(CALIBRATION_SWITCH_DIO);
 		lift_encoder = new Encoder(ENC_A_DIO, ENC_B_DIO);
-		lifter = new Lifter(lifter_motor, lift_encoder, bottom_switch, top_switch);
+		lifter = new Lifter(lifter_motor, lift_encoder, bottom_switch, calibration_switch);
 
 		tote_handler = new ToteHandler(roller, lifter);
 
@@ -154,7 +157,11 @@ private:
 		auton_chooser->AddObject("sit still", sit_still);
 		auton_program = tote_only;
 
-
+		//the lifter pointer will evaluate to true, NULL to false
+		calibration_chooser = new SendableChooser();
+		calibration_chooser->AddDefault("above line break", lifter);
+		calibration_chooser->AddObject("below line break", NULL);
+		above_cal = true;
 
 		//this is horrible sketchy yes but it works
 		teleop_chooser = new SendableChooser();
@@ -185,6 +192,7 @@ private:
 		//update auton and teleop modes from smart dashboard
 		auton_program = (AutonProgram *) auton_chooser->GetSelected();
 		current_teleop = (teleop_program) teleop_chooser->GetSelected();
+		above_cal = (bool) calibration_chooser->GetSelected();
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
@@ -206,7 +214,7 @@ private:
 		gyro->Reset();
 
 		if (!tote_handler->Calibrated()) {
-			tote_handler->Calibrate();
+			tote_handler->Calibrate(above_cal);
 		}
 
 		//gyro->Start();
@@ -246,7 +254,7 @@ private:
 		} else if (copilot->DPadX() == 1.0){
 			tote_handler->Eject();
 		} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
-			tote_handler->Calibrate();
+			tote_handler->Calibrate(above_cal);
 		} else if (fabs(copilot->LeftY()) >= 0.3 || fabs(copilot->LeftX()) >= 0.3) {
 			//cancel command if left stick wiggled
 			tote_handler->ReturnToDefault();

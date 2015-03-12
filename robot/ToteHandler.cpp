@@ -16,7 +16,6 @@ ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 	default_position = Lifter::kTote;
 
 	timer = new Timer();
-	calibrated = false;
 	ejecting = false;
 
 }
@@ -58,7 +57,7 @@ void ToteHandler::Update(){
 		}
 		break;
 	case kCalibrating:
-		if (lifter->AtPosition(Lifter::kFloor)) {
+		if (lifter->Calibrated()) {
 			ReturnToDefault();
 		}
 		break;
@@ -73,10 +72,6 @@ void ToteHandler::Update(){
 	case kOverridden:
 		//let main program control lifter and roller
 		break;
-	}
-
-	if (lifter->AtPosition(Lifter::kFloor)) {
-		calibrated = true;
 	}
 
 	if (current_state == kOverridden) {
@@ -171,10 +166,10 @@ void ToteHandler::GoToFloor() {
 	}
 }
 
-void ToteHandler::Calibrate() {
+void ToteHandler::Calibrate(bool from_above) {
 	if (current_state != kCalibrating){
 		roller->Stop();
-		lifter->MoveToPosition(Lifter::kFloor);
+		lifter->Calibrate(from_above);
 	}
 	current_state = kCalibrating;
 }
@@ -197,7 +192,7 @@ void ToteHandler::ManualRoller(float x, float y) {
 }
 
 bool ToteHandler::Calibrated() {
-	return calibrated;
+	return lifter->Calibrated();
 }
 
 void ToteHandler::IncreaseHeight() {

@@ -12,15 +12,25 @@ Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_li
 	lifter = lift_motor;
 	encoder = lift_enc;
 	bottom_switch = bottom_limit_switch;
-	top_switch = top_limit_switch;
-	target = kFloor;
+	calibration_switch = top_limit_switch;
+	target = kCalibration;
+	calibrated = false;
+	offset = 0;
+	above_cal = true;
 }
 
 void Lifter::Update() {
 	//use bottom position as reference point for encoder
 	if (AtBottom()) {
-		//ignore while switch not wired in
 		encoder->Reset();
+		calibrated = true;
+		offset = 0;
+	}
+
+	if (AtCalibrationPoint() && !calibrated) {
+		encoder->Reset();
+		calibrated = true;
+		offset = (int) kCalibration;
 	}
 
 	//move lifter to the desired position
@@ -39,21 +49,28 @@ void Lifter::MoveToPosition(enum Position target_pos){
 }
 int Lifter::DistFromPosition(enum Position target_pos){
 	int dist;
+	int encoder_val = encoder->Get() + offset;
 	if (target_pos == kFloor){
-
 		if (AtBottom()) {
 			return 0;
 		} else {
-			dist = encoder->Get(); //since encoder measures from the bottom, encoder->Get() gives our distance from the bottom position
+			dist = encoder_val; //since encoder measures from the bottom, encoder->Get() gives our distance from the bottom position
 			if (dist > MARGIN_OF_ERROR) {
 				return dist;
 			} else {
 				return MARGIN_OF_ERROR;
 			}
 		}
-	}
-	else {
-		dist = encoder->Get() - ((int) target_pos);
+	} else if (target_pos == kCalibration) {
+		if (AtCalibrationPoint()) {
+			return 0;
+		} else if (above_cal) {
+				return MARGIN_OF_ERROR;
+		} else {
+			return -MARGIN_OF_ERROR;
+		}
+	} else {
+		dist = encoder_val - ((int) target_pos);
 		if (abs(dist) < MARGIN_OF_ERROR){
 			return 0;
 		} else {
@@ -65,6 +82,20 @@ bool Lifter::AtPosition(enum Position target_pos){
 	return DistFromPosition(target_pos) == 0;
 }
 
+void Lifter::Calibrate(bool above_switch) {
+	calibrated = false;
+	above_cal = above_switch;
+	MoveToPosition(kCalibration);
+}
+
+bool Lifter::Calibrated() {
+	return calibrated;
+}
+
 bool Lifter::AtBottom() {
 	return !bottom_switch->Get(); //switch returns false when pressed
+}
+
+bool Lifter::AtCalibrationPoint() {
+	return calibration_switch->Get();
 }

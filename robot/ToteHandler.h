@@ -25,7 +25,7 @@ public:
 	void PickUp();
 	void GoToStep();
 	void GoToFloor();
-	void Calibrate();
+	void Calibrate(bool from_above);
 	void Override();
 	void ReturnToDefault();
 
@@ -43,7 +43,6 @@ private:
 
 	Timer * timer;
 
-	bool calibrated;
 	bool ejecting;
 	enum HandlerState{
 		kGatheringBin, kGatheringTote, kPickingUpTote, kGatheringFromFeeder, kPickingUpFromFeeder, kWaitingToRaise, kDefault, kCalibrating, kOverridden
