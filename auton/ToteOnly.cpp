@@ -21,27 +21,35 @@ void ToteOnly::Periodic(){
 	switch (current_state) {
 	case kCalibrating:
 		if (tote_handler->Calibrated()){
-			current_state = kMovingToAuto;
-			//current_state = kGatheringTote;
-			//tote_handler->GatherTote();
+			current_state = kGatheringTote;
+			roller->RollIn();
+			timer->Reset();
+			timer->Start();
 		}
 		break;
 	case kGatheringTote:
-		drive->DriveCartesian(0.0, 0.5, 0.0);
-		if (roller->ToteCaptured()){
+		if (roller->ToteCaptured() && timer->Get() >= TIME_TO_GATHER_TOTE){
 			tote_handler->PickUpTote();
 			timer->Reset();
 			timer->Start();
+			current_state = kTurning;
+		}
+		break;
+	case kTurning:
+		//turn 90 degrees to face forwards
+		drive->DriveCartesian(0.0, 0.0, 0.3); //eventually this should be based on the gyro or something
+		if (timer->Get() >= TIME_TO_ROTATE) {
 			current_state = kMovingToAuto;
 		}
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(0.0, 0.6, 0.0);
+		drive->DriveCartesian(0.0, 0.5, 0.0);
 		if (timer->Get() >= MOVE_TIME) {
 			current_state = kDone;
 		}
 		break;
 	case kDone:
+		drive->Brake();
 		break;
 	}
 

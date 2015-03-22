@@ -14,6 +14,8 @@ Roller::Roller(Victor * left_motor, Victor * right_motor, DigitalInput * linebre
 	state = kStopped;
 
 	roller_set = false;
+	left_turn = 0.0;
+	right_turn = 0.0;
 
 }
 void Roller::Update(){
@@ -23,8 +25,8 @@ void Roller::Update(){
 		right_side->Set(0.0);
 		break;
 	case kRollingIn:
-		left_side->Set(INTAKE_SPEED);
-		right_side->Set(-INTAKE_SPEED);
+		left_side->Set(INTAKE_SPEED + left_turn);
+		right_side->Set(-INTAKE_SPEED + right_turn);
 		break;
 	case kRollingOut:
 		left_side->Set(-EJECT_SPEED);
@@ -36,6 +38,9 @@ void Roller::Update(){
 			right_side->Set(0.0);
 		}
 		roller_set = false;
+
+		left_turn = 0.0;
+		right_turn = 0.0;
 	}
 }
 bool Roller::ToteCaptured(){
@@ -50,6 +55,12 @@ void Roller::RollOut(){
 void Roller::Stop(){
 	state = kStopped;
 }
+
+void Roller::Rotate(float r) {
+	left_turn = r;
+	right_turn = r;
+}
+
 void Roller::Manual(float x, float y) {
 	state = kManual;
 	if (y >= 0.4) {

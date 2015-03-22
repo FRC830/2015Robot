@@ -19,6 +19,7 @@ public:
 	void RollIn();
 	void RollOut();
 	void Stop();
+	void Rotate(float r);
 	void Manual(float x, float y);
 
 	bool ToteCaptured();
@@ -29,6 +30,8 @@ private:
 	DigitalInput * line_break;
 
 	bool roller_set;
+	float left_turn;
+	float right_turn;
 
 	static constexpr float INTAKE_SPEED = 0.8;
 	static constexpr float EJECT_SPEED = 0.3;

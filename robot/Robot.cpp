@@ -276,6 +276,7 @@ private:
 			tote_handler->ReturnToDefault();
 		}
 
+		roller->Rotate(copilot->RightX());
 
 		float dpad_y = copilot->DPadY();
 		if (dpad_y == 1.0 && last_dpad_y != 1.0) {
