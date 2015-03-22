@@ -25,7 +25,7 @@ public:
 	void PickUp();
 	void GoToStep();
 	void GoToFloor();
-	void Calibrate(bool from_above);
+	void Calibrate();
 	void Override();
 	void ReturnToDefault();
 

@@ -73,9 +73,6 @@ private:
 
 	SendableChooser * auton_chooser;
 
-	SendableChooser * calibration_chooser;
-	bool above_cal;
-
 	SendableChooser * teleop_chooser;
 	//to store our chosen teleop program, use a function pointer
 	//this is a pointer to a function that takes nothing and returns nothing
@@ -148,32 +145,24 @@ private:
 		move_forward = new MoveForward(lifter, roller, tote_handler, drive);
 		sit_still = new SitStill(lifter, roller, tote_handler, drive);
 		auton_chooser = new SendableChooser();
+
 		//these guys have to be pointers
-
-		auton_chooser->AddDefault("tote only", tote_only);
+		//auton_chooser->AddDefault("tote only", tote_only);
 		auton_chooser->AddObject("bin only", bin_only);
-		auton_chooser->AddObject("bin and tote", bin_and_tote);
+		//auton_chooser->AddObject("bin and tote", bin_and_tote);
 		auton_chooser->AddObject("move forward", move_forward);
-		auton_chooser->AddObject("sit still", sit_still);
-		auton_program = tote_only;
-
-		//the lifter pointer will evaluate to true, NULL to false
-		calibration_chooser = new SendableChooser();
-		calibration_chooser->AddDefault("above line break", lifter);
-		calibration_chooser->AddObject("below line break", NULL);
-		above_cal = true;
+		auton_chooser->AddDefault("sit still", sit_still);
+		auton_program = sit_still;
 
 		//this is horrible sketchy yes but it works
 		teleop_chooser = new SendableChooser();
-		teleop_chooser->AddDefault("test", (void *) &Robot::TeleopTestPeriodic);
-		teleop_chooser->AddObject("official", (void *) &Robot::TeleopControlPeriodic);
-
-
+		teleop_chooser->AddDefault("official", (void *) &Robot::TeleopControlPeriodic);
+		teleop_chooser->AddObject("test", (void *) &Robot::TeleopTestPeriodic);
 
 		SmartDashboard::PutData("auton chooser", auton_chooser);
 		SmartDashboard::PutData("teleop chooser", teleop_chooser);
 		SmartDashboard::PutNumber("roller speed", 1.0); //set up smart dashboard variables we want to read from
-		SmartDashboard::PutNumber("lifter speed", 0.8);
+		SmartDashboard::PutNumber("lifter speed", 1.0);
 
 
 		lw = LiveWindow::GetInstance();
@@ -190,23 +179,46 @@ private:
 	void DisabledPeriodic() {
 		drive->Brake();
 		//update auton and teleop modes from smart dashboard
-		auton_program = (AutonProgram *) auton_chooser->GetSelected();
-		current_teleop = (teleop_program) teleop_chooser->GetSelected();
-		above_cal = (bool) calibration_chooser->GetSelected();
+
+		AutonProgram * auton = (AutonProgram *) auton_chooser->GetSelected();
+		if (auton) {
+			auton_program = auton;
+		} else {
+			auton_program = sit_still;
+		}
+		teleop_program teleop = (teleop_program) teleop_chooser->GetSelected();
+		if (teleop) {
+			current_teleop = teleop;
+		} else {
+			current_teleop = (teleop_program) &Robot::TeleopControlPeriodic;
+		}
 
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
+		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
 	}
 
 	void AutonomousInit()
 	{
-		auton_program->Init();
+		if (auton_program) {
+			auton_program->Init();
+		} else {
+			sit_still->Init();
+		}
+		//move_forward->Init();
 	}
 
 	void AutonomousPeriodic()
 	{
-		auton_program->Periodic();
+
+		if (auton_program) {
+			auton_program->Periodic();
+		} else {
+			sit_still->Periodic();
+		}
+
+		//move_forward->Periodic();
 	}
 
 	void TeleopInit()
@@ -214,14 +226,16 @@ private:
 		gyro->Reset();
 
 		if (!tote_handler->Calibrated()) {
-			tote_handler->Calibrate(above_cal);
+			tote_handler->Calibrate();
 		}
 
 		//gyro->Start();
 	}
 
 	void TeleopPeriodic() {
-		current_teleop();
+		if (current_teleop) {
+			current_teleop();
+		}
 		//TeleopTestPeriodic();
 	}
 
@@ -232,7 +246,7 @@ private:
 		float right_y = pilot->RightY();
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
-		} else if (pilot->LeftBumper() || pilot->RightBumper()) {
+		} else if (pilot->LeftTrigger() >= 0.3|| pilot->RightTrigger() >= 0.3) {
 			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.5, pilot->RightX() / 2.0);
 		} else {
 			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.0, pilot->RightX() / 1.5);
@@ -253,12 +267,23 @@ private:
 			tote_handler->RaiseTote();
 		} else if (copilot->DPadX() == 1.0){
 			tote_handler->Eject();
+		} else if (copilot->Button(GamepadF310::START_BUTTON)) {
+			tote_handler->Calibrate();
 		} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
-			tote_handler->Calibrate(above_cal);
+			tote_handler->GoToFloor();
 		} else if (fabs(copilot->LeftY()) >= 0.3 || fabs(copilot->LeftX()) >= 0.3) {
 			//cancel command if left stick wiggled
 			tote_handler->ReturnToDefault();
 		}
+
+
+		float dpad_y = copilot->DPadY();
+		if (dpad_y == 1.0 && last_dpad_y != 1.0) {
+			tote_handler->IncreaseHeight();
+		} else if (dpad_y == -1.0 && last_dpad_y != -1.0) {
+			tote_handler->DecreaseHeight();
+		}
+		last_dpad_y = dpad_y;
 
 		//only does anything when lifter under tote
 		//tote_handler->ManualRoller(copilot->RightX(), copilot->RightY());
@@ -278,19 +303,14 @@ private:
 			} else if (copilot->Button(GamepadF310::Y_Button)) {
 				left_roller_motor->Set(-0.3);
 				right_roller_motor->Set(0.3);
+			} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
+				left_roller_motor->Set(-1.0);
+				right_roller_motor->Set(-1.0);
 			} else {
 				left_roller_motor->Set(0.0);
 				right_roller_motor->Set(0.0);
 			}
 		}
-
-		float dpad_y = copilot->DPadY();
-		if (dpad_y == 1.0 && last_dpad_y != 1.0) {
-			tote_handler->IncreaseHeight();
-		} else if (dpad_y == -1.0 && last_dpad_y != -1.0) {
-			tote_handler->DecreaseHeight();
-		}
-		last_dpad_y = dpad_y;
 
 		tote_handler->Update(); //need to call this for anything to happen
 
@@ -298,12 +318,17 @@ private:
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutBoolean("lifter calibrated", tote_handler->Calibrated());
+		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
 		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
-
 	}
 
 	void TeleopTestPeriodic()
 	{
+		//in case we accidentally start a match in test
+		if (copilot->Button(GamepadF310::START_BUTTON)) {
+			current_teleop = (teleop_program) &Robot::TeleopControlPeriodic;
+		}
+
 		float right_y = pilot->RightY();
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
@@ -373,6 +398,7 @@ private:
 		SmartDashboard::PutNumber("encoder value", lift_encoder->Get());
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
+		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
 		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 
 		//lw->Run()

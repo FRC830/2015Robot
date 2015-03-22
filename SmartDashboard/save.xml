@@ -1,5 +1,15 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="cal line broken" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="22" y="248"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="above cal switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="355" y="34"/>
+	</widget>
+	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="352" y="316"/>
+	</widget>
 	<widget field="auton state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="21"/>
 	</widget>
@@ -14,13 +24,8 @@
 		<location x="19" y="225"/>
 		<property name="Editable" value="false"/>
 	</widget>
-	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
-		<location x="310" y="66"/>
-		<width>336</width>
-		<height>250</height>
-	</widget>
 	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="28" y="320"/>
+		<location x="29" y="354"/>
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="teleop chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
@@ -36,7 +41,7 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="roller state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="42" y="297"/>
+		<location x="42" y="330"/>
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="lift state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -44,7 +49,7 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="roller speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="38" y="273"/>
+		<location x="43" y="304"/>
 	</widget>
 	<widget field="lifter speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="38" y="123"/>

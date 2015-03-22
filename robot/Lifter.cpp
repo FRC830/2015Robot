@@ -6,6 +6,7 @@
  */
 
 #include "Lifter.h"
+#include "WPILib.h"
 #include <cmath>
 
 Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * top_limit_switch) {
@@ -17,6 +18,7 @@ Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_li
 	calibrated = false;
 	offset = 0;
 	above_cal = true;
+	SmartDashboard::PutBoolean("above cal switch", true);
 }
 
 void Lifter::Update() {
@@ -27,6 +29,7 @@ void Lifter::Update() {
 		offset = 0;
 	}
 
+	//calibrate using linebreak if necessary
 	if (AtCalibrationPoint() && !calibrated) {
 		encoder->Reset();
 		calibrated = true;
@@ -61,7 +64,7 @@ int Lifter::DistFromPosition(enum Position target_pos){
 				return MARGIN_OF_ERROR;
 			}
 		}
-	} else if (target_pos == kCalibration) {
+	} else if (target_pos == kCalibration && !calibrated) {
 		if (AtCalibrationPoint()) {
 			return 0;
 		} else if (above_cal) {
@@ -82,9 +85,9 @@ bool Lifter::AtPosition(enum Position target_pos){
 	return DistFromPosition(target_pos) == 0;
 }
 
-void Lifter::Calibrate(bool above_switch) {
+void Lifter::Calibrate() {
 	calibrated = false;
-	above_cal = above_switch;
+	above_cal = SmartDashboard::GetBoolean("above cal switch");
 	MoveToPosition(kCalibration);
 }
 
