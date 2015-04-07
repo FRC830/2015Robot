@@ -88,6 +88,9 @@ void ToteHandler::Update(){
 		lifter->Update();
 		roller->Update();
 	}
+
+	SmartDashboard::PutBoolean("intaking bin", current_state == kGatheringBin);
+
 }
 void ToteHandler::GatherBin(){
 	if (current_state != kGatheringBin) {
@@ -115,7 +118,7 @@ void ToteHandler::GatherTote(){
 }
 
 void ToteHandler::PickUpTote() {
-	if (current_state != kPickingUpTote && roller->ToteCaptured()) {
+	if (current_state != kPickingUpTote /*&& roller->ToteCaptured()*/) {
 		roller->Stop();
 		lifter->MoveToPosition(Lifter::kFloor);
 		current_state = kPickingUpTote;

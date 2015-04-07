@@ -1,5 +1,9 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="intaking bin" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="37" y="380"/>
+		<property name="Editable" value="false"/>
+	</widget>
 	<widget field="cal line broken" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="22" y="248"/>
 		<property name="Editable" value="false"/>

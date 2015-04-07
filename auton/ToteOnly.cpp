@@ -18,6 +18,7 @@ void ToteOnly::Init() {
 }
 
 void ToteOnly::Periodic(){
+	//this assumes a starting position where we start out with the tote already in our rollers
 	switch (current_state) {
 	case kCalibrating:
 		if (tote_handler->Calibrated()){
