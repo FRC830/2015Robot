@@ -147,7 +147,7 @@ private:
 		auton_chooser = new SendableChooser();
 
 		//these guys have to be pointers
-		//auton_chooser->AddDefault("tote only", tote_only);
+		auton_chooser->AddDefault("tote only", tote_only);
 		auton_chooser->AddObject("bin only", bin_only);
 		//auton_chooser->AddObject("bin and tote", bin_and_tote);
 		auton_chooser->AddObject("move forward", move_forward);

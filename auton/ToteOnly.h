@@ -24,7 +24,7 @@ public:
 	enum State current_state;
 
 	static constexpr float TIME_TO_GATHER_TOTE = 0.5;
-	static constexpr float TIME_TO_ROTATE = 0.5;
+	static constexpr float TIME_TO_ROTATE = 2.0;
 };
 
 #endif /* AUTON_TOTEONLY_H_ */

@@ -1,5 +1,8 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="current state" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="42"/>
+	</widget>
 	<widget field="intaking bin" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="37" y="380"/>
 		<property name="Editable" value="false"/>

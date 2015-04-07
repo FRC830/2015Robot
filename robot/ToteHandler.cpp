@@ -154,7 +154,8 @@ void ToteHandler::PickUp() {
 		PickUpBin();
 	} else if (current_state == kGatheringFromFeeder) {
 		PickUpFromFeeder();
-	} else if (current_state == kGatheringTote || current_state == kDefault){
+	} else if (current_state == kGatheringTote || (current_state == kDefault && default_position != Lifter::kBin)){
+		//if default position is kBin, we're probably picking up a bin
 		PickUpTote();
 	}
 }

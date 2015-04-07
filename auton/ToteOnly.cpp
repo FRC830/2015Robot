@@ -14,37 +14,25 @@ ToteOnly::ToteOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDr
 
 void ToteOnly::Init() {
 	tote_handler->Calibrate();
-	current_state = kCalibrating;
+	current_state = kTurning;
+	timer->Reset();
+	timer->Start();
 }
 
 void ToteOnly::Periodic(){
 	//this assumes a starting position where we start out with the tote already in our rollers
 	switch (current_state) {
-	case kCalibrating:
-		if (tote_handler->Calibrated()){
-			current_state = kGatheringTote;
-			roller->RollIn();
-			timer->Reset();
-			timer->Start();
-		}
-		break;
-	case kGatheringTote:
-		if (roller->ToteCaptured() && timer->Get() >= TIME_TO_GATHER_TOTE){
-			tote_handler->PickUpTote();
-			timer->Reset();
-			timer->Start();
-			current_state = kTurning;
-		}
-		break;
+	//turn clockwise, while rolling in the tote to hold it
 	case kTurning:
 		//turn 90 degrees to face forwards
-		drive->DriveCartesian(0.0, 0.0, 0.3); //eventually this should be based on the gyro or something
+		drive->DriveCartesian(0.0, 0.0, 0.5); //eventually this should be based on the gyro or something
 		if (timer->Get() >= TIME_TO_ROTATE) {
 			current_state = kMovingToAuto;
+			timer->Reset();
 		}
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(0.0, 0.5, 0.0);
+		drive->DriveCartesian(0.0, 0.7, 0.0);
 		if (timer->Get() >= MOVE_TIME) {
 			current_state = kDone;
 		}
@@ -57,6 +45,6 @@ void ToteOnly::Periodic(){
 	tote_handler->Update();
 
 
-
+	SmartDashboard::PutNumber("current state", (int) current_state);
 	SmartDashboard::PutString("auton mode", "tote");
 }
