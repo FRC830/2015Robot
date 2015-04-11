@@ -133,17 +133,17 @@ private:
 		gyro = new ADXRS450Gyro();
 		accel = new BuiltInAccelerometer();
 
-		led = new DigitalLED(LED_RED_DIO, LED_GREEN_DIO, LED_BLUE_DIO);
+		//led = new DigitalLED(LED_RED_DIO, LED_GREEN_DIO, LED_BLUE_DIO);
 
 		SmartDashboard::init();
 
 		pdp = new PowerDistributionPanel();
 
-		tote_only = new ToteOnly(lifter, roller, tote_handler, drive);
-		bin_only = new BinOnly(lifter, roller, tote_handler, drive);
-		bin_and_tote = new BinAndTote(lifter, roller, tote_handler, drive);
-		move_forward = new MoveForward(lifter, roller, tote_handler, drive);
-		sit_still = new SitStill(lifter, roller, tote_handler, drive);
+		//tote_only = new ToteOnly(lifter, roller, tote_handler, drive);
+		//bin_only = new BinOnly(lifter, roller, tote_handler, drive);
+		//bin_and_tote = new BinAndTote(lifter, roller, tote_handler, drive);
+		//move_forward = new MoveForward(lifter, roller, tote_handler, drive);
+		//sit_still = new SitStill(lifter, roller, tote_handler, drive);
 		auton_chooser = new SendableChooser();
 
 		//these guys have to be pointers
@@ -375,14 +375,14 @@ private:
 		}
 
 		if (roller->ToteCaptured()){
-			led->Set(DigitalLED::kGreen);
+			//led->Set(DigitalLED::kGreen);
 		}else{
 			enum DriverStation::Alliance alliance = ds->GetAlliance();
 			if (alliance == DriverStation::kBlue){
-				led->Set(DigitalLED::kBlue);
+				//led->Set(DigitalLED::kBlue);
 			}
 			else if (alliance == DriverStation::kRed){
-				led->Set(DigitalLED::kRed);
+				//led->Set(DigitalLED::kRed);
 			}
 		}
 
