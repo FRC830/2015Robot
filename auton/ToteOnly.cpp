@@ -9,7 +9,7 @@
 #include "WPILib.h"
 
 ToteOnly::ToteOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive) : AutonProgram(lift, roll, tote_h, mec_drive) {
-	current_state = kCalibrating;
+	current_state = kTurning;
 }
 
 void ToteOnly::Init() {
@@ -25,7 +25,7 @@ void ToteOnly::Periodic(){
 	//turn clockwise, while rolling in the tote to hold it
 	case kTurning:
 		//turn 90 degrees to face forwards
-		drive->DriveCartesian(0.0, 0.0, 0.5); //eventually this should be based on the gyro or something
+		drive->DriveCartesian(0.0, 0.0, 0.6); //eventually this should be based on the gyro or something
 		if (timer->Get() >= TIME_TO_ROTATE) {
 			current_state = kMovingToAuto;
 			timer->Reset();
@@ -33,7 +33,7 @@ void ToteOnly::Periodic(){
 		break;
 	case kMovingToAuto:
 		drive->DriveCartesian(0.0, 0.7, 0.0);
-		if (timer->Get() >= MOVE_TIME) {
+		if (timer->Get() >= 1.7) {
 			current_state = kDone;
 		}
 		break;
@@ -44,7 +44,5 @@ void ToteOnly::Periodic(){
 
 	tote_handler->Update();
 
-
-	SmartDashboard::PutNumber("current state", (int) current_state);
 	SmartDashboard::PutString("auton mode", "tote");
 }

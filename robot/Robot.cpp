@@ -246,8 +246,9 @@ private:
 		float right_y = pilot->RightY();
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
-		} else if (pilot->LeftTrigger() >= 0.3|| pilot->RightTrigger() >= 0.3) {
-			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.5, pilot->RightX() / 2.0);
+		} else if (!(pilot->LeftTrigger() >= 0.3|| pilot->RightTrigger() >= 0.3)) {
+			//go slow unless triggers pressed
+			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.3, pilot->RightX() / 1.9);
 		} else {
 			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.0, pilot->RightX() / 1.5);
 		}
@@ -289,7 +290,7 @@ private:
 		//only does anything when lifter under tote
 		//tote_handler->ManualRoller(copilot->RightX(), copilot->RightY());
 
-		if (copilot->LeftTrigger() >= 0.4 && copilot->RightTrigger() >= 0.4) {
+		if (copilot->LeftTrigger() >= 0.4 || copilot->RightTrigger() >= 0.4) {
 			tote_handler->Override();
 			if (copilot->DPadY() == 1.0) {
 				lifter_motor->Set(-1.0);
@@ -301,12 +302,15 @@ private:
 			if (copilot->Button(GamepadF310::A_Button)) {
 				left_roller_motor->Set(0.8);
 				right_roller_motor->Set(-0.8);
-			} else if (copilot->Button(GamepadF310::Y_Button)) {
+			} else if (copilot->Button(GamepadF310::Y_Button) || copilot->DPadX() == 1.0) {
 				left_roller_motor->Set(-0.3);
 				right_roller_motor->Set(0.3);
 			} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
 				left_roller_motor->Set(-1.0);
 				right_roller_motor->Set(-1.0);
+			} else if (copilot->Button(GamepadF310::START_BUTTON)) {
+				left_roller_motor->Set(1.0);
+				right_roller_motor->Set(1.0);
 			} else {
 				left_roller_motor->Set(0.0);
 				right_roller_motor->Set(0.0);
@@ -320,7 +324,7 @@ private:
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutBoolean("lifter calibrated", tote_handler->Calibrated());
 		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
-		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
+		//SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 	}
 
 	void TeleopTestPeriodic()
@@ -400,7 +404,7 @@ private:
 		SmartDashboard::PutBoolean("tote captured", roller->ToteCaptured());
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
-		SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
+		//SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 
 		//lw->Run()
 	}

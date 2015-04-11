@@ -20,11 +20,11 @@ public:
 	void Init();
 	void Periodic();
 
-	enum State {kCalibrating, kGatheringTote, kLiftingTote, kTurning, kMovingToAuto, kDone};
+	enum State {kTurning, kMovingToAuto, kDone};
 	enum State current_state;
 
 	static constexpr float TIME_TO_GATHER_TOTE = 0.5;
-	static constexpr float TIME_TO_ROTATE = 2.0;
+	static constexpr float TIME_TO_ROTATE = 1.2;
 };
 
 #endif /* AUTON_TOTEONLY_H_ */

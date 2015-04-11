@@ -18,7 +18,7 @@ Lifter::Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_li
 	calibrated = false;
 	offset = 0;
 	above_cal = true;
-	SmartDashboard::PutBoolean("above cal switch", true);
+	//SmartDashboard::PutBoolean("above cal switch", true);
 }
 
 void Lifter::Update() {
@@ -87,7 +87,8 @@ bool Lifter::AtPosition(enum Position target_pos){
 
 void Lifter::Calibrate() {
 	calibrated = false;
-	above_cal = SmartDashboard::GetBoolean("above cal switch");
+	//above_cal = SmartDashboard::GetBoolean("above cal switch");
+	above_cal = true; //ignore the smart dashboard switch for now
 	MoveToPosition(kCalibration);
 }
 
