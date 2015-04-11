@@ -25,8 +25,8 @@ void Roller::Update(){
 		right_side->Set(0.0);
 		break;
 	case kRollingIn:
-		left_side->Set(INTAKE_SPEED + left_turn);
-		right_side->Set(-INTAKE_SPEED + right_turn);
+		left_side->Set(INTAKE_SPEED * (1 + left_turn));
+		right_side->Set(-INTAKE_SPEED * (1 + right_turn));
 		break;
 	case kRollingOut:
 		left_side->Set(-EJECT_SPEED);
@@ -57,8 +57,13 @@ void Roller::Stop(){
 }
 
 void Roller::Rotate(float r) {
-	left_turn = r;
-	right_turn = r;
+	if (r >= 0) {
+		left_turn = 0;
+		right_turn = -2.0 * r;
+	} else if (r < 0){
+		left_turn = 2.0 * r;
+		right_turn = 0;
+	}
 }
 
 void Roller::Manual(float x, float y) {

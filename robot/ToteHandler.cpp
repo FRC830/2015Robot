@@ -88,6 +88,9 @@ void ToteHandler::Update(){
 		lifter->Update();
 		roller->Update();
 	}
+
+	SmartDashboard::PutBoolean("intaking bin", current_state == kGatheringBin);
+
 }
 void ToteHandler::GatherBin(){
 	if (current_state != kGatheringBin) {
@@ -115,7 +118,7 @@ void ToteHandler::GatherTote(){
 }
 
 void ToteHandler::PickUpTote() {
-	if (current_state != kPickingUpTote && roller->ToteCaptured()) {
+	if (current_state != kPickingUpTote /*&& roller->ToteCaptured()*/) {
 		roller->Stop();
 		lifter->MoveToPosition(Lifter::kFloor);
 		current_state = kPickingUpTote;
@@ -151,7 +154,8 @@ void ToteHandler::PickUp() {
 		PickUpBin();
 	} else if (current_state == kGatheringFromFeeder) {
 		PickUpFromFeeder();
-	} else if (current_state == kGatheringTote || current_state == kDefault){
+	} else if (current_state == kGatheringTote || (current_state == kDefault && default_position != Lifter::kBin)){
+		//if default position is kBin, we're probably picking up a bin
 		PickUpTote();
 	}
 }
@@ -207,9 +211,11 @@ void ToteHandler::IncreaseHeight() {
 	if (current_state == kDefault) {
 		switch (default_position) {
 		case Lifter::kFloor: default_position = Lifter::kStep; break;
-		case Lifter::kStep: default_position = Lifter::kHoldTote; break;
-		case Lifter::kHoldTote: default_position = Lifter::kTote; break;
-		case Lifter::kTote: default_position = Lifter::kBin; break;
+		case Lifter::kHoldTote: default_position = Lifter::kStep; break;
+		case Lifter::kStep:
+		case Lifter::kTote: default_position = Lifter::kBelowStepBin; break; //it's not possible to reach with this control; this is because it's very close to kStepBinPickup and the copilot can't tell which position he's at
+		case Lifter::kBelowStepBin: default_position = Lifter::kStepBinPickup; break;
+		case Lifter::kStepBinPickup: default_position = Lifter::kBin; break;
 		case Lifter::kBin: default_position = Lifter::kMaxHeight; break;
 		default: return;
 		}
@@ -221,10 +227,12 @@ void ToteHandler::DecreaseHeight() {
 	if (current_state == kDefault) {
 	switch (default_position) {
 		case Lifter::kMaxHeight: default_position = Lifter::kBin; break;
-		case Lifter::kBin: default_position = Lifter::kTote; break;
-		case Lifter::kTote: default_position = Lifter::kHoldTote; break;
-		case Lifter::kHoldTote: default_position = Lifter::kStep; break;
-		case Lifter::kStep: default_position = Lifter::kFloor; break;
+		case Lifter::kBin: default_position = Lifter::kStepBinPickup; break;
+		case Lifter::kStepBinPickup: default_position = Lifter::kBelowStepBin; break;
+		case Lifter::kTote:
+		case Lifter::kBelowStepBin: default_position = Lifter::kStep; break;
+		case Lifter::kStep: default_position = Lifter::kHoldTote; break;
+		case Lifter::kHoldTote: default_position = Lifter::kFloor; break;
 		default: return;
 		}
 	}

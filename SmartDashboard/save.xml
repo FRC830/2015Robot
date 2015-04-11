@@ -1,20 +1,29 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="271" y="203"/>
+		<property name="Text" value="Auton Mode"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="252" y="27"/>
+		<width>87</width>
+		<property name="Text" value="Teleop Mode"/>
+	</static-widget>
+	<widget field="intaking bin" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="45" y="379"/>
+		<property name="Editable" value="false"/>
+	</widget>
 	<widget field="cal line broken" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="22" y="248"/>
 		<property name="Editable" value="false"/>
 	</widget>
-	<widget field="above cal switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="355" y="34"/>
-	</widget>
-	<widget field="Lifter Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="352" y="316"/>
-	</widget>
 	<widget field="auton state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="21"/>
+		<location x="1" y="21"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="auton mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="0"/>
+		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="arm at bottom" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="22" y="202"/>
@@ -25,11 +34,11 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="tote captured" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="29" y="354"/>
+		<location x="33" y="354"/>
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="teleop chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="191" y="25"/>
+		<location x="255" y="30"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
 		<location x="648" y="24"/>
@@ -41,7 +50,7 @@
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="roller state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="42" y="330"/>
+		<location x="47" y="329"/>
 		<property name="Editable" value="false"/>
 	</widget>
 	<widget field="lift state" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -52,10 +61,10 @@
 		<location x="43" y="304"/>
 	</widget>
 	<widget field="lifter speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="38" y="123"/>
+		<location x="35" y="123"/>
 	</widget>
 	<widget field="auton chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="188" y="212"/>
+		<location x="241" y="213"/>
 	</widget>
 </dashboard>
 <live-window>

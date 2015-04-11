@@ -13,7 +13,7 @@
 class Lifter {
 public:
 	enum Position {
-		kFloor = 0, kBinPickup = 500, kCalibration = 1100, kHoldTote = 700, kStep = 1200, kRollersClear = 1500, kFeederPickup = 1400, kTote = 2350, kBin = 4400, kFeederGather = 4500, kMaxHeight = 6500
+		kFloor = 0, kBinPickup = 500, kCalibration = 1100, kHoldTote = 700, kStep = 1200, kRollersClear = 1500, kFeederPickup = 1400, kTote = 2350, kBelowStepBin = 2500, kStepBinPickup = 2850, kBin = 4400, kFeederGather = 4500, kMaxHeight = 6000
 	};
 
 	Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * cal_switch);
