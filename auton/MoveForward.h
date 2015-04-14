@@ -1,6 +1,10 @@
 /*
  * MoveForward.h
  *
+ *	Starting position: anywhere facing towards auto zone
+ *	Action: robot drives forward into auto zone
+ *	This auton has been tested at competitions and works consistenly
+ *
  *  Created on: Feb 23, 2015
  *      Author: ratpack
  */

@@ -19,7 +19,6 @@ public:
 	void PickUpBin();
 	void GatherTote();
 	void PickUpTote();
-	void RaiseTote();
 	void GatherFromFeeder();
 	void PickUpFromFeeder();
 	void PickUp();
@@ -32,7 +31,7 @@ public:
 	void ManualRoller(float x, float y);
 	void Eject();
 
-	bool Calibrated();
+	bool IsCalibrated();
 
 	void IncreaseHeight();
 	void DecreaseHeight();

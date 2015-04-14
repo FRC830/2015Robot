@@ -1,6 +1,10 @@
 /*
  * ToteOnly.h
  *
+ *	Starting position: holding any yellow tote between the rollers
+ *	Action: robot turns 90 degrees while holding tote, then drives forward into auto zone (without picking up the tote)
+ *  This auton has been tested at competitions and works consistently
+ *
  *  Created on: Feb 11, 2015
  *      Author: ratpack
  */
@@ -22,9 +26,6 @@ public:
 
 	enum State {kTurning, kMovingToAuto, kDone};
 	enum State current_state;
-
-	static constexpr float TIME_TO_GATHER_TOTE = 0.5;
-	static constexpr float TIME_TO_ROTATE = 1.2;
 };
 
 #endif /* AUTON_TOTEONLY_H_ */

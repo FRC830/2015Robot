@@ -1,6 +1,10 @@
 /*
  * BinOnly.h
  *
+ *	Starting position: directly behind any starting recycling container
+ *	Action: robot drives forward while picking up container, ends up in auto zone or just before it
+ *	This has been tested at competition and works consistently
+ *
  *  Created on: Feb 11, 2015
  *      Author: ratpack
  */
@@ -23,7 +27,6 @@ public:
 private:
 	enum State {kCalibrating, kGatheringBin, kMovingToAuto, kDone};
 	enum State current_state;
-	static constexpr float BIN_TIME = 1.5;
 
 };
 

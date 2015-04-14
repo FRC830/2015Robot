@@ -66,6 +66,9 @@ void Roller::Rotate(float r) {
 	}
 }
 
+//allow the user to choose the direction of motion of the rollers
+//note that x and y determine direction only
+//also that this doesn't compensate for the fact that some joystick axes are reversed
 void Roller::Manual(float x, float y) {
 	state = kManual;
 	if (y >= 0.4) {

@@ -1,6 +1,8 @@
 /*
  * auton_programs.h
  *
+ *	A collection of all our auton classes, so they can be included with one statement
+ *
  *  Created on: Feb 11, 2015
  *      Author: ratpack
  */

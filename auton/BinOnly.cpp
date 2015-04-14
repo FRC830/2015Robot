@@ -20,34 +20,31 @@ void BinOnly::Init() {
 void BinOnly::Periodic(){
 	switch (current_state) {
 	case kCalibrating:
-		if (tote_handler->Calibrated()){
+		if (tote_handler->IsCalibrated()){
 			current_state = kGatheringBin;
 			tote_handler->GatherBin();
 			timer->Reset();
 		}
-		SmartDashboard::PutString("auton state", "calibrating");
 		break;
 	case kGatheringBin:
 		if (lifter->AtPosition(Lifter::kBinPickup)) {
 			drive->DriveCartesian(0.0, 0.6, 0.0);
 			timer->Start();
 		}
-		if (timer->Get() >= BIN_TIME /* || roller->ToteCaptured() */){
+		if (timer->Get() >= 1.5){
 			timer->Reset();
 			tote_handler->PickUpBin();
 			current_state = kMovingToAuto;
 		}
-		SmartDashboard::PutString("auton state", "gathering bin");
 		break;
 	case kMovingToAuto:
-		drive->DriveCartesian(0.0, 0.6, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
+		drive->DriveCartesian(0.0, 0.6, 0.0);
 		if (timer->Get() >= 1.0) {
 			current_state = kDone;
 		}
-		SmartDashboard::PutString("auton state", "moving");
 		break;
 	case kDone:
-		SmartDashboard::PutString("auton state", "done");
+		drive->Brake();
 		break;
 	}
 

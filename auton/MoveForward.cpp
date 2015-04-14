@@ -21,7 +21,7 @@ void MoveForward::Periodic() {
 	switch (current_state) {
 	case kMovingToAuto:
 		drive->DriveCartesian(0.0, 0.5, 0.0); //assumes we start out facing forwards
-		if (timer->Get() >= MOVE_TIME) {
+		if (timer->Get() >= 2.0) {
 			current_state = kDone;
 		}
 		break;

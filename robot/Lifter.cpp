@@ -92,7 +92,7 @@ void Lifter::Calibrate() {
 	MoveToPosition(kCalibration);
 }
 
-bool Lifter::Calibrated() {
+bool Lifter::IsCalibrated() {
 	return calibrated;
 }
 

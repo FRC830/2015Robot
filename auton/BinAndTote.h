@@ -1,6 +1,8 @@
 /*
  * BinAndTote.h
  *
+ *	This auton has not been tested in any capacity, and should be substantially redesigned if we want to do this
+ *
  *  Created on: Feb 23, 2015
  *      Author: ratpack
  */
@@ -19,8 +21,6 @@ public:
 private:
 	enum State {kCalibrating, kGatheringBin, kRaisingBin, kGatheringTote, kMovingToAuto, kDone};
 	enum State current_state;
-	static constexpr float TIME_TO_GATHER_BIN = 5.0;
-	static constexpr float TIME_TO_RAISE_BIN = 1.0;
 };
 
 #endif /* AUTON_BINANDTOTE_H_ */

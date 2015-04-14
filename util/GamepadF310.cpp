@@ -42,9 +42,9 @@ float GamepadF310::DPadX() {
 	//the joystick class treats the DPad like a POV switch, i.e. a little control stick
 	//it returns an angle giving its position clockwise from straight up
 	//on the DPad on the angles will be multiples of 45 degrees
-	//this is written so that the DPad has the same interface as the sticks
+	//this class is written so that the DPad has the same interface as the sticks
 	//which is good because the mode button switches the DPad and left stick
-	//(which is also why we use <=, even though the physical DPad won't give in-between values
+	//(which is also why we use <=, even though the physical DPad won't give in-between values)
 	float pov = joystick->GetPOV();
 	if (45.0 <= pov && pov <= 135.0){
 		return 1.0;

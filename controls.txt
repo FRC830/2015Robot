@@ -3,26 +3,42 @@ Ratpack 2015 Controls
 Pilot:
 Mecanum drive: left stick forward and strafe, right stick x-axis rotation. This has acceleration control applied at all times
 
-Slow down: pressing down either of the top two bumpers will halve the drive inputs, allowing for greater precision
+Turbo: pressing down either of the top two bumpers will increase the drive inputs, allowing for greater speed
 
 Brake: pressing down (or up) on *both* sticks will immediately stop the robot (overriding acceleration control).
 This is intended to be used if the robot is about to crash, not as a usual part of driving.
 
 Copilot:
-Pick up a bin: press B. this will lower the lift, run the rollers until a bin 
-breaks the line break, then lift up the bin.
+A button: Pick up a tote. this will lift up the current stack high enough to intake a tote, and start running the rollers
 
-Pick up a tote: press A. this will run the rollers until a tote breaks the line break,
-then lower the lift, and raise it up again, picking up the tote
+B button: Pick up a bin. this will lower the lift enough to get under a bin, and start running the rollers
 
-Eject to floor: press X. this will lower the stack to the ground and then roll out until cancelled.
+X button: Recalibrate the lifter. This is never necessary in competition.
 
-Eject to step: press Y. this will lower the stack to the height of the step, then roll out until cancelled.
+Y button: Go to step height. This will raise the stack to the height of the step
 
-Cancel/stop any of the previous three: jiggle the left-stick. (The program detects if it is pressed more than halfway in any direction) 
+DPad right: Eject. This only ejects while the dpad is held, and only happens if another routine is not in progress
+
+DPad up/down: cycle the lifter up or down through several pre-determined positions, from the floor to the maximum allowed height. This is primarily important
+for picking up a bin from the step, which is done by lifting the lifter until it gets just under a bin, then lifting it up another step. (After catching the bin, back up and press Y to drop it) 
+
+Jiggle left stick: Cancel/stop any sequence. (The program detects if it is pressed more than halfway in any direction) 
 if the button is pressed again, the sequence will restart from the beginning.
 
 Note: once the robot is in a certain mode (eg "picking up a tote"), pressing the same button again will have no effect.
 If you want to restart the sequence, cancel it then start again.
 
 (Note that all sequences are mutually exclusive, so for example pressing A will cancel the 'B'-sequence and start from the beginning)
+
+Copilot manual:
+Manual controls are used if the robot is in test mode, or if either of the bumpers is being held down. They override the usual controls.
+
+A button: Run rollers in.
+
+X button: Go out of test mode, if in test mode. This is a safeguard in case we start a competition match in test mode.
+
+DPad right: Eject.
+
+DPad up/down: move the lifter up/down (useful for getting it above the calibration sensor before a match)
+
+Back/Start buttons: run rollers full speed to the left/right. Intended to be used for disrupting the tote array quickly
