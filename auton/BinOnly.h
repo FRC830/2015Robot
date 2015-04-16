@@ -14,10 +14,6 @@
 
 #include "AutonProgram.h"
 
-#include "../robot/Lifter.h"
-#include "../robot/Roller.h"
-#include "../robot/MecanumDrive.h"
-
 class BinOnly : public AutonProgram {
 public:
 	BinOnly(Lifter * lift, Roller * roll, ToteHandler * tote_h, MecanumDrive * mec_drive);

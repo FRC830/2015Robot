@@ -14,9 +14,9 @@
 
 #include "AutonProgram.h"
 
-#include "../robot/Lifter.h"
-#include "../robot/Roller.h"
-#include "../robot/MecanumDrive.h"
+#include "../src/Lifter.h"
+#include "../src/Roller.h"
+#include "../src/MecanumDrive.h"
 
 class ToteOnly : public AutonProgram {
 public:

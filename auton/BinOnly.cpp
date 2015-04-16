@@ -44,7 +44,7 @@ void BinOnly::Periodic(){
 		}
 		break;
 	case kDone:
-		drive->Brake();
+		drive->Stop();
 		break;
 	}
 
