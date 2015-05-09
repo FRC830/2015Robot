@@ -26,7 +26,7 @@ void ToteOnly::Periodic(){
 	case kTurning:
 		//turn 90 degrees to face forwards
 		drive->DriveCartesian(0.0, 0.0, 0.6); //eventually this should be based on the gyro or something
-		if (timer->Get() >= TIME_TO_ROTATE) {
+		if (timer->Get() >= 1.2) {
 			current_state = kMovingToAuto;
 			timer->Reset();
 		}
@@ -38,7 +38,7 @@ void ToteOnly::Periodic(){
 		}
 		break;
 	case kDone:
-		drive->Brake();
+		drive->Stop();
 		break;
 	}
 

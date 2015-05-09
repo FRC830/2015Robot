@@ -5,11 +5,11 @@
  *      Author: ratpack
  */
 
-#ifndef ROBOT_TOTEHANDLER_H_
-#define ROBOT_TOTEHANDLER_H_
+#ifndef SRC_TOTEHANDLER_H_
+#define SRC_TOTEHANDLER_H_
 
-#include "Lifter.h"
-#include "Roller.h"
+#include "../src/Lifter.h"
+#include "../src/Roller.h"
 
 class ToteHandler {
 public:
@@ -19,7 +19,6 @@ public:
 	void PickUpBin();
 	void GatherTote();
 	void PickUpTote();
-	void RaiseTote();
 	void GatherFromFeeder();
 	void PickUpFromFeeder();
 	void PickUp();
@@ -32,7 +31,7 @@ public:
 	void ManualRoller(float x, float y);
 	void Eject();
 
-	bool Calibrated();
+	bool IsCalibrated();
 
 	void IncreaseHeight();
 	void DecreaseHeight();
@@ -50,4 +49,4 @@ private:
 	enum HandlerState current_state;
 };
 
-#endif /* ROBOT_TOTEHANDLER_H_ */
+#endif /* SRC_TOTEHANDLER_H_ */

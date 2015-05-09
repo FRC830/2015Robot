@@ -13,7 +13,7 @@
 class Lifter {
 public:
 	enum Position {
-		kFloor = 0, kBinPickup = 500, kCalibration = 1100, kHoldTote = 700, kStep = 1200, kRollersClear = 1500, kFeederPickup = 1400, kTote = 2350, kBelowStepBin = 2500, kStepBinPickup = 2850, kBin = 4400, kFeederGather = 4500, kMaxHeight = 6000
+		kFloor = 0, kBinPickup = 500, kCalibration = 1100, kHoldTote = 600, kStep = 1200, kRollersClear = 1500, kFeederPickup = 1400, kTote = 2350, kBelowStepBin = 2500, kStepBinPickup = 2850, kBin = 4400, kFeederGather = 4500, kMaxHeight = 6000
 	};
 
 	Lifter(Victor * lift_motor, Encoder * lift_enc, DigitalInput * bottom_limit_switch, DigitalInput * cal_switch);
@@ -22,7 +22,7 @@ public:
 	int DistFromPosition(enum Position target_pos); //returns distance from the position (positive: distance above, negative: distance below)
 	bool AtPosition(enum Position target_pos); //returns true if we are at the target position
 	void Calibrate(); //moves to the calibration switch position and recalibrates
-	bool Calibrated();
+	bool IsCalibrated();
 	bool AtBottom();
 	bool AtCalibrationPoint();
 

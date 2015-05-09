@@ -8,10 +8,10 @@
 #ifndef AUTON_AUTONPROGRAM_H_
 #define AUTON_AUTONPROGRAM_H_
 
-#include "../robot/Lifter.h"
-#include "../robot/Roller.h"
-#include "../robot/ToteHandler.h"
-#include "../robot/MecanumDrive.h"
+#include "../src/Lifter.h"
+#include "../src/MecanumDrive.h"
+#include "../src/Roller.h"
+#include "../src/ToteHandler.h"
 
 //abstract class to represent auton programs
 class AutonProgram {

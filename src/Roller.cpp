@@ -5,7 +5,7 @@
  *      Author: ratpack
  */
 
-#include "Roller.h"
+#include "../src/Roller.h"
 
 Roller::Roller(Victor * left_motor, Victor * right_motor, DigitalInput * linebreak_sensor) {
 	left_side = left_motor;
@@ -66,6 +66,8 @@ void Roller::Rotate(float r) {
 	}
 }
 
+//allow the user to choose the direction of motion of the rollers
+//note that x and y determine direction only
 void Roller::Manual(float x, float y) {
 	state = kManual;
 	if (y >= 0.4) {

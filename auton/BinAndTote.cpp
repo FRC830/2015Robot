@@ -19,7 +19,7 @@ void BinAndTote::Init() {
 void BinAndTote::Periodic() {
 	switch (current_state) {
 	case kCalibrating:
-		if (tote_handler->Calibrated()){
+		if (tote_handler->IsCalibrated()){
 			current_state = kGatheringBin;
 			tote_handler->GatherBin();
 			timer->Reset();
@@ -28,21 +28,20 @@ void BinAndTote::Periodic() {
 		break;
 	case kGatheringBin:
 		drive->DriveCartesian(0.0, 0.2, 0.0);
-		if (timer->Get() >= TIME_TO_GATHER_BIN || roller->ToteCaptured()){
+		if (timer->Get() >= 1.2){
 			timer->Reset();
 			tote_handler->PickUpBin();
 			current_state = kRaisingBin;
 		}
 		break;
 	case kRaisingBin:
-		//raise bin enough to clear the linebreak
-		if (timer->Get() >= TIME_TO_RAISE_BIN) {
+		if (lifter->AtPosition(Lifter::kBin)) {
 			tote_handler->GatherTote();
 			current_state = kGatheringTote;
 		}
 		break;
 	case kGatheringTote:
-		drive->DriveCartesian(0.0, 0.2, 0.0);
+		drive->DriveCartesian(0.0, 0.4, 0.0);
 		if (roller->ToteCaptured()) {
 			tote_handler->PickUpTote();
 			timer->Reset();
@@ -51,7 +50,7 @@ void BinAndTote::Periodic() {
 		break;
 	case kMovingToAuto:
 		drive->DriveCartesian(-0.5, 0.0, 0.0); //we start out facing the bin, with the auto zone to our left, so strafe left
-		if (timer->Get() >= MOVE_TIME) {
+		if (timer->Get() >= 2.0) {
 			current_state = kDone;
 		}
 		break;

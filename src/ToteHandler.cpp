@@ -5,9 +5,10 @@
  *      Author: ratpack
  */
 
-#include "ToteHandler.h"
-#include "Lifter.h"
-#include "Roller.h"
+#include "../src/ToteHandler.h"
+
+#include "../src/Lifter.h"
+#include "../src/Roller.h"
 
 ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 	roller = roll;
@@ -22,19 +23,8 @@ ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 void ToteHandler::Update(){
 	switch (current_state){
 	case kGatheringBin:
-		/*
-		if (roller->ToteCaptured()){
-			PickUpBin();
-		}
-		*/
 		break;
 	case kGatheringTote:
-		/*
-		if (roller->ToteCaptured()){
-			PickUpTote();
-		}
-		*/
-
 		//don't run rollers until the tote is clear
 		//so the totes will line up better
 		if (lifter->DistFromPosition(Lifter::kRollersClear) >= 0) {
@@ -46,7 +36,6 @@ void ToteHandler::Update(){
 			timer->Start();
 			timer->Reset();
 			current_state = kWaitingToRaise;
-			//roller->RollIn();
 		}
 		break;
 	case kWaitingToRaise:
@@ -65,7 +54,7 @@ void ToteHandler::Update(){
 		}
 		break;
 	case kCalibrating:
-		if (lifter->Calibrated()) {
+		if (lifter->IsCalibrated()) {
 			ReturnToDefault();
 		}
 		break;
@@ -82,15 +71,13 @@ void ToteHandler::Update(){
 		break;
 	}
 
+	//overriding must be continuously refreshed, otherwise control returns to the tote handler
 	if (current_state == kOverridden) {
 		current_state = kDefault;
 	} else {
 		lifter->Update();
 		roller->Update();
 	}
-
-	SmartDashboard::PutBoolean("intaking bin", current_state == kGatheringBin);
-
 }
 void ToteHandler::GatherBin(){
 	if (current_state != kGatheringBin) {
@@ -112,23 +99,16 @@ void ToteHandler::GatherTote(){
 			default_position = Lifter::kTote;
 		}
 		lifter->MoveToPosition(default_position);
-		//roller->RollIn();
+		//we don't run the rollers here, because the update loop will start them when we've lifted the tote stack out of the rollers
 		current_state = kGatheringTote;
 	}
 }
 
 void ToteHandler::PickUpTote() {
-	if (current_state != kPickingUpTote /*&& roller->ToteCaptured()*/) {
+	if (current_state != kPickingUpTote) {
 		roller->Stop();
 		lifter->MoveToPosition(Lifter::kFloor);
 		current_state = kPickingUpTote;
-	}
-}
-
-void ToteHandler::RaiseTote() {
-	if (current_state == kPickingUpTote && lifter->AtPosition(Lifter::kFloor)){
-		default_position = Lifter::kHoldTote;
-		ReturnToDefault();
 	}
 }
 
@@ -150,18 +130,20 @@ void ToteHandler::PickUpFromFeeder() {
 }
 
 void ToteHandler::PickUp() {
+	//call the pick up function appropriate to what we're picking up
+	//this has no default case, as in such a case it's impossible to know for sure if we're picking up a bin or tote
+	//and performing the wrong pick up operation is bad
 	if (current_state == kGatheringBin) {
 		PickUpBin();
 	} else if (current_state == kGatheringFromFeeder) {
 		PickUpFromFeeder();
-	} else if (current_state == kGatheringTote || (current_state == kDefault && default_position != Lifter::kBin)){
-		//if default position is kBin, we're probably picking up a bin
+	} else if (current_state == kGatheringTote){
 		PickUpTote();
 	}
 }
 
 void ToteHandler::Eject(){
-	ejecting = true;
+	ejecting = true; //ejecting isn't a separate state but an action that can be performed in default mode
 }
 
 void ToteHandler::GoToStep() {
@@ -203,10 +185,12 @@ void ToteHandler::ManualRoller(float x, float y) {
 	}
 }
 
-bool ToteHandler::Calibrated() {
-	return lifter->Calibrated();
+bool ToteHandler::IsCalibrated() {
+	return lifter->IsCalibrated();
 }
 
+//allow the user to cycle upwards through useful heights
+//this is most important for picking up bins from the step
 void ToteHandler::IncreaseHeight() {
 	if (current_state == kDefault) {
 		switch (default_position) {
@@ -223,6 +207,8 @@ void ToteHandler::IncreaseHeight() {
 	}
 }
 
+
+//...and cycle downwards
 void ToteHandler::DecreaseHeight() {
 	if (current_state == kDefault) {
 	switch (default_position) {

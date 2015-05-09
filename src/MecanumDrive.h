@@ -5,8 +5,8 @@
  *      Author: ratpack
  */
 
-#ifndef ROBOT_MECANUMDRIVE_H_
-#define ROBOT_MECANUMDRIVE_H_
+#ifndef SRC_MECANUMDRIVE_H_
+#define SRC_MECANUMDRIVE_H_
 
 #include "WPILib.h"
 
@@ -14,7 +14,7 @@ class MecanumDrive {
 public:
 	MecanumDrive(RobotDrive * robot_drive, float accel_time);
 	void DriveCartesian(float x, float y, float rotation, float gyro_angle = 0.0);
-	void Brake();
+	void Stop();
 	void TestAll();
 
 private:
@@ -30,4 +30,4 @@ private:
 	float current_y;
 };
 
-#endif /* ROBOT_MECANUMDRIVE_H_ */
+#endif /* SRC_MECANUMDRIVE_H_ */

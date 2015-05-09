@@ -5,7 +5,8 @@
  *      Author: ratpack
  */
 
-#include "Lifter.h"
+#include "../src/Lifter.h"
+
 #include "WPILib.h"
 #include <cmath>
 
@@ -92,7 +93,7 @@ void Lifter::Calibrate() {
 	MoveToPosition(kCalibration);
 }
 
-bool Lifter::Calibrated() {
+bool Lifter::IsCalibrated() {
 	return calibrated;
 }
 

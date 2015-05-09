@@ -5,8 +5,8 @@
  *      Author: ratpack
  */
 
-#ifndef ROBOT_ROLLER_H_
-#define ROBOT_ROLLER_H_
+#ifndef SRC_ROLLER_H_
+#define SRC_ROLLER_H_
 
 #include "WPILib.h"
 
@@ -45,4 +45,4 @@ private:
 
 };
 
-#endif /* ROBOT_ROLLER_H_ */
+#endif /* SRC_ROLLER_H_ */
