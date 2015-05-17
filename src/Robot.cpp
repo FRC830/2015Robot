@@ -3,11 +3,11 @@
 #include "../util/830utilities.h"
 #include "../auton/auton_programs.h"
 #include "Lifter.h"
-#include "../src/Lifter.h"
-#include "../src/MecanumDrive.h"
-#include "../src/robot_identifier.h"
-#include "../src/Roller.h"
-#include "../src/ToteHandler.h"
+#include "Lifter.h"
+#include "MecanumDrive.h"
+#include "robot_identifier.h"
+#include "Roller.h"
+#include "ToteHandler.h"
 
 class Robot: public IterativeRobot
 {

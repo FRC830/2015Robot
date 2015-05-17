@@ -5,7 +5,7 @@
  *      Author: ratpack
  */
 
-#include "../src/Roller.h"
+#include "Roller.h"
 
 Roller::Roller(Victor * left_motor, Victor * right_motor, DigitalInput * linebreak_sensor) {
 	left_side = left_motor;

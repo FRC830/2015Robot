@@ -5,10 +5,10 @@
  *      Author: ratpack
  */
 
-#include "../src/ToteHandler.h"
+#include "ToteHandler.h"
 
-#include "../src/Lifter.h"
-#include "../src/Roller.h"
+#include "Lifter.h"
+#include "Roller.h"
 
 ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 	roller = roll;
