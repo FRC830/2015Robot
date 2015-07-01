@@ -54,7 +54,7 @@ void ToteHandler::Update(){
 		}
 		break;
 	case kCalibrating:
-		if (lifter->IsCalibrated()) {
+		if (lifter->Calibrated()) {
 			ReturnToDefault();
 		}
 		break;
@@ -186,7 +186,7 @@ void ToteHandler::ManualRoller(float x, float y) {
 }
 
 bool ToteHandler::IsCalibrated() {
-	return lifter->IsCalibrated();
+	return lifter->Calibrated();
 }
 
 //allow the user to cycle upwards through useful heights

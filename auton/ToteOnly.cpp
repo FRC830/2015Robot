@@ -38,7 +38,7 @@ void ToteOnly::Periodic(){
 		}
 		break;
 	case kDone:
-		drive->Stop();
+		drive->Brake();
 		break;
 	}
 

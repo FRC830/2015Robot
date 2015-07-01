@@ -183,7 +183,7 @@ private:
 		//drive controls
 		float right_y = pilot->RightY();
 		if (right_y > 0.9 || right_y < -0.9) {
-			drive->Stop();
+			drive->Brake();
 		} else if (!(pilot->LeftTrigger() >= 0.3|| pilot->RightTrigger() >= 0.3)) {
 			//go slow unless triggers pressed
 			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.3, pilot->RightX() / 1.9);

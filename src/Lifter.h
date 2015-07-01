@@ -22,9 +22,9 @@ public:
 	int DistFromPosition(enum Position target_pos); //returns distance from the position (positive: distance above, negative: distance below)
 	bool AtPosition(enum Position target_pos); //returns true if we are at the target position
 	void Calibrate(); //moves to the calibration switch position and recalibrates
-	bool IsCalibrated();
 	bool AtBottom();
 	bool AtCalibrationPoint();
+	bool Calibrated();
 
 private:
 
