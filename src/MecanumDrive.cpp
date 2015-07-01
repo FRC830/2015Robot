@@ -5,7 +5,7 @@
  *      Author: ratpack
  */
 
-#include "../src/MecanumDrive.h"
+#include "MecanumDrive.h"
 
 MecanumDrive::MecanumDrive(RobotDrive * robot_drive, float accel_time) {
 
