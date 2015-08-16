@@ -9,6 +9,32 @@
 #include "Roller.h"
 #include "ToteHandler.h"
 
+struct IMU {
+	int16_t roll, pitch, yaw;
+};
+
+int16_t getSPIInt(SPI *s) {
+	static uint8_t cmd = 0;
+	uint8_t byte0, byte1;
+	s->Transaction(&cmd, &byte0, 1);
+	s->Transaction(&cmd, &byte1, 1);
+	return (byte1 << 8) + byte0;
+}
+
+IMU readIMU(SPI *s) {
+	static uint8_t cmd = 0, out;
+	//s->SetChipSelectActiveHigh();
+	s->Transaction(&cmd, &out, 1);
+	IMU imu;
+	imu.roll = getSPIInt(s);
+	imu.pitch = getSPIInt(s);
+	imu.yaw = getSPIInt(s);
+	for (int i = 0; i < 6; ++i)
+		getSPIInt(s);
+	//s->SetChipSelectActiveLow();
+	return imu;
+}
+
 class Robot: public IterativeRobot
 {
 private:
@@ -63,6 +89,8 @@ private:
 	AutonProgram * default_auton; //keep a default auton program in case there's trouble with the smart dashboard
 	SendableChooser * auton_chooser;
 
+	SPI *compass;
+
 	bool test_mode; //whether we're in test mode, with manual controls only
 
 	DriverStation * ds;
@@ -71,6 +99,8 @@ private:
 
 	void RobotInit()
 	{
+		compass = new SPI(SPI::kOnboardCS0);
+		compass->SetClockRate(100000);
 		left_roller_motor = new Victor(ROLLER_LEFT_PWM);
 		right_roller_motor = new Victor(ROLLER_RIGHT_PWM);
 		roller_linebreak = new DigitalInput(ROLLER_LINEBREAK_DIO);
@@ -263,6 +293,13 @@ private:
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutBoolean("lifter calibrated", tote_handler->IsCalibrated());
 		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
+
+//		int16_t angle;
+//		compass->Read(true, (uint8_t*)&angle, sizeof(angle));
+//		SmartDashboard::PutNumber("compass", angle);
+		IMU imu = readIMU(compass);
+#define display(v)		SmartDashboard::PutNumber(#v, imu.v)
+		display(roll); display(pitch); display(yaw);
 		//SmartDashboard::PutNumber("Lifter Current", pdp->GetCurrent(2));
 	}
 };
