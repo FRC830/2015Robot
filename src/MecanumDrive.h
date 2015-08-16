@@ -15,6 +15,7 @@ public:
 	MecanumDrive(RobotDrive * robot_drive, float accel_time);
 	void DriveCartesian(float x, float y, float rotation, float gyro_angle = 0.0);
 	void Brake();
+	inline void Stop() { Brake(); }
 	void TestAll();
 
 private:

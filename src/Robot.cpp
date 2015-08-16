@@ -202,16 +202,16 @@ private:
 			} else {
 				lifter_motor->Set(0.0);
 			}
-			if (copilot->Button(GamepadF310::A_Button)) {
+			if (copilot->ButtonState(F310Buttons::Y)) {
 				left_roller_motor->Set(0.8);
 				right_roller_motor->Set(-0.8);
-			} else if (copilot->Button(GamepadF310::Y_Button) || copilot->DPadX() == 1.0) {
+			} else if (copilot->ButtonState(F310Buttons::Y) || copilot->DPadX() == 1.0) {
 				left_roller_motor->Set(-0.3);
 				right_roller_motor->Set(0.3);
-			} else if (copilot->Button(GamepadF310::BACK_BUTTON)) {
+			} else if (copilot->ButtonState(F310Buttons::Back)) {
 				left_roller_motor->Set(-1.0);
 				right_roller_motor->Set(-1.0);
-			} else if (copilot->Button(GamepadF310::START_BUTTON)) {
+			} else if (copilot->ButtonState(F310Buttons::Start)) {
 				left_roller_motor->Set(1.0);
 				right_roller_motor->Set(1.0);
 			} else {
@@ -219,22 +219,22 @@ private:
 				right_roller_motor->Set(0.0);
 			}
 
-			if (copilot->Button(GamepadF310::X_Button)) {
+			if (copilot->ButtonState(F310Buttons::X)) {
 				test_mode = false; //escape in case we accidentally start a match in test mode
 				SmartDashboard::PutBoolean("test mode", false);
 				tote_handler->Calibrate(); //make sure we're calibrated (would happen anyways since X calibrates in normal controls)
 			}
 		} else {
 			//normal copilot controls
-			if(copilot->Button(GamepadF310::B_Button)) {
+			if(copilot->ButtonState(F310Buttons::B)) {
 				tote_handler->GatherBin();
-			} else if (copilot->Button(GamepadF310::A_Button)) {
+			} else if (copilot->ButtonState(F310Buttons::A)) {
 				tote_handler->GatherTote();
-			} else if (copilot->Button(GamepadF310::X_Button)) {
+			} else if (copilot->ButtonState(F310Buttons::X)) {
 				tote_handler->Calibrate();
-			} else if (copilot->Button(GamepadF310::Y_Button)) {
+			} else if (copilot->ButtonState(F310Buttons::Y)) {
 				tote_handler->GoToStep();
-			} else if (copilot->RightBumper()) {
+			} else if (copilot->ButtonState(F310Buttons::RightBumper)) {
 				tote_handler->PickUp();
 			} else if (copilot->DPadX() == 1.0){
 				tote_handler->Eject();
