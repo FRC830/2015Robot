@@ -58,6 +58,8 @@ private:
 	static const int LED_GREEN_DIO = 8;
 	static const int LED_BLUE_DIO = 9;
 
+	static const int GYRO_ANALOG_PIN = 0;
+
 	//Roller setup
 	Victor * left_roller_motor;
 	Victor * right_roller_motor;
@@ -90,6 +92,10 @@ private:
 	SendableChooser * auton_chooser;
 
 	SPI *compass;
+	Gyro * gyro;
+	bool picked_up;
+	float initial_angle;
+	Timer * auton_timer;
 
 	bool test_mode; //whether we're in test mode, with manual controls only
 
@@ -101,6 +107,10 @@ private:
 	{
 		compass = new SPI(SPI::kOnboardCS0);
 		compass->SetClockRate(100000);
+
+		gyro  = new Gyro(GYRO_ANALOG_PIN);
+		auton_timer = new Timer;
+
 		left_roller_motor = new Victor(ROLLER_LEFT_PWM);
 		right_roller_motor = new Victor(ROLLER_RIGHT_PWM);
 		roller_linebreak = new DigitalInput(ROLLER_LINEBREAK_DIO);
@@ -184,20 +194,61 @@ private:
 	void AutonomousInit()
 	{
 		//make extra sure that auton_program is non-null before we run it
+		/* Competition code
 		if (auton_program) {
 			auton_program->Init();
 		} else {
 			default_auton->Init();
 		}
+		*/
+		if (!tote_handler->IsCalibrated()) {
+			tote_handler->Calibrate();
+		}
+		picked_up = false;
+		initial_angle = 0;
+		auton_timer->Reset();
 	}
 
 	void AutonomousPeriodic()
 	{
+		/*competition code
 		if (auton_program) {
 			auton_program->Periodic();
 		} else {
 			default_auton->Periodic();
 		}
+		*/
+		float current_angle = gyro->GetAngle();
+		float rotatePower = 0.5;
+
+
+		if(abs(current_angle - initial_angle - 90) < 10) {
+			rotatePower = 0.4;
+		}
+
+
+		//pick up a tote and turn 90 degrees to the right
+		if (!picked_up){
+			if (!roller->ToteCaptured()){
+				tote_handler->GatherTote();
+			} else {
+				tote_handler->PickUp();
+				auton_timer->Start();
+				if (auton_timer->Get() > 4.0){
+					picked_up = true;
+					initial_angle = gyro->GetAngle();
+					auton_timer->Stop();
+				}
+			}
+
+		} else if ((current_angle - initial_angle) < 89){
+			drive->DriveCartesian(0.0, 0.0, rotatePower);
+		} else if ((current_angle - initial_angle) > 91){
+			drive->DriveCartesian(0.0, 0.0, -rotatePower);
+		} else {
+			drive->DriveCartesian(0.0, 0.0, 0.0);
+		}
+		tote_handler->Update();
 	}
 
 	void TeleopInit()
@@ -205,6 +256,7 @@ private:
 		if (!tote_handler->IsCalibrated()) {
 			tote_handler->Calibrate();
 		}
+		gyro->Reset();
 	}
 
 	//see controls.txt for control scheme explanation
@@ -293,6 +345,9 @@ private:
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutBoolean("lifter calibrated", tote_handler->IsCalibrated());
 		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
+
+		float angle = gyro->GetAngle();
+		SmartDashboard::PutNumber("Gyro angle:", angle);
 
 //		int16_t angle;
 //		compass->Read(true, (uint8_t*)&angle, sizeof(angle));
