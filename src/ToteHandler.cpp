@@ -18,6 +18,7 @@ ToteHandler::ToteHandler(Roller * roll, Lifter * lift) {
 
 	timer = new Timer();
 	ejecting = false;
+	rolling_in = false;
 
 }
 void ToteHandler::Update(){
@@ -62,6 +63,9 @@ void ToteHandler::Update(){
 		if (ejecting) {
 			roller->RollOut();
 			ejecting = false;
+		} else if (rolling_in){
+			roller->RollIn();
+			rolling_in = false;
 		} else {
 			roller->Stop();
 		}
@@ -144,6 +148,10 @@ void ToteHandler::PickUp() {
 
 void ToteHandler::Eject(){
 	ejecting = true; //ejecting isn't a separate state but an action that can be performed in default mode
+}
+
+void ToteHandler::RollIn(){
+	rolling_in = true; //opposite of Eject()
 }
 
 void ToteHandler::GoToStep() {

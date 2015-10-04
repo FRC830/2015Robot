@@ -103,6 +103,9 @@ private:
 
 	float last_dpad_y;
 
+	// Teleop variables:
+	float desired_angle;
+
 	void RobotInit()
 	{
 		compass = new SPI(SPI::kOnboardCS0);
@@ -167,6 +170,7 @@ private:
 		ds = DriverStation::GetInstance();
 
 		last_dpad_y = 0.0;
+		desired_angle = 0.0;
 	}
 
 	void DisabledInit() {
@@ -207,6 +211,9 @@ private:
 		picked_up = false;
 		initial_angle = 0;
 		auton_timer->Reset();
+		auton_timer->Start();
+
+		gyro->Reset();
 	}
 
 	void AutonomousPeriodic()
@@ -218,37 +225,86 @@ private:
 			default_auton->Periodic();
 		}
 		*/
-		float current_angle = gyro->GetAngle();
-		float rotatePower = 0.5;
+//		float current_angle = gyro->GetAngle();
+//		float rotatePower = 0.5;
+//
+//
+//		if(abs(current_angle - initial_angle - 90) < 10) {
+//			rotatePower = 0.4;
+//		}
+//
+//
+//		//pick up a tote and turn 90 degrees to the right
+//		if (!picked_up){
+//			if (!roller->ToteCaptured()){
+//				tote_handler->GatherTote();
+//			} else {
+//				tote_handler->PickUp();
+//				auton_timer->Start();
+//				if (auton_timer->Get() > 4.0){
+//					picked_up = true;
+//					initial_angle = gyro->GetAngle();
+//					auton_timer->Stop();
+//				}
+//			}
+//
+//		} else if ((current_angle - initial_angle) < 89){
+//			drive->DriveCartesian(0.0, 0.0, rotatePower);
+//		} else if ((current_angle - initial_angle) > 91){
+//			drive->DriveCartesian(0.0, 0.0, -rotatePower);
+//		} else {
+//			drive->DriveCartesian(0.0, 0.0, 0.0);
+//		}
+//		tote_handler->Update();
 
+//		float rotatePower = 1.0;
+//		drive->DriveCartesian(0.0, 0.0, rotatePower);
 
-		if(abs(current_angle - initial_angle - 90) < 10) {
-			rotatePower = 0.4;
+//		float speed = 0.5;
+//
+
+		float target_angle = 0;
+		float y_speed = 0.5;
+		float time = auton_timer->Get();
+		float speed = 0.0;
+		float angle = gyro->GetAngle();
+
+		if (time < 4.0) {
+			tote_handler->GatherTote();
+		}
+		if (time > 2.0) {
+			y_speed = 0.0;
 		}
 
+		if (time > 4.0 && time < 6) {
+			tote_handler->PickUpTote();
+		}
+		if (time > 6) {
+			target_angle  = 180;
+		}
 
-		//pick up a tote and turn 90 degrees to the right
-		if (!picked_up){
-			if (!roller->ToteCaptured()){
-				tote_handler->GatherTote();
-			} else {
-				tote_handler->PickUp();
-				auton_timer->Start();
-				if (auton_timer->Get() > 4.0){
-					picked_up = true;
-					initial_angle = gyro->GetAngle();
-					auton_timer->Stop();
-				}
+		if (abs(angle - 180) < 1) {
+			tote_handler->Eject();
+			if(time > 15){
+				auton_timer->Reset();
+				gyro->Reset();
 			}
-
-		} else if ((current_angle - initial_angle) < 89){
-			drive->DriveCartesian(0.0, 0.0, rotatePower);
-		} else if ((current_angle - initial_angle) > 91){
-			drive->DriveCartesian(0.0, 0.0, -rotatePower);
-		} else {
-			drive->DriveCartesian(0.0, 0.0, 0.0);
 		}
+
+		SmartDashboard::PutNumber("angle", angle);
+		float error = 1;
+		if (angle > (target_angle + error)){
+			speed = -0.5;
+
+		}
+		else if (angle < (target_angle - error)){
+			speed = 0.5;
+		}
+		SmartDashboard::PutNumber("speed", speed);
+		drive->DriveCartesian(0.0, y_speed, speed);
+
 		tote_handler->Update();
+
 	}
 
 	void TeleopInit()
@@ -262,16 +318,41 @@ private:
 	//see controls.txt for control scheme explanation
 	void TeleopPeriodic()
 	{
+
+		float angle = gyro->GetAngle();
+		bool updating = false;
+		SmartDashboard::PutNumber("Gyro angle:", angle);
+		SmartDashboard::PutNumber("left y:", pilot->LeftY());
+		SmartDashboard::PutNumber("left x:", pilot->LeftX());
+		SmartDashboard::PutNumber("right x:", pilot->RightX());
+		float rotation = pilot->RightX();
+		if (fabs (pilot->RightX()) > 0.05 || (fabs (pilot->LeftX()) < 0.1 && fabs (pilot->LeftY()) < 0.05)){
+			desired_angle = angle;
+			updating = true;
+		}
+		else{
+			if (desired_angle > angle){
+				rotation = 0.3;
+			}
+			else if (desired_angle < angle){
+				rotation = -0.3;
+			}
+		}
+		SmartDashboard::PutNumber("desired angle:", desired_angle);
+		SmartDashboard::PutBoolean("updating", updating);
+
 		//drive controls
 		float right_y = pilot->RightY();
 		if (right_y > 0.9 || right_y < -0.9) {
 			drive->Brake();
+
 		} else if (!(pilot->LeftTrigger() >= 0.3|| pilot->RightTrigger() >= 0.3)) {
 			//go slow unless triggers pressed
-			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.3, pilot->RightX() / 1.9);
+			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.3, rotation / 1.9);
 		} else {
-			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.0, pilot->RightX() / 1.5);
+			drive->DriveCartesian(pilot->LeftX() / 1.0, pilot->LeftY() / 1.0, rotation / 1.5);
 		}
+
 
 
 		//use manual controls if a trigger is pressed or if we're in test mode
@@ -316,11 +397,13 @@ private:
 				tote_handler->Calibrate();
 			} else if (copilot->ButtonState(F310Buttons::Y)) {
 				tote_handler->GoToStep();
-			} else if (copilot->ButtonState(F310Buttons::RightBumper)) {
+			} else if (copilot->ButtonState(F310Buttons::RightBumper) || copilot->ButtonState(F310Buttons::LeftBumper)) {
 				tote_handler->PickUp();
-			} else if (copilot->DPadX() == 1.0){
+			} else if (copilot->ButtonState(F310Buttons::Back)){
 				tote_handler->Eject();
-			}  else if (fabs(copilot->LeftY()) >= 0.3 || fabs(copilot->LeftX()) >= 0.3) {
+			} else if (copilot->ButtonState(F310Buttons::Start)){
+				tote_handler->RollIn();
+			} else if (fabs(copilot->LeftY()) >= 0.3 || fabs(copilot->LeftX()) >= 0.3) {
 				//cancel command if left stick wiggled
 				tote_handler->ReturnToDefault();
 			}
@@ -345,9 +428,6 @@ private:
 		SmartDashboard::PutBoolean("arm at bottom", lifter->AtBottom());
 		SmartDashboard::PutBoolean("lifter calibrated", tote_handler->IsCalibrated());
 		SmartDashboard::PutBoolean("cal line broken", calibration_switch->Get());
-
-		float angle = gyro->GetAngle();
-		SmartDashboard::PutNumber("Gyro angle:", angle);
 
 //		int16_t angle;
 //		compass->Read(true, (uint8_t*)&angle, sizeof(angle));

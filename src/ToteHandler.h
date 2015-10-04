@@ -30,6 +30,7 @@ public:
 
 	void ManualRoller(float x, float y);
 	void Eject();
+	void RollIn();
 
 	bool IsCalibrated();
 
@@ -43,6 +44,7 @@ private:
 	Timer * timer;
 
 	bool ejecting;
+	bool rolling_in;
 	enum HandlerState{
 		kGatheringBin, kGatheringTote, kPickingUpTote, kGatheringFromFeeder, kPickingUpFromFeeder, kWaitingToRaise, kDefault, kCalibrating, kOverridden
 	};
